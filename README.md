@@ -1,19 +1,18 @@
 ## 팀원
 <div align="center">
 	<table>
-  <th><a href="https://github.com/raymondanythings"> 최세호 </th>
-	<th><a href="https://github.com/mikekks"> 정슬기 </th>
-  <th><a href="https://github.com/clean2001"> 박우진 </th>
-  <th><a href="https://github.com/clean2001"> 김세정 </th>
 	<tr>
-		<td><img width="300" alt="세호" src="https://avatars.githubusercontent.com/u/96410921?v=4">
-    </td>
-		<td><img width="300" alt="슬기" src="https://avatars.githubusercontent.com/u/135789383?v=)">
-    </td>
-    <td><img width="300" alt="우진" src="https://avatars.githubusercontent.com/u/126751594?v=4">
-    <td><img width="300" alt="세정" src="https://github.com/depromeet/layer-server/assets/100754581/45e216a1-ae8c-40b4-b028-24c51c39abd7">
-    </td>
+	<td><img width="300" alt="세호" src="https://avatars.githubusercontent.com/u/96410921?v=4"></td>
+	<td><img width="300" alt="슬기" src="https://avatars.githubusercontent.com/u/135789383?v=)"> </td>
+	    <td><img width="300" alt="우진" src="https://avatars.githubusercontent.com/u/126751594?v=4">
+	    <td><img width="300" alt="세정" src="https://github.com/depromeet/layer-server/assets/100754581/45e216a1-ae8c-40b4-b028-24c51c39abd7"></td>
 	</tr>
+		<tr>
+   <th><a href="https://github.com/sseho"> 최세호 </th>
+	<th><a href="https://github.com/wisdom0405"> 정슬기 </th>
+  <th><a href="https://github.com/getsetgo1"> 박우진 </th>
+  <th><a href="https://github.com/clean2001"> 김세정 </th>
+	  </tr>
 <th> BE </th>
 <th> BE </th>
 <th> BE </th>
