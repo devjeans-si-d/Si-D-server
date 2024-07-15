@@ -5,7 +5,7 @@
 	<td><img width="300" alt="세호" src="https://avatars.githubusercontent.com/u/96410921?v=4"></td>
 	<td><img width="300" alt="슬기" src="https://avatars.githubusercontent.com/u/135789383?v=)"> </td>
 	    <td><img width="300" alt="우진" src="https://avatars.githubusercontent.com/u/126751594?v=4">
-	    <td><img width="300" alt="세정" src="https://github.com/depromeet/layer-server/assets/100754581/45e216a1-ae8c-40b4-b028-24c51c39abd7"></td>
+	    <td><img width="300" alt="세정" src="https://avatars.githubusercontent.com/u/64718002?v=4"></td>
 	</tr>
 		<tr>
    <th><a href="https://github.com/sseho"> 최세호 </th>
