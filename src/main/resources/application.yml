@@ -21,14 +21,3 @@ logging:
     org.hibernate.sql: debug
     org.hibernate.type: trace
 
-
-
-jwt:
-  secret: fdskfnsklfnewfnlwekfnlkewnfklewnflkwenflkew
-
-
-
-webmvc:
-  cors:
-    allowedOrigins:
-      http://localhost:8080
