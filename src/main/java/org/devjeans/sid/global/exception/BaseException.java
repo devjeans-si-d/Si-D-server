@@ -1,11 +1,13 @@
 package org.devjeans.sid.global.exception;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.devjeans.sid.global.exception.exceptionType.ExceptionType;
 
+@RequiredArgsConstructor
 @Getter
 public class BaseException extends RuntimeException {
-    ExceptionType exceptionType;
+    private final ExceptionType exceptionType;
 
     @Override
     public String getMessage() {
