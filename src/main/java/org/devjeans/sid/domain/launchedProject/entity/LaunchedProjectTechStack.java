@@ -1,8 +1,8 @@
-package org.devjeans.sid.domain.launchedProjectTechStack.entity;
+package org.devjeans.sid.domain.launchedProject.entity;
+
 
 import org.devjeans.sid.domain.common.BaseEntity;
-import org.devjeans.sid.domain.launchedProject.entity.LaunchedProject;
-import org.devjeans.sid.domain.techStack.entity.TechStack;
+import org.devjeans.sid.domain.siderCard.entity.TechStack;
 
 import javax.persistence.*;
 
