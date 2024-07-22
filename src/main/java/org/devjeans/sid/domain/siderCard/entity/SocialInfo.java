@@ -1,4 +1,4 @@
-package org.devjeans.sid.domain.socialInfo.entity;
+package org.devjeans.sid.domain.siderCard.entity;
 
 import org.devjeans.sid.domain.common.BaseEntity;
 import org.devjeans.sid.domain.siderCard.entity.SiderCard;

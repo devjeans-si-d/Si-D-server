@@ -4,7 +4,6 @@ import org.devjeans.sid.domain.chatRoom.entity.ChatRoom;
 import org.devjeans.sid.domain.common.BaseEntity;
 import org.devjeans.sid.domain.projectMember.entity.ProjectMember;
 import org.devjeans.sid.domain.projectScrap.entity.ProjectScrap;
-import org.devjeans.sid.domain.recruitInfo.entity.RecruitInfo;
 import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;

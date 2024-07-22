@@ -1,4 +1,4 @@
-package org.devjeans.sid.domain.launchedProjectMember.entity;
+package org.devjeans.sid.domain.launchedProject.entity;
 
 import org.devjeans.sid.domain.common.BaseEntity;
 import org.devjeans.sid.domain.launchedProject.entity.LaunchedProject;

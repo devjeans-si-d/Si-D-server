@@ -1,9 +1,6 @@
 package org.devjeans.sid.domain.launchedProject.entity;
 
 import org.devjeans.sid.domain.common.BaseEntity;
-import org.devjeans.sid.domain.launchedProjectMember.entity.LaunchedProjectMember;
-import org.devjeans.sid.domain.launchedProjectScrap.entity.LaunchedProjectScrap;
-import org.devjeans.sid.domain.launchedProjectTechStack.entity.LaunchedProjectTechStack;
 import org.devjeans.sid.domain.project.entity.Project;
 
 import javax.persistence.*;

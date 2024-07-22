@@ -1,8 +1,8 @@
-package org.devjeans.sid.domain.recruitInfo.entity;
+package org.devjeans.sid.domain.project.entity;
 
 import org.devjeans.sid.domain.common.BaseEntity;
-import org.devjeans.sid.domain.project.entity.Project;
-import org.devjeans.sid.domain.techStack.entity.JobField;
+import org.devjeans.sid.domain.siderCard.entity.JobField;
+
 
 import javax.persistence.*;
 

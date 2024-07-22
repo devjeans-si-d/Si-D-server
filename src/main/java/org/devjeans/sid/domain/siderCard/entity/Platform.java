@@ -1,4 +1,4 @@
-package org.devjeans.sid.domain.socialInfo.entity;
+package org.devjeans.sid.domain.siderCard.entity;
 
 public enum Platform {
     EMAIL,

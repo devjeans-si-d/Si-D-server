@@ -3,8 +3,6 @@ package org.devjeans.sid.domain.siderCard.entity;
 import org.devjeans.sid.domain.career.entity.Career;
 import org.devjeans.sid.domain.common.BaseEntity;
 import org.devjeans.sid.domain.member.entity.Member;
-import org.devjeans.sid.domain.siderCardTechStack.entity.SiderCardTechStack;
-import org.devjeans.sid.domain.socialInfo.entity.SocialInfo;
 
 import javax.persistence.*;
 import java.util.ArrayList;
