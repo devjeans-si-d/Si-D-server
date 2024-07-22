@@ -1,2 +1,4 @@
-package org.devjeans.sid.domain.member.controller;public class MemberController {
+package org.devjeans.sid.domain.member.controller;
+
+public class MemberController {
 }
