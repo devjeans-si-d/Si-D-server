@@ -1,5 +1,6 @@
 package org.devjeans.sid.domain.member.entity;
 
+import lombok.Getter;
 import org.devjeans.sid.domain.common.BaseEntity;
 import org.devjeans.sid.domain.launchedProject.entity.LaunchedProjectScrap;
 import org.devjeans.sid.domain.projectMember.entity.ProjectMember;
@@ -10,6 +11,7 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@Getter
 @Entity
 public class Member extends BaseEntity {
     @Id
@@ -43,14 +45,14 @@ public class Member extends BaseEntity {
 //    @OneToMany(mappedBy = "member", cascade = CascadeType.PERSIST)
 //    private List<LaunchedProjectMember> launchedProjectMembers = new ArrayList<>();
 
-    @OneToMany(mappedBy = "member", cascade = CascadeType.PERSIST)
-    private List<ProjectMember> projectMembers = new ArrayList<>();
-
-    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
-    private List<ProjectScrap> projectScraps = new ArrayList<>();
-
-    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
-    private List<LaunchedProjectScrap> launchedProjectScraps = new ArrayList<>();
+//    @OneToMany(mappedBy = "member", cascade = CascadeType.PERSIST)
+//    private List<ProjectMember> projectMembers = new ArrayList<>();
+//
+//    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+//    private List<ProjectScrap> projectScraps = new ArrayList<>();
+//
+//    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+//    private List<LaunchedProjectScrap> launchedProjectScraps = new ArrayList<>();
 
 //    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
 //    private List<ChatParticipant> chatParticipants = new ArrayList<>();
