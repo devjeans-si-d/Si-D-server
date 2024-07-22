@@ -7,17 +7,17 @@ import org.devjeans.sid.domain.member.entity.Member;
 import javax.persistence.*;
 
 @Entity
-public class LaunchedProjectMember extends BaseEntity {
+public class LaunchedProjectMember extends BaseEntity { // LaunchedProject - 회원 교차테이블
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "launched_project_member_id")
-    private Long id;
+    private Long id; // LaunchedProject - 회원 교차테이블 id
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="launched_project_id")
-    private LaunchedProject launchedProject;
+    private LaunchedProject launchedProject; // 프로젝트 id
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="member_id")
-    private Member member;
+    private Member member; // 참여한 회원
 }
