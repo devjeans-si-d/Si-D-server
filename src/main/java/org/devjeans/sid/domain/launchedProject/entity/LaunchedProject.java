@@ -30,7 +30,8 @@ public class LaunchedProject extends BaseEntity {
     @JoinColumn(name = "project_id")
     private Project project;
 
-    private Long views=0L;
+    @Column(columnDefinition = "bigint default 0")
+    private Long views;
 
     @OneToMany(mappedBy = "launchedProject", cascade = CascadeType.ALL)
     private List<LaunchedProjectTechStack> launchedProjectTechStacks = new ArrayList<>();

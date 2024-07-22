@@ -30,8 +30,8 @@ public class Project extends BaseEntity {
     @Column(nullable = false, length = 5000)
     private String recruitmemtContents;
 
-    @Column(length = 1)
-    private String isClosed="N";
+    @Column(columnDefinition = "varchar(1) default 'N'")
+    private String isClosed;
 
     @Column(nullable = false)
     private LocalDateTime deadline;

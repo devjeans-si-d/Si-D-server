@@ -22,7 +22,4 @@ public abstract class BaseEntity {
     private LocalDateTime updatedAt;
 
     private LocalDateTime deletedAt;
-
-    @Column(length = 1)
-    private String isDeleted;
 }

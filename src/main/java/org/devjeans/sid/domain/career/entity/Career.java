@@ -26,7 +26,7 @@ public class Career extends BaseEntity {
     @Column(nullable = false)
     private LocalDateTime employedStart;
 
-    private LocalDateTime getEmployedEnd;
+    private LocalDateTime employedEnd;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sider_card_id")
