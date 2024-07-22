@@ -35,6 +35,8 @@ public class Member extends BaseEntity {
     @Column(nullable = false)
     private String phoneNumber;
 
+    private String profileImageUrl;
+
     @OneToOne(mappedBy = "member",cascade = CascadeType.ALL)
     private SiderCard siderCard;
 
