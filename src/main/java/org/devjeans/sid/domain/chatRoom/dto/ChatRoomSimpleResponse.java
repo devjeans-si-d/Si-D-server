@@ -13,7 +13,7 @@ public class ChatRoomSimpleResponse { // 밖에서 미리보기처럼 보이는 
     private Long projectId;
     private Long participantId; // 상대방의 멤버 아이디
     private String participantNickName; // 상대방 이름
-    private String participantProfile; // 상대방 프로필 사진
+    private String participantProfileImageUrl; // 상대방 프로필 사진
     private Long unreadCount; // 읽었는지 여부
     private String unreadContent; // 채팅 내용
 
@@ -23,7 +23,7 @@ public class ChatRoomSimpleResponse { // 밖에서 미리보기처럼 보이는 
                 .projectId(chatRoom.getProject().getId())
                 .participantId(participant.getId())
                 .participantNickName(participant.getNickname())
-                .participantProfile(participant.getProfileImageUrl())
+                .participantProfileImageUrl(participant.getProfileImageUrl())
                 .unreadCount(unreadCount)
                 .unreadContent(unreadContent)
                 .build();
