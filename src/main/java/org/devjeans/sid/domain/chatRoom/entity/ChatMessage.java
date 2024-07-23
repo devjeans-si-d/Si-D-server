@@ -30,4 +30,9 @@ public class ChatMessage extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
+
+
+    public void readMessage() {
+        this.isRead = true;
+    }
 }

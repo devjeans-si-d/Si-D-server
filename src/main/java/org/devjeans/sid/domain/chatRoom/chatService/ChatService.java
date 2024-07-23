@@ -3,6 +3,7 @@ package org.devjeans.sid.domain.chatRoom.chatService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.devjeans.sid.domain.chatRoom.dto.ChatRoomListResponse;
+import org.devjeans.sid.domain.chatRoom.dto.ChatRoomMessageResponse;
 import org.devjeans.sid.domain.chatRoom.dto.ChatRoomSimpleResponse;
 import org.devjeans.sid.domain.chatRoom.entity.ChatMessage;
 import org.devjeans.sid.domain.chatRoom.entity.ChatParticipant;
@@ -15,7 +16,9 @@ import org.devjeans.sid.domain.member.repository.MemberRepository;
 import org.devjeans.sid.global.exception.BaseException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -68,5 +71,31 @@ public class ChatService {
         });
 
 
+    }
+
+    @Transactional
+    public Slice<ChatRoomMessageResponse> getChatRoomMessages(Pageable pageable, Long chatRoomId, Long memberId) {
+        resolveUnread(chatRoomId, memberId);
+        Slice<ChatMessage> messages = chatMessageRepository.findAllByChatRoomId(pageable, chatRoomId);
+        return messages.map(ChatRoomMessageResponse::fromEntity);
+    }
+
+    // unread message 읽음 처리
+    private void resolveUnread(Long chatRoomId, Long memberId) {
+        // 방 찾기
+        ChatRoom chatRoom = chatRoomRepository.findByIdOrThrow(chatRoomId);
+
+        // 상대방 찾기
+        Member participant = chatRoom.getChatParticipants().stream()
+                .filter(p -> !p.getMember().getId().equals(memberId))
+                .findFirst()
+                .map(ChatParticipant::getMember)
+                .orElseThrow(() -> new BaseException(INVALID_CHATROOM));
+
+        // 안읽은 메시지 모두 가져오기
+        List<ChatMessage> unreadMessages = chatMessageRepository.findChatMessageByChatRoomAndIsReadAndMember(chatRoom, false, participant);
+
+        // 메시지 읽기
+        unreadMessages.stream().forEach(ChatMessage::readMessage);
     }
 }
