@@ -1,12 +1,13 @@
 package org.devjeans.sid.domain.chatRoom.entity;
 
-import org.devjeans.sid.domain.chatRoom.entity.ChatRoom;
+import lombok.Getter;
 import org.devjeans.sid.domain.common.BaseEntity;
 import org.devjeans.sid.domain.member.entity.Member;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
+@Getter
 @Entity
 public class ChatMessage extends BaseEntity {
     @Id

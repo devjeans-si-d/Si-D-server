@@ -1,5 +1,6 @@
 package org.devjeans.sid.domain.chatRoom.entity;
 
+import lombok.Getter;
 import org.devjeans.sid.domain.common.BaseEntity;
 import org.devjeans.sid.domain.project.entity.Project;
 
@@ -7,6 +8,7 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@Getter
 @Entity
 public class ChatRoom extends BaseEntity {
     @Id
