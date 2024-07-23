@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.devjeans.sid.domain.common.BaseEntity;
+import org.devjeans.sid.domain.launchedProject.dto.LaunchProjectDTO.DetailBasicLaunchedProjectResponse;
 import org.devjeans.sid.domain.project.entity.Project;
 
 import javax.persistence.*;
@@ -46,4 +47,19 @@ public class LaunchedProject extends BaseEntity {
 
     @OneToMany(mappedBy = "launchedProject", cascade = CascadeType.ALL)
     private List<LaunchedProjectScrap> launchedProjectScraps = new ArrayList<>(); // Launched-Project 스크랩(사이다) 리스트
+
+
+    // Launched-Project -> DetailBasicLaunchedProjectResponse DTO로 build
+    public static DetailBasicLaunchedProjectResponse fromEntity(LaunchedProject launchedProject){
+
+        return DetailBasicLaunchedProjectResponse.builder()
+                .id(launchedProject.getId())
+                .launchedProjectImage(launchedProject.getLaunchedProjectImage())
+                .launchedProjectContents(launchedProject.getLaunchedProjectContents())
+                .siteUrl(launchedProject.getSiteUrl())
+                .projectId(launchedProject.project.getId())
+                .build();
+    }
+
+
 }
