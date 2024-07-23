@@ -1,7 +1,5 @@
 package org.devjeans.sid.domain.chatRoom.entity;
 
-import org.devjeans.sid.domain.chatMessage.entity.ChatMessage;
-import org.devjeans.sid.domain.chatParticipant.entity.ChatParticipant;
 import org.devjeans.sid.domain.common.BaseEntity;
 import org.devjeans.sid.domain.project.entity.Project;
 

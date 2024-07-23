@@ -1,4 +1,4 @@
-package org.devjeans.sid.domain.chatMessage.entity;
+package org.devjeans.sid.domain.chatRoom.entity;
 
 import org.devjeans.sid.domain.chatRoom.entity.ChatRoom;
 import org.devjeans.sid.domain.common.BaseEntity;
