@@ -1,6 +1,8 @@
 package org.devjeans.sid.domain.chatRoom.chatService;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.devjeans.sid.domain.chatRoom.dto.ChatRoomListResponse;
 import org.devjeans.sid.domain.chatRoom.dto.ChatRoomSimpleResponse;
 import org.devjeans.sid.domain.chatRoom.entity.ChatMessage;
 import org.devjeans.sid.domain.chatRoom.entity.ChatParticipant;
@@ -11,16 +13,17 @@ import org.devjeans.sid.domain.chatRoom.repository.ChatRoomRepository;
 import org.devjeans.sid.domain.member.entity.Member;
 import org.devjeans.sid.domain.member.repository.MemberRepository;
 import org.devjeans.sid.global.exception.BaseException;
-import org.devjeans.sid.global.exception.exceptionType.ChatExceptionType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.devjeans.sid.global.exception.exceptionType.ChatExceptionType.INVALID_CHATROOM;
+import static org.devjeans.sid.global.exception.exceptionType.ChatExceptionType.NO_RECENT_MESSAGE;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class ChatService {
@@ -31,24 +34,39 @@ public class ChatService {
 
     // 해당 회원이 속한 채팅방을 updatedAt DESC로 정렬해서 보여주기
     public Page<ChatRoomSimpleResponse> getChatRoomList(Pageable pageable, Long memberId) {
-        Page<ChatRoom> chatRooms = chatRoomRepository.findAllByMemberIdOrderByUpdatedAtDesc(pageable, memberId);
+        // 해당 멤버가 속한 채팅방 아이디 다 뽑아오기
+        List<ChatParticipant> participants = chatParticipantRepository.findAllByMemberId(memberId);
+        List<Long> chatRoomIds = participants.stream()
+                .map(p -> p.getChatRoom().getId())
+                .distinct()
+                .collect(Collectors.toList());
 
-         // TODO: 로직 잘 맞는지 다시 검증
-        return chatRooms.map(r -> {
-            ChatParticipant chatParticipant = r.getChatParticipants().stream()
+        // 최신 순 정렬
+        Page<ChatRoom> chatRooms = chatRoomRepository.findAllByIds(pageable, chatRoomIds);
+
+
+        return chatRooms.map(chatRoom -> {
+
+            // 최근 메시지 뽑기
+            List<ChatMessage> recentMessages = chatMessageRepository.findRecentMessageByChatRoom(chatRoom);
+
+            if(recentMessages.isEmpty()) {
+                throw new BaseException(NO_RECENT_MESSAGE);
+            }
+            // 상대방 찾기
+            Member participant = chatRoom.getChatParticipants().stream()
                     .filter(p -> !p.getMember().getId().equals(memberId))
                     .findFirst()
+                    .map(ChatParticipant::getMember)
                     .orElseThrow(() -> new BaseException(INVALID_CHATROOM));
 
-            Page<ChatMessage> unreadMessages = chatMessageRepository.findAllByIsReadAndChatRoomIdOrderByUpdatedAt(pageable,false, r.getId());
+            // 안읽은 메시지 개수 뽑기
+            Long unreadCount = chatMessageRepository.countChatMessageByChatRoomAndIsReadAndMember(chatRoom, false, participant);
 
-            ChatMessage recentMessage = null;
-            // unread Message가 없을 경우 처리
-            if (!unreadMessages.getContent().isEmpty()) {
-                unreadMessage = unreadMessages.getContent().get(0);
-            }
 
-            return ChatRoomSimpleResponse.fromEntity(r, unreadMessages.getTotalElements(), chatParticipant.getMember(), unreadMessage.getContent());
+            return ChatRoomSimpleResponse.fromEntity(chatRoom, unreadCount, participant, recentMessages.get(0).getContent());
         });
+
+
     }
 }
