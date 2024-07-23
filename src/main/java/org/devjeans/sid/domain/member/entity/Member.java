@@ -1,7 +1,9 @@
 package org.devjeans.sid.domain.member.entity;
 
+import lombok.Getter;
 import org.devjeans.sid.domain.common.BaseEntity;
 import org.devjeans.sid.domain.launchedProject.entity.LaunchedProjectScrap;
+import org.devjeans.sid.domain.member.dto.UpdateMemberRequest;
 import org.devjeans.sid.domain.projectMember.entity.ProjectMember;
 import org.devjeans.sid.domain.projectScrap.entity.ProjectScrap;
 import org.devjeans.sid.domain.siderCard.entity.SiderCard;
@@ -10,6 +12,7 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@Getter
 @Entity
 public class Member extends BaseEntity {
     @Id
@@ -35,25 +38,38 @@ public class Member extends BaseEntity {
     @Column(nullable = false)
     private String phoneNumber;
 
+    private String profileImageUrl;
+
     @OneToOne(mappedBy = "member",cascade = CascadeType.ALL)
     private SiderCard siderCard;
 
 //    @OneToMany(mappedBy = "member", cascade = CascadeType.PERSIST)
 //    private List<LaunchedProjectMember> launchedProjectMembers = new ArrayList<>();
 
-    @OneToMany(mappedBy = "member", cascade = CascadeType.PERSIST)
-    private List<ProjectMember> projectMembers = new ArrayList<>();
-
-    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
-    private List<ProjectScrap> projectScraps = new ArrayList<>();
-
-    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
-    private List<LaunchedProjectScrap> launchedProjectScraps = new ArrayList<>();
+//    @OneToMany(mappedBy = "member", cascade = CascadeType.PERSIST)
+//    private List<ProjectMember> projectMembers = new ArrayList<>();
+//
+//    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+//    private List<ProjectScrap> projectScraps = new ArrayList<>();
+//
+//    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+//    private List<LaunchedProjectScrap> launchedProjectScraps = new ArrayList<>();
 
 //    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
 //    private List<ChatParticipant> chatParticipants = new ArrayList<>();
 
 //    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
 //    private List<ChatMessage> chatMessages = new ArrayList<>();
+
+    //== Custom methos ==//
+    public void updateProfileImageUrl(String profileImageUrl) {
+        this.profileImageUrl = profileImageUrl;
+    }
+
+    public void updateMemberInfo(UpdateMemberRequest updateMemberRequest) {
+        this.name = updateMemberRequest.getName();
+        this.nickname = updateMemberRequest.getNickname();
+        this.phoneNumber = updateMemberRequest.getPhoneNumber();
+    }
 
 }
