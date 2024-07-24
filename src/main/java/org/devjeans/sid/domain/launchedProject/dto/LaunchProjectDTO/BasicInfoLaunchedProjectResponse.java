@@ -10,7 +10,7 @@ import org.devjeans.sid.domain.launchedProject.entity.LaunchedProject;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class DetailBasicLaunchedProjectResponse {
+public class BasicInfoLaunchedProjectResponse {
 
     private Long id; // 프로젝트 전시(Launched-Project) id
 
@@ -25,8 +25,8 @@ public class DetailBasicLaunchedProjectResponse {
     private Long views; // Launched-Project 조회수
 
     // LaunchProject -> DetailBasicLaunchedProjectResponse(DTO)로 build
-    public static DetailBasicLaunchedProjectResponse fromEntity(LaunchedProject launchedProject){
-        return DetailBasicLaunchedProjectResponse.builder()
+    public static BasicInfoLaunchedProjectResponse fromEntity(LaunchedProject launchedProject){
+        return BasicInfoLaunchedProjectResponse.builder()
                 .id(launchedProject.getId())
                 .launchedProjectImage(launchedProject.getLaunchedProjectImage())
                 .launchedProjectContents(launchedProject.getLaunchedProjectContents())

@@ -18,8 +18,6 @@ public class LaunchedProjectMemberResponse {
 
     private String memberName; // 회원 이름
 
-//    private SiderCardResponse siderCard; // 회원의 사이더 카드 (넣어야 하나,,?? 안넣어야 하나,,??)
-
 
     // LaunchedProjectMember 엔티티 -> LaunchedProjectMemberResponse (DTO)로 build
     public static LaunchedProjectMemberResponse fromEntity(LaunchedProjectMember launchedProjectMember) {

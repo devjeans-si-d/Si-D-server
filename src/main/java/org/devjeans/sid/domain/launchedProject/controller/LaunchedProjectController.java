@@ -1,9 +1,8 @@
 package org.devjeans.sid.domain.launchedProject.controller;
 
-import org.devjeans.sid.domain.launchedProject.dto.LaunchProjectDTO.DetailBasicLaunchedProjectResponse;
+import org.devjeans.sid.domain.launchedProject.dto.LaunchProjectDTO.BasicInfoLaunchedProjectResponse;
 import org.devjeans.sid.domain.launchedProject.dto.LaunchedProjectMemberDTO.LaunchedProjectMemberResponse;
 import org.devjeans.sid.domain.launchedProject.dto.LaunchedProjectTechStackDTO.LaunchedProjectTechStackResponse;
-import org.devjeans.sid.domain.launchedProject.entity.LaunchedProject;
 import org.devjeans.sid.domain.launchedProject.service.LaunchedProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -29,10 +28,9 @@ public class LaunchedProjectController {
 
     // Launched-Project id로 Launched-Project 기본정보 조회
     @GetMapping("/detail/{id}/basic-info")
-    public ResponseEntity<DetailBasicLaunchedProjectResponse> getDetailBasicInfo(@PathVariable Long id) {
-        LaunchedProject launchedProject = launchedProjectService.findById(id);
-        DetailBasicLaunchedProjectResponse basicInfo = DetailBasicLaunchedProjectResponse.fromEntity(launchedProject);
-        return ResponseEntity.ok(basicInfo);
+    public ResponseEntity<BasicInfoLaunchedProjectResponse> getDetailBasicInfo(@PathVariable Long projectId) {
+        BasicInfoLaunchedProjectResponse dto = launchedProjectService.getBasicInfoByProjectId(projectId);
+        return ResponseEntity.ok(dto);
     }
 
     // Launched-Project id로 프로젝트에 사용된 기술스택(TechStack)리스트 조회
