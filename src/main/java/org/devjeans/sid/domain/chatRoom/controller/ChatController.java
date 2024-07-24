@@ -1,7 +1,7 @@
 package org.devjeans.sid.domain.chatRoom.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.devjeans.sid.domain.chatRoom.chatService.ChatService;
+import org.devjeans.sid.domain.chatRoom.service.ChatService;
 import org.devjeans.sid.domain.chatRoom.dto.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
