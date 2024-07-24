@@ -71,7 +71,7 @@ public class MemberController {
     }
 
     @GetMapping("register")
-    public ResponseEntity<String> registerMember(RegisterMemberRequest dto) {
+    public ResponseEntity<String> registerMember(@RequestBody RegisterMemberRequest dto) {
         memberService.registerMember(dto);
         return new ResponseEntity<>("register succes!!", HttpStatus.OK);
     }

@@ -24,6 +24,7 @@ public class RegisterMemberRequest {
                 .socialType(SocialType.KAKAO)
                 .socialId(this.socialId)
                 .phoneNumber(this.phoneNumber).build();
+        System.out.println(member);
         return member;
     }
 }
