@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.devjeans.sid.domain.member.dto.MemberInfoResponse;
+import org.devjeans.sid.domain.member.dto.RegisterMemberRequest;
 import org.devjeans.sid.domain.member.dto.UpdateMemberRequest;
 import org.devjeans.sid.domain.member.dto.UpdateMemberResponse;
 import org.devjeans.sid.domain.member.entity.KakaoRedirect;
@@ -51,12 +52,6 @@ public class MemberController {
         return new ResponseEntity<>(updateMemberResponse, HttpStatus.OK);
     }
 
-//    @GetMapping("auth/kakao/callback")
-//    public String kakaoCallback(KakaoRedirect kakaoRedirect) {
-//        System.out.println(kakaoRedirect);
-//        return kakaoRedirect.getCode();
-//    }
-
 
     @GetMapping("auth/kakao/callback")
     public String kakaoCallback(KakaoRedirect kakaoRedirect) throws JsonProcessingException {
@@ -67,11 +62,19 @@ public class MemberController {
         Member originMember = memberService.getMemberByKakaoId(kakaoId);
         System.out.println(originMember);
         if(originMember == null) {
+//           신규 회원일경우 errorResponse에 소셜id를 담아 예외를 프론트로 던지기
+//            프론트는 예외일경우 회원가입 화면으로 이동하여 회원가입 정보와 소셜id를 담아 다시 회원가입 요청
             memberService.createMember(kakaoId);
         }
-
 //            로그인 처리
         return kakaoId.toString();
     }
+
+    @GetMapping("register")
+    public String registerMember(RegisterMemberRequest dto) {
+        memberService.registerMember(dto);
+        return "ok";
+    }
+
 
 }

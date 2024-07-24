@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.devjeans.sid.domain.member.dto.MemberInfoResponse;
+import org.devjeans.sid.domain.member.dto.RegisterMemberRequest;
 import org.devjeans.sid.domain.member.dto.UpdateMemberRequest;
 import org.devjeans.sid.domain.member.dto.UpdateMemberResponse;
 import org.devjeans.sid.domain.member.entity.KakaoProfile;
@@ -142,5 +143,9 @@ public class MemberService {
         KakaoProfile kakaoProfile = objectMapper2.readValue(response2.getBody(), KakaoProfile.class);
 
         return kakaoProfile.getId();
+    }
+
+    public void registerMember(RegisterMemberRequest dto) {
+        Member member = dto.toEntity();
     }
 }
