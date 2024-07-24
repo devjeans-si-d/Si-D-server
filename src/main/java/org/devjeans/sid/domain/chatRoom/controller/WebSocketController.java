@@ -26,8 +26,9 @@ public class WebSocketController {
 
     private final WebSocketService webSocketService;
 
-    @MessageMapping("/{chatRoomId}/receiver/{receiverId}") // 웹소켓 메시지를 특정 경로로 매핑한다.
-    @SendTo("/queue/reply/{chatRoomId}")
+    // 웹소켓 메시지를 특정 경로로 매핑한다.
+    @MessageMapping("/{chatRoomId}/receiver/{receiverId}") // /pub/1/receiver/1
+//    @SendTo("/sub/chatroom/{chatRoomId}") // /sub/chatroom/1
     public void sendMessage(ChatMessageRequest chatMessageRequest,
                             SimpMessageHeaderAccessor headerAccessor,
                             @DestinationVariable(value = "chatRoomId") Long chatRoomId,
@@ -35,4 +36,6 @@ public class WebSocketController {
         log.info("line 35: {}", chatMessageRequest);
         webSocketService.sendMessage(chatRoomId, receiverId, chatMessageRequest);
     }
+
+
 }
