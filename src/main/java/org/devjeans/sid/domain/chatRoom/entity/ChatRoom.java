@@ -1,6 +1,6 @@
 package org.devjeans.sid.domain.chatRoom.entity;
 
-import lombok.Getter;
+import lombok.*;
 import org.devjeans.sid.domain.common.BaseEntity;
 import org.devjeans.sid.domain.project.entity.Project;
 
@@ -8,6 +8,9 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Entity
 public class ChatRoom extends BaseEntity {

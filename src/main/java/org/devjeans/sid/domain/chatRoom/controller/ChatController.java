@@ -2,19 +2,14 @@ package org.devjeans.sid.domain.chatRoom.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.devjeans.sid.domain.chatRoom.chatService.ChatService;
-import org.devjeans.sid.domain.chatRoom.dto.ChatRoomListResponse;
-import org.devjeans.sid.domain.chatRoom.dto.ChatRoomMessageResponse;
-import org.devjeans.sid.domain.chatRoom.dto.ChatRoomSimpleResponse;
+import org.devjeans.sid.domain.chatRoom.dto.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RequestMapping("/api/chat")
@@ -36,5 +31,13 @@ public class ChatController {
         Slice<ChatRoomMessageResponse> chatRoomMessages = chatService.getChatRoomMessages(pageable, chatRoomId, memberId);
 
         return new ResponseEntity<>(chatRoomMessages, HttpStatus.OK);
+    }
+
+    // 채팅방 만들기
+    @PostMapping("/chat-room/create")
+    public ResponseEntity<CreateChatRoomResponse> createChatRoom(@RequestBody CreateChatRoomRequest createChatRoomRequest) {
+        CreateChatRoomResponse chatRoom = chatService.createChatRoom(createChatRoomRequest);
+
+        return new ResponseEntity<>(chatRoom, HttpStatus.CREATED);
     }
 }

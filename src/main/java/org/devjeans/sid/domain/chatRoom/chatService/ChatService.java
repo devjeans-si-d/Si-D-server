@@ -2,9 +2,7 @@ package org.devjeans.sid.domain.chatRoom.chatService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.devjeans.sid.domain.chatRoom.dto.ChatRoomListResponse;
-import org.devjeans.sid.domain.chatRoom.dto.ChatRoomMessageResponse;
-import org.devjeans.sid.domain.chatRoom.dto.ChatRoomSimpleResponse;
+import org.devjeans.sid.domain.chatRoom.dto.*;
 import org.devjeans.sid.domain.chatRoom.entity.ChatMessage;
 import org.devjeans.sid.domain.chatRoom.entity.ChatParticipant;
 import org.devjeans.sid.domain.chatRoom.entity.ChatRoom;
@@ -13,6 +11,8 @@ import org.devjeans.sid.domain.chatRoom.repository.ChatParticipantRepository;
 import org.devjeans.sid.domain.chatRoom.repository.ChatRoomRepository;
 import org.devjeans.sid.domain.member.entity.Member;
 import org.devjeans.sid.domain.member.repository.MemberRepository;
+import org.devjeans.sid.domain.project.entity.Project;
+import org.devjeans.sid.domain.project.repository.ProjectRepository;
 import org.devjeans.sid.global.exception.BaseException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -34,6 +34,7 @@ public class ChatService {
     private final ChatMessageRepository chatMessageRepository;
     private final ChatParticipantRepository chatParticipantRepository;
     private final MemberRepository memberRepository;
+    private final ProjectRepository projectRepository;
 
     // 해당 회원이 속한 채팅방을 updatedAt DESC로 정렬해서 보여주기
     public Page<ChatRoomSimpleResponse> getChatRoomList(Pageable pageable, Long memberId) {
@@ -80,6 +81,27 @@ public class ChatService {
         return messages.map(ChatRoomMessageResponse::fromEntity);
     }
 
+    @Transactional
+    public CreateChatRoomResponse createChatRoom(CreateChatRoomRequest createChatRoomRequest) {
+        // project 정보 찾기
+        Project project = projectRepository.findByIdOrThrow(createChatRoomRequest.getProjectId());
+
+        // TODO: chatRoom, chatParticipant(2개) 데이터 만들기 => chatRoom만 save하면 되겠구나
+
+        // chatParticipant 만들기
+        Member starterMember = memberRepository.findByIdOrThrow(createChatRoomRequest.getChatStarterId());
+        Member pmMember = memberRepository.findByIdOrThrow(project.getPm().getId());
+
+        ChatParticipant starter = ChatParticipant.builder().member(starterMember).build();
+        ChatParticipant pm = ChatParticipant.builder().member(pmMember).build();
+
+        // chatroom 만들기
+        ChatRoom chatRoom = CreateChatRoomRequest.toEntity(project, starter, pm);
+        ChatRoom savedChatRoom = chatRoomRepository.save(chatRoom);
+
+        return CreateChatRoomResponse.fromEntity(savedChatRoom);
+    }
+
     // unread message 읽음 처리
     private void resolveUnread(Long chatRoomId, Long memberId) {
         // 방 찾기
@@ -98,4 +120,5 @@ public class ChatService {
         // 메시지 읽기
         unreadMessages.stream().forEach(ChatMessage::readMessage);
     }
+
 }
