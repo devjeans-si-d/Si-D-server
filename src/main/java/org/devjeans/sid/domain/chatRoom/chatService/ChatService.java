@@ -14,6 +14,7 @@ import org.devjeans.sid.domain.member.repository.MemberRepository;
 import org.devjeans.sid.domain.project.entity.Project;
 import org.devjeans.sid.domain.project.repository.ProjectRepository;
 import org.devjeans.sid.global.exception.BaseException;
+import org.devjeans.sid.global.exception.exceptionType.ChatExceptionType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -23,8 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static org.devjeans.sid.global.exception.exceptionType.ChatExceptionType.INVALID_CHATROOM;
-import static org.devjeans.sid.global.exception.exceptionType.ChatExceptionType.NO_RECENT_MESSAGE;
+import static org.devjeans.sid.global.exception.exceptionType.ChatExceptionType.*;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -87,10 +87,14 @@ public class ChatService {
         // project 정보 찾기
         Project project = projectRepository.findByIdOrThrow(createChatRoomRequest.getProjectId());
 
-        // TODO: chatRoom, chatParticipant(2개) 데이터 만들기 => chatRoom만 save하면 되겠구나
+        // 이미 채팅방이 있지 않은지 검증 => 프로젝트 아이디와 스타터 아이디가 동일한게 존재하면 Exception
+        Optional<ChatRoom> findChatRoom = chatRoomRepository.findByStarterMemberIdAndProject(createChatRoomRequest.getChatStarterMemberId(), project);
+        if(findChatRoom.isPresent()) {
+            throw new BaseException(CHATROOM_ALREADY_EXIST);
+        }
 
         // chatroom 만들기
-        ChatRoom chatRoom = CreateChatRoomRequest.toEntity(project);
+        ChatRoom chatRoom = CreateChatRoomRequest.toEntity(project, createChatRoomRequest);
 
         // chatParticipant 만들기
         Member starterMember = memberRepository.findByIdOrThrow(createChatRoomRequest.getChatStarterMemberId());

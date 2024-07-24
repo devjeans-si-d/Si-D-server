@@ -23,6 +23,8 @@ public class ChatRoom extends BaseEntity {
     @JoinColumn(name = "project_id")
     private Project project;
 
+    private Long starterMemberId; // 만든 사람 아이디
+
     @OneToMany(mappedBy = "chatRoom", cascade = CascadeType.ALL)
     private List<ChatParticipant> chatParticipants = new ArrayList<>();
 

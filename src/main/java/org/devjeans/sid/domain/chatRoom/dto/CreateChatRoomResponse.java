@@ -18,7 +18,7 @@ public class CreateChatRoomResponse {
     public static CreateChatRoomResponse fromEntity(ChatRoom chatRoom) {
         List<Long> participantIds = chatRoom.getChatParticipants()
                 .stream()
-                .map(p -> p.getId())
+                .map(p -> p.getMember().getId())
                 .collect(Collectors.toList());
 
         return CreateChatRoomResponse.builder()

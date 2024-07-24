@@ -10,7 +10,8 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 public enum ChatExceptionType implements ExceptionType {
     INVALID_CHATROOM(BAD_REQUEST, "유효하지 않은 채팅방입니다."),
     NO_CHATROOM(NOT_FOUND, "채팅방이 존재하지 않습니다."),
-    NO_RECENT_MESSAGE(NOT_FOUND, "채팅방에 메시지가 없습니다.");
+    NO_RECENT_MESSAGE(NOT_FOUND, "채팅방에 메시지가 없습니다."),
+    CHATROOM_ALREADY_EXIST(BAD_REQUEST, "채팅방이 이미 존재합니다.");
 
     private final HttpStatus status;
     private final String message;
