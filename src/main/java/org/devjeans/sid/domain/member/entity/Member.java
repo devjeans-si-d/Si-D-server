@@ -46,8 +46,9 @@ public class Member extends BaseEntity {
 
     private String profileImageUrl;
 
-    @OneToOne(mappedBy = "member",cascade = CascadeType.ALL)
-    private SiderCard siderCard;
+//    트랜잭션으로 회원가입할때 사이더카드도 같이 생성하여 id 공유
+//    @OneToOne(mappedBy = "member",cascade = CascadeType.ALL)
+//    private SiderCard siderCard;
 
 //    @OneToMany(mappedBy = "member", cascade = CascadeType.PERSIST)
 //    private List<LaunchedProjectMember> launchedProjectMembers = new ArrayList<>();

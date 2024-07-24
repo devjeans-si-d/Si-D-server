@@ -14,7 +14,6 @@ public class RegisterMemberRequest {
     private String nickname;
     private String email;
     private String phoneNumber;
-    private String profileImageUrl;
     private Long socialId;
 
     public Member toEntity() {
@@ -24,8 +23,7 @@ public class RegisterMemberRequest {
                 .nickname(this.nickname)
                 .socialType(SocialType.KAKAO)
                 .socialId(this.socialId)
-                .phoneNumber(this.phoneNumber)
-                .profileImageUrl(this.profileImageUrl).build();
+                .phoneNumber(this.phoneNumber).build();
         return member;
     }
 }

@@ -80,6 +80,8 @@ public class MemberService {
 
         return UpdateMemberResponse.fromEntity(updatedMember);
     }
+
+
     public Long login(KakaoRedirect kakaoRedirect) throws JsonProcessingException {
         OAuthToken oAuthToken = getAccessToken(kakaoRedirect);
         Long kakaoId = getKakaoId(oAuthToken.getAccess_token());
@@ -88,11 +90,13 @@ public class MemberService {
     public void createMember(Long kakaoId){
 
     }
+
     public Member getMemberByKakaoId(Long kakaoId) {
         Member member = memberRepository.findBySocialId(kakaoId).orElse(null);
 //        System.out.println(member);
         return member;
     }
+
     public OAuthToken getAccessToken(KakaoRedirect kakaoRedirect) throws JsonProcessingException {
 
         RestTemplate rt = new RestTemplate();
@@ -147,5 +151,6 @@ public class MemberService {
 
     public void registerMember(RegisterMemberRequest dto) {
         Member member = dto.toEntity();
+        memberRepository.save(member);
     }
 }
