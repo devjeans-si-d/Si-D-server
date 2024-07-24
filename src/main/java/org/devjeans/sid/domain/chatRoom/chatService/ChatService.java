@@ -81,6 +81,7 @@ public class ChatService {
         return messages.map(ChatRoomMessageResponse::fromEntity);
     }
 
+    // TODO: 추후 쿼리 최적화가 필요..
     @Transactional
     public CreateChatRoomResponse createChatRoom(CreateChatRoomRequest createChatRoomRequest) {
         // project 정보 찾기
@@ -88,18 +89,31 @@ public class ChatService {
 
         // TODO: chatRoom, chatParticipant(2개) 데이터 만들기 => chatRoom만 save하면 되겠구나
 
+        // chatroom 만들기
+        ChatRoom chatRoom = CreateChatRoomRequest.toEntity(project);
+
         // chatParticipant 만들기
-        Member starterMember = memberRepository.findByIdOrThrow(createChatRoomRequest.getChatStarterId());
+        Member starterMember = memberRepository.findByIdOrThrow(createChatRoomRequest.getChatStarterMemberId());
         Member pmMember = memberRepository.findByIdOrThrow(project.getPm().getId());
 
-        ChatParticipant starter = ChatParticipant.builder().member(starterMember).build();
-        ChatParticipant pm = ChatParticipant.builder().member(pmMember).build();
+        ChatParticipant starter = ChatParticipant.builder()
+                .member(starterMember)
+                .chatRoom(chatRoom)
+                .build();
+        ChatParticipant pm = ChatParticipant.builder()
+                .member(pmMember)
+                .chatRoom(chatRoom)
+                .build();
 
-        // chatroom 만들기
-        ChatRoom chatRoom = CreateChatRoomRequest.toEntity(project, starter, pm);
-        ChatRoom savedChatRoom = chatRoomRepository.save(chatRoom);
+        chatParticipantRepository.save(starter);
+        chatParticipantRepository.save(pm);
 
-        return CreateChatRoomResponse.fromEntity(savedChatRoom);
+        List<ChatParticipant> participants = new ArrayList<>();
+        participants.add(starter);
+        participants.add(pm);
+        chatRoom.setChatParticipants(participants);
+
+        return CreateChatRoomResponse.fromEntity(chatRoom);
     }
 
     // unread message 읽음 처리

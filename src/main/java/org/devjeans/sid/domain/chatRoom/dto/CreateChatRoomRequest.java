@@ -14,15 +14,15 @@ import java.util.List;
 @Getter
 public class CreateChatRoomRequest {
     private Long projectId;
-    private Long chatStarterId; // 채팅을 시작한 사람
+    private Long chatStarterMemberId; // 채팅을 시작한 사람
 
-    public static ChatRoom toEntity(Project project, ChatParticipant starter, ChatParticipant pm) {
-        List<ChatParticipant> participantList = new ArrayList<>();
-        participantList.add(starter);
-        participantList.add(pm);
+    public static ChatRoom toEntity(Project project) {
+//        List<ChatParticipant> participantList = new ArrayList<>();
+//        participantList.add(starter);
+//        participantList.add(pm);
 
         return ChatRoom.builder()
-                .chatParticipants(participantList)
+//                .chatParticipants(participantList)
                 .project(project)
                 .build();
     }

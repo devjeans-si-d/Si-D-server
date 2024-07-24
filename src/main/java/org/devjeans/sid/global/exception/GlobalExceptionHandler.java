@@ -19,14 +19,14 @@ public class GlobalExceptionHandler {
     }
 
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handleException(Exception e) {
-        log.info("[Unhandled Error] {}", e.getMessage());
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(ErrorResponse.builder()
-                        .name(HttpStatus.INTERNAL_SERVER_ERROR.name())
-                        .httpStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value())
-                        .message("서버 에러입니다.")
-                        .build());
-    }
+//    @ExceptionHandler(Exception.class)
+//    public ResponseEntity<ErrorResponse> handleException(Exception e) {
+//        log.info("[Unhandled Error] {}", e.getMessage());
+//        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+//                .body(ErrorResponse.builder()
+//                        .name(HttpStatus.INTERNAL_SERVER_ERROR.name())
+//                        .httpStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value())
+//                        .message("서버 에러입니다.")
+//                        .build());
+//    }
 }
