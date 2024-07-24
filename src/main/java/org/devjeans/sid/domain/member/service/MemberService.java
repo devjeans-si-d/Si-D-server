@@ -12,6 +12,8 @@ import org.devjeans.sid.domain.member.entity.Member;
 import org.devjeans.sid.domain.member.entity.OAuthToken;
 import org.devjeans.sid.domain.member.repository.MemberRepository;
 import org.devjeans.sid.global.exception.BaseException;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -23,6 +25,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.persistence.EntityNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -33,8 +36,12 @@ import static org.devjeans.sid.global.exception.exceptionType.MemberExceptionTyp
 
 @RequiredArgsConstructor
 @Service
+@PropertySource("classpath:application-secret.properties")
 public class MemberService {
     private final MemberRepository memberRepository;
+
+    @Value("${auth.oauth.kakao.api}")
+    private String authOauthKakaoApi;
 
     private static final String STORAGE_DIR = "/Users/sejeong/Documents/besw-devjeans/temp"; // 실제 저장 경로로 변경
     public MemberInfoResponse getMemberInfo(Long memberId) {
@@ -81,7 +88,8 @@ public class MemberService {
 
     }
     public Member getMemberByKakaoId(Long kakaoId) {
-        Member member = memberRepository.findBySocialId(kakaoId).get();
+        Member member = memberRepository.findBySocialId(kakaoId).orElse(null);
+//        System.out.println(member);
         return member;
     }
     public OAuthToken getAccessToken(KakaoRedirect kakaoRedirect) throws JsonProcessingException {
@@ -92,8 +100,8 @@ public class MemberService {
 
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("grant_type", "authorization_code");
-        params.add("client_id","f1a9f25e347069f2e5fedb6375c0b82d");
-        params.add("redirect_uri","http://localhost:8080/auth/kakao/callback");
+        params.add("client_id",authOauthKakaoApi);
+        params.add("redirect_uri","http://localhost:8080/api/member/auth/kakao/callback");
         params.add("code",kakaoRedirect.getCode());
 
         HttpEntity<MultiValueMap<String, String>> kakaoTokenRequest = new HttpEntity<>(params, headers);
