@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
-public class ChatRoomKey {
+public class ChatRoomValue {
     private Long memberId;
     private Long chatRoomId;
 }

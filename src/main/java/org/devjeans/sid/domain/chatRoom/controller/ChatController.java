@@ -34,10 +34,18 @@ public class ChatController {
     }
 
     // 채팅방 만들기
-    @PostMapping("/chat-room/create")
+    @PostMapping("/chatroom/create")
     public ResponseEntity<CreateChatRoomResponse> createChatRoom(@RequestBody CreateChatRoomRequest createChatRoomRequest) {
         CreateChatRoomResponse chatRoom = chatService.createChatRoom(createChatRoomRequest);
 
         return new ResponseEntity<>(chatRoom, HttpStatus.CREATED);
     }
+
+    // 채팅방 입장하기 (= 메모리 map에 값 넣기)
+    // 웹 소켓 연결은 클라이언트에서 함
+    @PostMapping("/chatroom/{chatroomId}/entrance/member/{memberId}")
+    public void enterChatRoom(@PathVariable Long chatroomId, @PathVariable Long memberId) {
+        chatService.enterChatRoom(chatroomId, memberId);
+    }
+
 }

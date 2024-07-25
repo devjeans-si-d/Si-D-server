@@ -2,6 +2,7 @@ package org.devjeans.sid.domain.chatRoom.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.devjeans.sid.domain.chatRoom.component.ConnectedMap;
 import org.devjeans.sid.domain.chatRoom.dto.*;
 import org.devjeans.sid.domain.chatRoom.entity.ChatMessage;
 import org.devjeans.sid.domain.chatRoom.entity.ChatParticipant;
@@ -34,6 +35,8 @@ public class ChatService {
     private final ChatParticipantRepository chatParticipantRepository;
     private final MemberRepository memberRepository;
     private final ProjectRepository projectRepository;
+
+    private final ConnectedMap connectedMap;
 
     // 해당 회원이 속한 채팅방을 updatedAt DESC로 정렬해서 보여주기
     public Page<ChatRoomSimpleResponse> getChatRoomList(Pageable pageable, Long memberId) {
@@ -119,6 +122,23 @@ public class ChatService {
         return CreateChatRoomResponse.fromEntity(chatRoom);
     }
 
+    // TODO: FRONT - 만약 방을 만들려고 했는데 createChatRoom에서 CHATROOM_ALREADY_EXIST가 떨어지면 enterChatRoom 호출
+    public void enterChatRoom(Long chatRoomId, Long memberId) {
+        // 검증: 해당 방에 member가 속해있는지
+        ChatRoom chatRoom = chatRoomRepository.findByIdOrThrow(chatRoomId);
+        List<Long> memberIds = chatRoom.getChatParticipants().stream()
+                .map(p -> p.getMember().getId())
+                .collect(Collectors.toList());
+
+        if(!memberIds.contains(memberId)) {
+            // 회원이 아닌 경우
+            throw new BaseException(NOT_A_PARTICIPANT);
+        }
+
+        // 메모리에 저장
+        connectedMap.enterChatRoom(chatRoomId, memberId);
+    }
+
     // unread message 읽음 처리
     private void resolveUnread(Long chatRoomId, Long memberId) {
         // 방 찾기
@@ -137,5 +157,6 @@ public class ChatService {
         // 메시지 읽기
         unreadMessages.stream().forEach(ChatMessage::readMessage);
     }
+
 
 }
