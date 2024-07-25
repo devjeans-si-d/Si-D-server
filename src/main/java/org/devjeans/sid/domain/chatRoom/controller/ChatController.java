@@ -27,7 +27,7 @@ public class ChatController {
 
     // createdAt의 내림차순으로 뿌려주기, 보낸사람 아이디, 내용, 보낸 시간
     @GetMapping("/chat-room/{chatRoomId}/receiver/{memberId}")
-    public ResponseEntity<Slice<ChatRoomMessageResponse>> getChatRoomMessages(@PageableDefault(size = 10) Pageable pageable,
+    public ResponseEntity<Slice<ChatRoomMessageResponse>> getChatRoomMessages(@PageableDefault(size = 50) Pageable pageable,
                                                                               @PathVariable("chatRoomId") Long chatRoomId,
                                                                               @PathVariable("memberId") Long memberId) {
         Slice<ChatRoomMessageResponse> chatRoomMessages = chatService.getChatRoomMessages(pageable, chatRoomId, memberId);
