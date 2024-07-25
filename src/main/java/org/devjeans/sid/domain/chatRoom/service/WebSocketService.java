@@ -32,7 +32,7 @@ public class WebSocketService {
     public void sendMessage(Long chatRoomId, Long receiverId, ChatMessageRequest chatMessageRequest) {
         // chat room 찾기
         ChatRoom chatRoom = chatRoomRepository.findByIdOrThrow(chatRoomId);boolean isRead = false;
-        // TODO: 인증 구현 후, 상대방 찾기 => findParticipantMemberId
+        // TODO: 인증 구현 후, 상대방 찾기 => findReceiverMemberId
 
 
         // 멤버가 현재 접속해있는지를 확인
@@ -51,7 +51,8 @@ public class WebSocketService {
         chatMessageRepository.save(chatMessage); // 메시지를 저장한다.
     }
 
-    private Long findParticipantMemberId(ChatRoom chatRoom) {
+    // 추후 jwt 인증이 구현되면 사용할 수 있는 메서드. receiverId를 받을 필요없이 자신의 아이디로 상대방을 찾을 수 있다.
+    private Long findReceiverMemberId(ChatRoom chatRoom) {
         Long memberId = 1L; // FIXME: 인증 구현 후 수정 필요(시큐리티 컨텍스트에서 가져오기)
         return chatRoom.getChatParticipants().stream()
                 .filter(p -> p.getMember().getId().equals(memberId))
