@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.devjeans.sid.domain.member.dto.MemberInfoResponse;
+import org.devjeans.sid.domain.member.dto.RegisterMemberRequest;
 import org.devjeans.sid.domain.member.dto.UpdateMemberRequest;
 import org.devjeans.sid.domain.member.dto.UpdateMemberResponse;
 import org.devjeans.sid.domain.member.entity.KakaoProfile;
@@ -79,6 +80,8 @@ public class MemberService {
 
         return UpdateMemberResponse.fromEntity(updatedMember);
     }
+
+
     public Long login(KakaoRedirect kakaoRedirect) throws JsonProcessingException {
         OAuthToken oAuthToken = getAccessToken(kakaoRedirect);
         Long kakaoId = getKakaoId(oAuthToken.getAccess_token());
@@ -87,11 +90,13 @@ public class MemberService {
     public void createMember(Long kakaoId){
 
     }
+
     public Member getMemberByKakaoId(Long kakaoId) {
         Member member = memberRepository.findBySocialId(kakaoId).orElse(null);
 //        System.out.println(member);
         return member;
     }
+
     public OAuthToken getAccessToken(KakaoRedirect kakaoRedirect) throws JsonProcessingException {
 
         RestTemplate rt = new RestTemplate();
@@ -142,5 +147,10 @@ public class MemberService {
         KakaoProfile kakaoProfile = objectMapper2.readValue(response2.getBody(), KakaoProfile.class);
 
         return kakaoProfile.getId();
+    }
+
+    public void registerMember(RegisterMemberRequest dto) {
+        Member member = dto.toEntity();
+        memberRepository.save(member);
     }
 }
