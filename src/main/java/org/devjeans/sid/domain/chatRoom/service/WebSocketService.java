@@ -26,12 +26,12 @@ public class WebSocketService {
 
     @Transactional
     public void sendMessage(Long chatRoomId, Long receiverId, ChatMessageRequest chatMessageRequest) {
-        boolean isUnread = true;
+        boolean isRead = false;
         // 멤버가 현재 접속해있는지를 확인
         Long receiverChatRoomId = connectedMap.getChatroomIdByMemberId(receiverId);
-        if(true || receiverChatRoomId != null && receiverChatRoomId.equals(chatRoomId)) {
+        if(receiverChatRoomId != null && receiverChatRoomId.equals(chatRoomId)) {
             // 접속해있다면 바로 보내준다.
-            isUnread = false;
+            isRead = true;
             messagingTemplate.convertAndSend("/sub/chatroom/" + chatRoomId, chatMessageRequest);
         }
 
@@ -40,7 +40,7 @@ public class WebSocketService {
 
         // 보낸 사람 찾기
         Member sender = memberRepository.findByIdOrThrow(chatMessageRequest.getSenderId());
-        ChatMessage chatMessage = ChatMessageRequest.toEntity(chatRoom, sender, isUnread, chatMessageRequest.getContent());
+        ChatMessage chatMessage = ChatMessageRequest.toEntity(chatRoom, sender, isRead, chatMessageRequest.getContent());
         chatMessageRepository.save(chatMessage); // 메시지를 저장한다.
     }
 
