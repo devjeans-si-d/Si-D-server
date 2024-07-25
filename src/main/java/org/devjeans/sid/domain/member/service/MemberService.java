@@ -54,25 +54,8 @@ public class MemberService {
 
     @Transactional
     public UpdateMemberResponse updateMemberInfo(Long memberId,
-                                                 UpdateMemberRequest updateMemberRequest,
-                                                 MultipartFile profileImage) {
+                                                 UpdateMemberRequest updateMemberRequest) {
         Member member = memberRepository.findByIdOrThrow(memberId);
-
-        // 회원의 프로필 사진을 스토리지에 저장
-        if (profileImage != null && !profileImage.isEmpty()) {
-            String newFileName = memberId + "_" + profileImage.getOriginalFilename();
-            Path path = Paths.get(STORAGE_DIR, newFileName);
-
-            try {
-                Files.write(path, profileImage.getBytes());
-            } catch(IOException e) {
-                throw new BaseException(INVALID_PROFILE_IMAGE);
-            }
-
-
-            member.updateProfileImageUrl(path.toString());
-
-        }
 
         // 회원 정보 수정
         member.updateMemberInfo(updateMemberRequest);
