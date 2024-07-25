@@ -1,6 +1,6 @@
 package org.devjeans.sid.domain.member.entity;
 
-import lombok.Getter;
+import lombok.*;
 import org.devjeans.sid.domain.common.BaseEntity;
 import org.devjeans.sid.domain.launchedProject.entity.LaunchedProjectScrap;
 import org.devjeans.sid.domain.member.dto.UpdateMemberRequest;
@@ -12,8 +12,12 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@ToString
 @Getter
 @Entity
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Member extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,8 +44,9 @@ public class Member extends BaseEntity {
 
     private String profileImageUrl;
 
-    @OneToOne(mappedBy = "member",cascade = CascadeType.ALL)
-    private SiderCard siderCard;
+//    트랜잭션으로 회원가입할때 사이더카드도 같이 생성하여 id 공유
+//    @OneToOne(mappedBy = "member",cascade = CascadeType.ALL)
+//    private SiderCard siderCard;
 
 //    @OneToMany(mappedBy = "member", cascade = CascadeType.PERSIST)
 //    private List<LaunchedProjectMember> launchedProjectMembers = new ArrayList<>();
