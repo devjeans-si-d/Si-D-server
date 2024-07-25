@@ -1,9 +1,6 @@
 package org.devjeans.sid.domain.member.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.devjeans.sid.domain.common.BaseEntity;
 import org.devjeans.sid.domain.launchedProject.entity.LaunchedProjectScrap;
 import org.devjeans.sid.domain.member.dto.UpdateMemberRequest;
@@ -15,6 +12,7 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@ToString
 @Getter
 @Entity
 @Builder
