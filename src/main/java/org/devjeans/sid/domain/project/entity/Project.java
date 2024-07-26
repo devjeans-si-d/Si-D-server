@@ -60,4 +60,8 @@ public class Project extends BaseEntity {
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.PERSIST)
     private List<ChatRoom> chatRooms = new ArrayList<>();
+
+    public void updateProjectMembers(List<ProjectMember> projectMembers){
+        this.projectMembers = projectMembers;
+    }
 }

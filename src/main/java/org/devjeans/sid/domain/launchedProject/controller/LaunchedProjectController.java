@@ -25,10 +25,10 @@ public class LaunchedProjectController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<LaunchedProject> register(@RequestPart  SaveLaunchedProjectRequest dto,
-                                                    @RequestPart MultipartFile launchedProjectImage){
+    public ResponseEntity<Long> register(@RequestPart(value="dto") SaveLaunchedProjectRequest dto,
+                                                    @RequestPart(value="launchedProjectImage") MultipartFile launchedProjectImage){
         LaunchedProject launchedProject = launchedProjectService.register(dto,launchedProjectImage);
-        return ResponseEntity.ok(launchedProject);
+        return ResponseEntity.ok(launchedProject.getId());
     }
 
     // Launched-Project id로 Launched-Project 기본정보 조회

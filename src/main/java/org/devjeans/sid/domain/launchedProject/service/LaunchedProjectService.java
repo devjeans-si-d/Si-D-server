@@ -1,5 +1,6 @@
 package org.devjeans.sid.domain.launchedProject.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.devjeans.sid.domain.launchedProject.dto.LaunchProjectDTO.BasicInfoLaunchedProjectResponse;
 import org.devjeans.sid.domain.launchedProject.dto.LaunchProjectDTO.SaveLaunchedProjectRequest;
 import org.devjeans.sid.domain.launchedProject.dto.LaunchedProjectMemberDTO.LaunchedProjectMemberRequest;
@@ -7,6 +8,7 @@ import org.devjeans.sid.domain.launchedProject.dto.LaunchedProjectTechStackDTO.L
 import org.devjeans.sid.domain.launchedProject.entity.LaunchedProject;
 import org.devjeans.sid.domain.launchedProject.entity.LaunchedProjectTechStack;
 import org.devjeans.sid.domain.launchedProject.repository.LaunchedProjectRepository;
+import org.devjeans.sid.domain.member.entity.Member;
 import org.devjeans.sid.domain.member.repository.MemberRepository;
 import org.devjeans.sid.domain.project.entity.Project;
 import org.devjeans.sid.domain.project.entity.ProjectMember;
@@ -32,6 +34,7 @@ import java.util.stream.Collectors;
 
 import static org.devjeans.sid.global.exception.exceptionType.LaunchedProjectExceptionType.INVALID_PROJECT_IMAGE;
 
+@Slf4j
 @Service
 @Transactional
 public class LaunchedProjectService {
@@ -83,10 +86,12 @@ public class LaunchedProjectService {
         LaunchedProject savedLaunchedProject = null;
         Path imagePath;
 
+        log.info("line 87: {}", dto);
+
         try{
             byte[] bytes = launchedProjectImage.getBytes(); // 이미지 - > 바이트
             // 경로지정
-            imagePath = Paths.get(STORAGE_DIR, savedLaunchedProject.getId() +"_"+ launchedProjectImage.getOriginalFilename());
+            imagePath = Paths.get(STORAGE_DIR,  "_"+ launchedProjectImage.getOriginalFilename());
             // 파일 쓰기
             Files.write(imagePath, bytes, StandardOpenOption.CREATE, StandardOpenOption.WRITE); // 해당경로에 bytes 저장
 
@@ -114,16 +119,17 @@ public class LaunchedProjectService {
         List<ProjectMember> members = new ArrayList<>();
 
         for(LaunchedProjectMemberRequest memberDto : dto.getMembers()){
-//            memberRepository.findBy
-//            LaunchedProjectMemberRequest.toEntity(memberDto, )
+            Member member = memberRepository.findByIdOrThrow(memberDto.getId());
+            ProjectMember projectMember = LaunchedProjectMemberRequest.toEntity(memberDto, member, project);
+            members.add(projectMember);
         }
-
-
-
 
         // LaunchedProject 객체로 조립
         LaunchedProject launchedProject = dto.toEntity(dto, imagePath.toString(), project, launchedProjectTechStacks);
         savedLaunchedProject = launchedProjectRepository.save(launchedProject);
+
+        // 저장된 LaunchedProject -> Project -> ProjectMembers에 ProjectMembers 리스트 갈아끼우기
+        savedLaunchedProject.getProject().updateProjectMembers(members);
 
         return savedLaunchedProject;
     }
