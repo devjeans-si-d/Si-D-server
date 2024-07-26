@@ -36,6 +36,11 @@ public class Member extends BaseEntity {
     @Column(nullable = false)
     private SocialType socialType;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    @Builder.Default
+    private Role role = Role.USER;
+
     @Column(nullable=false)
     private Long socialId;
 

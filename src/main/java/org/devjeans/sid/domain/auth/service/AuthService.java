@@ -96,10 +96,6 @@ public class AuthService {
         memberRepository.save(member);
     }
 
-    public void createMember(Long kakaoId){
-
-    }
-
     public Member getMemberByKakaoId(Long kakaoId) {
         Member member = memberRepository.findBySocialId(kakaoId).orElse(null);
 //        System.out.println(member);

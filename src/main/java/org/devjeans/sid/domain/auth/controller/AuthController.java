@@ -42,7 +42,7 @@ public class AuthController {
 //            프론트는 예외일경우 회원가입 화면으로 이동하여 회원가입 정보와 소셜id를 담아 다시 회원가입 요청
             return new ResponseEntity<>(kakaoId,HttpStatus.UNAUTHORIZED);
         }
-        String jwtToken = jwtTokenProvider.createToken(originMember.getEmail(),originMember.getSocialType().toString());
+        String jwtToken = jwtTokenProvider.createToken(String.valueOf(originMember.getId()),originMember.getRole().toString());
         Map<String,Object> loginInfo = new HashMap<>();
         loginInfo.put("id",originMember.getId());
         loginInfo.put("token",jwtToken);
@@ -55,6 +55,7 @@ public class AuthController {
         authService.registerMember(dto);
         return new ResponseEntity<>("register succes!!", HttpStatus.OK);
     }
+
 
 
 }

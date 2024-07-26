@@ -14,9 +14,9 @@ public class JwtTokenProvider {
     @Value("${jwt.expiration}")
     private int expiration;
 
-    public String createToken(String email, String role) {
+    public String createToken(String id, String role) {
 //        Claims는 사용자 정보(페이로드 정보)
-        Claims claims = Jwts.claims().setSubject(email);
+        Claims claims = Jwts.claims().setSubject(id);
         claims.put("role", role);
         Date now = new Date();
         String token = Jwts.builder()
