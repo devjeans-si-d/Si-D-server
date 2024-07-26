@@ -48,7 +48,7 @@ public class AuthService {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("grant_type", "authorization_code");
         params.add("client_id",authOauthKakaoApi);
-        params.add("redirect_uri","http://localhost:8080/api/member/auth/kakao/callback");
+        params.add("redirect_uri","http://localhost:8080/api/auth/kakao/callback");
         params.add("code",kakaoRedirect.getCode());
 
         HttpEntity<MultiValueMap<String, String>> kakaoTokenRequest = new HttpEntity<>(params, headers);
