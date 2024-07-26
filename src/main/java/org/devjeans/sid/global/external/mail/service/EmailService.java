@@ -36,7 +36,7 @@ public class EmailService {
             MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, false, "UTF-8");
             mimeMessageHelper.setTo(email); // 메일 수신자
             mimeMessageHelper.setSubject("[Si-D] 이메일 변경을 위한 인증 메일입니다."); // 메일 제목
-            mimeMessageHelper.setText(setContext(generateRandomCode()), false); // 메일 본문 내용, HTML 여부
+            mimeMessageHelper.setText(setContext(generateRandomCode()), true); // 메일 본문 내용, HTML 여부
             javaMailSender.send(mimeMessage);
 
             log.info("Succeeded to send Email");
@@ -51,9 +51,9 @@ public class EmailService {
     }
 
     //thymeleaf를 통한 html 적용
-    public String setContext(String date) {
+    public String setContext(String randomCode) {
         Context context = new Context();
-        context.setVariable("date", date);
+        context.setVariable("randomCode", randomCode);
         return templateEngine.process("emailVerification", context);
     }
 }
