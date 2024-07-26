@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
-import static org.devjeans.sid.global.exception.exceptionType.LaunchedProjectExceptionType.PROJECT_NOT_FOUND;
+import static org.devjeans.sid.global.exception.exceptionType.TechStackExceptionType.TECH_STACK_NOT_FOUND;
 
 @Repository
 public interface LaunchedProjectRepository extends JpaRepository<LaunchedProject, Long> {
@@ -22,7 +22,7 @@ public interface LaunchedProjectRepository extends JpaRepository<LaunchedProject
 
         default LaunchedProject findByIdOrThrow(Long id) {
                 return findByIdAndDeletedAtIsNull(id)
-                        .orElseThrow(() -> new BaseException(PROJECT_NOT_FOUND));
+                        .orElseThrow(() -> new BaseException(TECH_STACK_NOT_FOUND));
         }
 
 }

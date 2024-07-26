@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.devjeans.sid.domain.common.BaseEntity;
 import org.devjeans.sid.domain.launchedProject.entity.LaunchedProjectScrap;
-import org.devjeans.sid.domain.projectMember.entity.ProjectMember;
+import org.devjeans.sid.domain.project.entity.ProjectMember;
 import org.devjeans.sid.domain.projectScrap.entity.ProjectScrap;
 import org.devjeans.sid.domain.siderCard.entity.SiderCard;
 

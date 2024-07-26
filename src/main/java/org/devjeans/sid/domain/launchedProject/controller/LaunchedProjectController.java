@@ -1,17 +1,20 @@
 package org.devjeans.sid.domain.launchedProject.controller;
 
 import org.devjeans.sid.domain.launchedProject.dto.LaunchProjectDTO.BasicInfoLaunchedProjectResponse;
+import org.devjeans.sid.domain.launchedProject.dto.LaunchProjectDTO.SaveLaunchedProjectRequest;
 import org.devjeans.sid.domain.launchedProject.dto.LaunchedProjectMemberDTO.LaunchedProjectMemberResponse;
 import org.devjeans.sid.domain.launchedProject.dto.LaunchedProjectTechStackDTO.LaunchedProjectTechStackResponse;
+import org.devjeans.sid.domain.launchedProject.entity.LaunchedProject;
 import org.devjeans.sid.domain.launchedProject.service.LaunchedProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/launched-projects")
+@RequestMapping("/api/launched-project")
 public class LaunchedProjectController {
 
     private final LaunchedProjectService launchedProjectService;
@@ -21,10 +24,12 @@ public class LaunchedProjectController {
         this.launchedProjectService = launchedProjectService;
     }
 
-    // Launched-Project 등록 (아직 수정중...ㅠㅠ)
-//    @PostMapping("/register")
-//    public ResponseEntity<>
-
+    @PostMapping("/register")
+    public ResponseEntity<LaunchedProject> register(@RequestPart  SaveLaunchedProjectRequest dto,
+                                                    @RequestPart MultipartFile launchedProjectImage){
+        LaunchedProject launchedProject = launchedProjectService.register(dto,launchedProjectImage);
+        return ResponseEntity.ok(launchedProject);
+    }
 
     // Launched-Project id로 Launched-Project 기본정보 조회
     @GetMapping("/detail/{id}/basic-info")
@@ -40,12 +45,12 @@ public class LaunchedProjectController {
         return ResponseEntity.ok(stacks);
     }
 
-    // Launched-Project id로 프로젝트에 참여한 회원(LaunchedProjectMember)리스트 조회
-    @GetMapping("/detail/{id}/members")
-    public ResponseEntity<List<LaunchedProjectMemberResponse>> getProjectMembers(@PathVariable Long id) {
-        List<LaunchedProjectMemberResponse> members = launchedProjectService.getProjectMembers(id);
-        return ResponseEntity.ok(members);
-    }
+//    // Launched-Project id로 프로젝트에 참여한 회원(LaunchedProjectMember)리스트 조회
+//    @GetMapping("/detail/{id}/members")
+//    public ResponseEntity<List<LaunchedProjectMemberResponse>> getProjectMembers(@PathVariable Long id) {
+//        List<LaunchedProjectMemberResponse> members = launchedProjectService.getProjectMembers(id);
+//        return ResponseEntity.ok(members);
+//    }
 
 
     // 유저는 프로젝트 모집글을 삭제할 수 있다.
