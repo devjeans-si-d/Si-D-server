@@ -17,9 +17,24 @@ spring:
     host: localhost
     port: 6380
     password:
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: "clearrworld@gmail.com"
+    password: "ddtq pucr hreu nwue"
+    properties:
+      mail.smtp.debug: true
+      mail.smtp.connectiontimeout: 1000 #1초
+      mail.starttls.enable: true
+      mail.smtp.auth: true
 
 logging:
   level:
     org.hibernate.sql: debug
     org.hibernate.type: trace
+
+auth:
+  oauth:
+    kakao:
+      api: f1a9f25e347069f2e5fedb6375c0b82d
 

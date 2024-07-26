@@ -3,24 +3,17 @@ package org.devjeans.sid.domain.member.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.devjeans.sid.domain.member.dto.MemberInfoResponse;
-import org.devjeans.sid.domain.member.dto.RegisterMemberRequest;
-import org.devjeans.sid.domain.member.dto.UpdateMemberRequest;
-import org.devjeans.sid.domain.member.dto.UpdateMemberResponse;
+import org.devjeans.sid.domain.member.dto.*;
 import org.devjeans.sid.domain.member.entity.KakaoRedirect;
 import org.devjeans.sid.domain.member.entity.Member;
 import org.devjeans.sid.domain.member.service.MemberService;
-import org.springframework.http.HttpHeaders;
+import org.devjeans.sid.global.external.mail.service.EmailService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
+import javax.validation.Valid;
+
 
 @Slf4j
 @RequiredArgsConstructor
@@ -28,6 +21,8 @@ import java.io.IOException;
 @RestController
 public class MemberController {
     private final MemberService memberService;
+    private final EmailService emailService;
+
     @GetMapping("/{memberId}")
     public ResponseEntity<MemberInfoResponse> getMemberInfo(@PathVariable("memberId") Long memberId) {
         MemberInfoResponse memberInfo = memberService.getMemberInfo(memberId);
@@ -43,6 +38,12 @@ public class MemberController {
         UpdateMemberResponse updateMemberResponse = memberService.updateMemberInfo(memberId, updateMemberRequest);
 
         return new ResponseEntity<>(updateMemberResponse, HttpStatus.OK);
+    }
+
+    @PostMapping("/{memberId}/update/email")
+    public ResponseEntity<?> sendEmail(@Valid @RequestBody UpdateEmailRequest updateEmailRequest) {
+        emailService.sendEmailNotice(updateEmailRequest.getEmail());
+        return new ResponseEntity<>(null, HttpStatus.OK);
     }
 
 
