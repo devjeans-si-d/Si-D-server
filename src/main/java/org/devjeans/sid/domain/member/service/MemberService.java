@@ -37,7 +37,6 @@ import static org.devjeans.sid.global.exception.exceptionType.MemberExceptionTyp
 
 @RequiredArgsConstructor
 @Service
-@PropertySource("classpath:application-secret.properties")
 public class MemberService {
     private final MemberRepository memberRepository;
 
