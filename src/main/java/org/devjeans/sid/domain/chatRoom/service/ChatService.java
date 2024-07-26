@@ -1,10 +1,9 @@
-package org.devjeans.sid.domain.chatRoom.chatService;
+package org.devjeans.sid.domain.chatRoom.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.devjeans.sid.domain.chatRoom.dto.ChatRoomListResponse;
-import org.devjeans.sid.domain.chatRoom.dto.ChatRoomMessageResponse;
-import org.devjeans.sid.domain.chatRoom.dto.ChatRoomSimpleResponse;
+import org.devjeans.sid.domain.chatRoom.component.ConnectedMap;
+import org.devjeans.sid.domain.chatRoom.dto.*;
 import org.devjeans.sid.domain.chatRoom.entity.ChatMessage;
 import org.devjeans.sid.domain.chatRoom.entity.ChatParticipant;
 import org.devjeans.sid.domain.chatRoom.entity.ChatRoom;
@@ -13,6 +12,8 @@ import org.devjeans.sid.domain.chatRoom.repository.ChatParticipantRepository;
 import org.devjeans.sid.domain.chatRoom.repository.ChatRoomRepository;
 import org.devjeans.sid.domain.member.entity.Member;
 import org.devjeans.sid.domain.member.repository.MemberRepository;
+import org.devjeans.sid.domain.project.entity.Project;
+import org.devjeans.sid.domain.project.repository.ProjectRepository;
 import org.devjeans.sid.global.exception.BaseException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,8 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static org.devjeans.sid.global.exception.exceptionType.ChatExceptionType.INVALID_CHATROOM;
-import static org.devjeans.sid.global.exception.exceptionType.ChatExceptionType.NO_RECENT_MESSAGE;
+import static org.devjeans.sid.global.exception.exceptionType.ChatExceptionType.*;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -34,6 +34,9 @@ public class ChatService {
     private final ChatMessageRepository chatMessageRepository;
     private final ChatParticipantRepository chatParticipantRepository;
     private final MemberRepository memberRepository;
+    private final ProjectRepository projectRepository;
+
+    private final ConnectedMap connectedMap;
 
     // 해당 회원이 속한 채팅방을 updatedAt DESC로 정렬해서 보여주기
     public Page<ChatRoomSimpleResponse> getChatRoomList(Pageable pageable, Long memberId) {
@@ -80,6 +83,62 @@ public class ChatService {
         return messages.map(ChatRoomMessageResponse::fromEntity);
     }
 
+    // TODO: 추후 쿼리 최적화가 필요..
+    @Transactional
+    public CreateChatRoomResponse createChatRoom(CreateChatRoomRequest createChatRoomRequest) {
+        // project 정보 찾기
+        Project project = projectRepository.findByIdOrThrow(createChatRoomRequest.getProjectId());
+
+        // 이미 채팅방이 있지 않은지 검증 => 프로젝트 아이디와 스타터 아이디가 동일한게 존재하면 Exception
+        Optional<ChatRoom> findChatRoom = chatRoomRepository.findByStarterMemberIdAndProject(createChatRoomRequest.getChatStarterMemberId(), project);
+        if(findChatRoom.isPresent()) {
+            throw new BaseException(CHATROOM_ALREADY_EXIST);
+        }
+
+        // chatroom 만들기
+        ChatRoom chatRoom = CreateChatRoomRequest.toEntity(project, createChatRoomRequest);
+
+        // chatParticipant 만들기
+        Member starterMember = memberRepository.findByIdOrThrow(createChatRoomRequest.getChatStarterMemberId());
+        Member pmMember = memberRepository.findByIdOrThrow(project.getPm().getId());
+
+        ChatParticipant starter = ChatParticipant.builder()
+                .member(starterMember)
+                .chatRoom(chatRoom)
+                .build();
+        ChatParticipant pm = ChatParticipant.builder()
+                .member(pmMember)
+                .chatRoom(chatRoom)
+                .build();
+
+        chatParticipantRepository.save(starter);
+        chatParticipantRepository.save(pm);
+
+        List<ChatParticipant> participants = new ArrayList<>();
+        participants.add(starter);
+        participants.add(pm);
+        chatRoom.setChatParticipants(participants);
+
+        return CreateChatRoomResponse.fromEntity(chatRoom);
+    }
+
+    // TODO: FRONT - 만약 방을 만들려고 했는데 createChatRoom에서 CHATROOM_ALREADY_EXIST가 떨어지면 enterChatRoom 호출
+    public void enterChatRoom(Long chatRoomId, Long memberId) {
+        // 검증: 해당 방에 member가 속해있는지
+        ChatRoom chatRoom = chatRoomRepository.findByIdOrThrow(chatRoomId);
+        List<Long> memberIds = chatRoom.getChatParticipants().stream()
+                .map(p -> p.getMember().getId())
+                .collect(Collectors.toList());
+
+        if(!memberIds.contains(memberId)) {
+            // 회원이 아닌 경우
+            throw new BaseException(NOT_A_PARTICIPANT);
+        }
+
+        // 메모리에 저장
+        connectedMap.enterChatRoom(chatRoomId, memberId);
+    }
+
     // unread message 읽음 처리
     private void resolveUnread(Long chatRoomId, Long memberId) {
         // 방 찾기
@@ -98,4 +157,6 @@ public class ChatService {
         // 메시지 읽기
         unreadMessages.stream().forEach(ChatMessage::readMessage);
     }
+
+
 }
