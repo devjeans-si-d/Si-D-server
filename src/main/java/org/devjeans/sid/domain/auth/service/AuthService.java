@@ -3,6 +3,7 @@ package org.devjeans.sid.domain.auth.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.devjeans.sid.domain.member.dto.MemberInfoResponse;
 import org.devjeans.sid.domain.member.dto.RegisterMemberRequest;
 import org.devjeans.sid.domain.member.dto.UpdateMemberRequest;
@@ -18,15 +19,22 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import java.time.LocalDateTime;
+
+import static java.rmi.server.LogStream.log;
+
+@Slf4j
 @RequiredArgsConstructor
 @Service
 @PropertySource("classpath:application-secret.properties")
+@Transactional
 public class AuthService {
     private final MemberRepository memberRepository;
 
@@ -99,6 +107,14 @@ public class AuthService {
     public Member getMemberByKakaoId(Long kakaoId) {
         Member member = memberRepository.findBySocialId(kakaoId).orElse(null);
 //        System.out.println(member);
+        return member;
+    }
+
+    public Member delete() {
+        Long id = Long.valueOf(SecurityContextHolder.getContext().getAuthentication().getName());
+//        System.out.println(id);
+        Member member = memberRepository.findByIdOrThrow(id);
+        member.updateDeleteAt();
         return member;
     }
 }

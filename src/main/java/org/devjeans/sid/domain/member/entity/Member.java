@@ -81,5 +81,8 @@ public class Member extends BaseEntity {
         this.nickname = updateMemberRequest.getNickname();
         this.phoneNumber = updateMemberRequest.getPhoneNumber();
     }
+    public void deleteMember(){
+        this.updateDeleteAt();
+    }
 
 }
