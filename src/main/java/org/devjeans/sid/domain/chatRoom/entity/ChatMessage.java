@@ -34,7 +34,6 @@ public class ChatMessage extends BaseEntity {
     @JoinColumn(name = "member_id")
     private Member member;
 
-
     public void readMessage() {
         this.isRead = true;
     }
