@@ -35,6 +35,12 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+	// STOMP
+	implementation 'org.webjars:stomp-websocket:2.3.4'
+
+// SockJS
+	implementation 'org.webjars:sockjs-client:1.5.1'
 }
 
 tasks.named('test') {

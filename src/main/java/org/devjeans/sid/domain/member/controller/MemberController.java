@@ -31,18 +31,11 @@ public class MemberController {
     }
 
     @PostMapping("/{memberId}/update")
-    public ResponseEntity<UpdateMemberResponse> getMemberInfo(@PathVariable("memberId") Long memberId,
-                                          @RequestPart String name,
-                                          @RequestPart String nickname,
-                                          @RequestPart String phoneNumber,
-                                          @RequestPart(value = "profileImage", required = false) MultipartFile profileImage) {
-//        log.info("line 32 {}", updateMemberRequest);
-        UpdateMemberRequest updateMemberRequest = UpdateMemberRequest.builder()
-                .nickname(nickname)
-                .name(name)
-                .phoneNumber(phoneNumber)
-                .build();
-        UpdateMemberResponse updateMemberResponse = memberService.updateMemberInfo(memberId, updateMemberRequest, profileImage);
+    public ResponseEntity<UpdateMemberResponse> updateMemberInfo(
+            @PathVariable Long memberId,
+            @RequestBody UpdateMemberRequest updateMemberRequest) {
+
+        UpdateMemberResponse updateMemberResponse = memberService.updateMemberInfo(memberId, updateMemberRequest);
 
         return new ResponseEntity<>(updateMemberResponse, HttpStatus.OK);
     }

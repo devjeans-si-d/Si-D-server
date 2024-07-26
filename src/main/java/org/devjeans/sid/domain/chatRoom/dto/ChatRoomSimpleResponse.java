@@ -11,7 +11,7 @@ import org.devjeans.sid.domain.member.entity.Member;
 public class ChatRoomSimpleResponse { // 밖에서 미리보기처럼 보이는 채팅방 1개의 정보
     private Long chatRoomId;
     private Long projectId;
-    private Long participantId; // 상대방의 멤버 아이디
+    private Long participantMemberId; // 상대방의 멤버 아이디
     private String participantNickName; // 상대방 이름
     private String participantProfileImageUrl; // 상대방 프로필 사진
     private Long unreadCount; // 읽었는지 여부
@@ -21,7 +21,7 @@ public class ChatRoomSimpleResponse { // 밖에서 미리보기처럼 보이는 
         return ChatRoomSimpleResponse.builder()
                 .chatRoomId(chatRoom.getId())
                 .projectId(chatRoom.getProject().getId())
-                .participantId(participant.getId())
+                .participantMemberId(participant.getId())
                 .participantNickName(participant.getNickname())
                 .participantProfileImageUrl(participant.getProfileImageUrl())
                 .unreadCount(unreadCount)
