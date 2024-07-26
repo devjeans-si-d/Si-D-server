@@ -1,12 +1,16 @@
-package org.devjeans.sid.domain.chatMessage.entity;
+package org.devjeans.sid.domain.chatRoom.entity;
 
-import org.devjeans.sid.domain.chatRoom.entity.ChatRoom;
+import lombok.*;
 import org.devjeans.sid.domain.common.BaseEntity;
 import org.devjeans.sid.domain.member.entity.Member;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
 @Entity
 public class ChatMessage extends BaseEntity {
     @Id
@@ -21,10 +25,16 @@ public class ChatMessage extends BaseEntity {
     @Column(nullable = false,length = 1000)
     private String content;
 
+    // 읽었는지 여부
     @Column(nullable = false)
-    private LocalDateTime sentAt;
+    private Boolean isRead;
 
+    // 보낸 사람
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
+
+    public void readMessage() {
+        this.isRead = true;
+    }
 }

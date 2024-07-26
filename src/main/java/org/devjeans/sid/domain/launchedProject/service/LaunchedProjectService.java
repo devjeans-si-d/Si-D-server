@@ -114,8 +114,8 @@ public class LaunchedProjectService {
         List<ProjectMember> members = new ArrayList<>();
 
         for(LaunchedProjectMemberRequest memberDto : dto.getMembers()){
-            memberRepository.findBy
-            LaunchedProjectMemberRequest.toEntity(memberDto, )
+//            memberRepository.findBy
+//            LaunchedProjectMemberRequest.toEntity(memberDto, )
         }
 
 

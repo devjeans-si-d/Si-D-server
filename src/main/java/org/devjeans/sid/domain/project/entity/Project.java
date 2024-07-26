@@ -6,10 +6,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.devjeans.sid.domain.chatRoom.entity.ChatRoom;
 import org.devjeans.sid.domain.common.BaseEntity;
-import org.devjeans.sid.domain.projectMember.entity.ProjectMember;
+import org.devjeans.sid.domain.member.entity.Member;
 import org.devjeans.sid.domain.projectScrap.entity.ProjectScrap;
 import org.hibernate.annotations.ColumnDefault;
-
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -45,6 +44,10 @@ public class Project extends BaseEntity {
 
     @ColumnDefault("0")
     private Long views=0L;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "pm_id")
+    private Member pm;
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
     private List<ProjectMember> projectMembers = new ArrayList<>();

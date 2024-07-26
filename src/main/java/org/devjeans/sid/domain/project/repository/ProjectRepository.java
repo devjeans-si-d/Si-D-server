@@ -19,5 +19,4 @@ public interface ProjectRepository extends JpaRepository<Project,Long> {
         return findByIdAndDeletedAtIsNull(id)
                 .orElseThrow(() -> new BaseException(PROJECT_NOT_FOUND)); // 원래는 Project Exception타입 던져줘야하는데 임시
     }
-
 }
