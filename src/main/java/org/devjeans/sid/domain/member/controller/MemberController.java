@@ -10,14 +10,9 @@ import org.devjeans.sid.domain.member.dto.UpdateMemberResponse;
 import org.devjeans.sid.domain.member.entity.KakaoRedirect;
 import org.devjeans.sid.domain.member.entity.Member;
 import org.devjeans.sid.domain.member.service.MemberService;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -70,8 +65,9 @@ public class MemberController {
         return kakaoId.toString();
     }
 
-    @GetMapping("register")
+    @GetMapping("/register")
     public ResponseEntity<String> registerMember(@RequestBody RegisterMemberRequest dto) {
+        System.out.println(dto.toString());
         memberService.registerMember(dto);
         return new ResponseEntity<>("register succes!!", HttpStatus.OK);
     }

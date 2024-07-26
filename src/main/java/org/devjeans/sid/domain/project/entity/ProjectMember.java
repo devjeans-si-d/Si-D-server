@@ -1,11 +1,15 @@
-package org.devjeans.sid.domain.projectMember.entity;
+package org.devjeans.sid.domain.project.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
 import org.devjeans.sid.domain.common.BaseEntity;
 import org.devjeans.sid.domain.member.entity.Member;
-import org.devjeans.sid.domain.project.entity.Project;
 
 import javax.persistence.*;
-
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 public class ProjectMember extends BaseEntity {
     @Id

@@ -1,11 +1,13 @@
 package org.devjeans.sid.domain.project.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.devjeans.sid.domain.chatRoom.entity.ChatRoom;
 import org.devjeans.sid.domain.common.BaseEntity;
 import org.devjeans.sid.domain.member.entity.Member;
-import org.devjeans.sid.domain.projectMember.entity.ProjectMember;
-import org.devjeans.sid.domain.projectScrap.entity.ProjectScrap;
+
 import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
@@ -15,6 +17,9 @@ import java.util.List;
 
 @Getter
 @Entity
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Project extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -45,15 +50,20 @@ public class Project extends BaseEntity {
     @JoinColumn(name = "pm_id")
     private Member pm;
 
-    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "project", cascade = CascadeType.PERSIST)
+    @Builder.Default
     private List<ProjectMember> projectMembers = new ArrayList<>();
 
-    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "project", cascade = CascadeType.PERSIST)
+    @Builder.Default
     private List<RecruitInfo> recruitInfos = new ArrayList<>();
 
+    // 얘는 cascade persist인지 all인지 체크 필요!!!!
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
+    @Builder.Default
     private List<ProjectScrap> projectScraps = new ArrayList<>();
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.PERSIST)
+    @Builder.Default
     private List<ChatRoom> chatRooms = new ArrayList<>();
 }
