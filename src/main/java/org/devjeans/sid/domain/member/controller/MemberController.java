@@ -41,10 +41,16 @@ public class MemberController {
     }
 
     @PostMapping("/{memberId}/update/email")
-    public ResponseEntity<?> sendEmail(@Valid @RequestBody UpdateEmailRequest updateEmailRequest) {
-        emailService.sendEmailNotice(updateEmailRequest.getEmail());
+    public ResponseEntity<?> sendEmail(@Valid @RequestBody UpdateEmailRequest updateEmailRequest, @PathVariable Long memberId) {
+        emailService.sendEmailNotice(updateEmailRequest.getEmail(), memberId);
         return new ResponseEntity<>(null, HttpStatus.OK);
     }
+
+//    // FIXME: 인증 구현 후 경로 수정 필요
+//    @PostMapping("/code/{memberId}/{code}")
+//    public ResponseEntity<?> updateEmail(@PathVariable String code,) {
+//        memberService.updateEmail(code);
+//    }
 
 
     @GetMapping("auth/kakao/callback")

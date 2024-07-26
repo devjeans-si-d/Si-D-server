@@ -3,6 +3,7 @@ package org.devjeans.sid.global.external.mail.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.devjeans.sid.domain.member.repository.MemberRepository;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
@@ -12,6 +13,7 @@ import org.thymeleaf.context.Context;
 import org.thymeleaf.spring5.SpringTemplateEngine;
 
 import javax.mail.internet.MimeMessage;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -28,15 +30,19 @@ public class EmailService {
     private final JavaMailSender javaMailSender;
     private final SpringTemplateEngine templateEngine;
     private final MemberRepository memberRepository;
+    private final RedisTemplate<String, Object> redisTemplate;
 
     @Async
-    public void sendEmailNotice(String email){
+    public void sendEmailNotice(String email, Long memberId){
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         try {
+            String randomCode = generateRandomCode();
+            saveRamdomCode(memberId, randomCode); // redis에 저장 (ttl: 10분)
+
             MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, false, "UTF-8");
             mimeMessageHelper.setTo(email); // 메일 수신자
             mimeMessageHelper.setSubject("[Si-D] 이메일 변경을 위한 인증 메일입니다."); // 메일 제목
-            mimeMessageHelper.setText(setContext(generateRandomCode()), true); // 메일 본문 내용, HTML 여부
+            mimeMessageHelper.setText(setContext(randomCode), true); // 메일 본문 내용, HTML 여부
             javaMailSender.send(mimeMessage);
 
             log.info("Succeeded to send Email");
@@ -56,4 +62,10 @@ public class EmailService {
         context.setVariable("randomCode", randomCode);
         return templateEngine.process("emailVerification", context);
     }
+
+    private void saveRamdomCode(Long memberId, String randomCode) {
+        redisTemplate.opsForValue().set(memberId.toString(), randomCode, Duration.ofMinutes(10));
+    }
+
+
 }

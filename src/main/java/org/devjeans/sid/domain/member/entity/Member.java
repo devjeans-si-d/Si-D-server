@@ -77,4 +77,7 @@ public class Member extends BaseEntity {
         this.phoneNumber = updateMemberRequest.getPhoneNumber();
     }
 
+    public void updateEmail(String email) {
+        this.email = email;
+    }
 }

@@ -15,6 +15,7 @@ import org.devjeans.sid.domain.member.repository.MemberRepository;
 import org.devjeans.sid.global.exception.BaseException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -33,12 +34,13 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
 
-import static org.devjeans.sid.global.exception.exceptionType.MemberExceptionType.INVALID_PROFILE_IMAGE;
+import static org.devjeans.sid.global.exception.exceptionType.MemberExceptionType.*;
 
 @RequiredArgsConstructor
 @Service
 public class MemberService {
     private final MemberRepository memberRepository;
+    private final RedisTemplate<String, Object> redisTemplate;
 
     @Value("${auth.oauth.kakao.api}")
     private String authOauthKakaoApi;
@@ -59,6 +61,20 @@ public class MemberService {
         Member updatedMember = memberRepository.save(member);
 
         return UpdateMemberResponse.fromEntity(updatedMember);
+    }
+
+    @Transactional
+    public void updateEmail(Long memberId, String email, String code) {
+        Member member = memberRepository.findByIdOrThrow(memberId);
+        if(getCodeFromRedis(memberId).equals(code)) {
+            member.updateEmail(email); // 인증 성공
+        } else {
+            throw new BaseException(INVALID_VERIFICATION);
+        }
+    }
+
+    private String getCodeFromRedis(Long memberId) {
+        return (String) redisTemplate.opsForValue().get(memberId.toString());
     }
 
 
