@@ -8,6 +8,7 @@ build/
 
 src/main/resources/static/chatfromt/**
 src/main/resources/application-secret.properties
+src/main/resources/application.yml
 ### STS ###
 .apt_generated
 .classpath
