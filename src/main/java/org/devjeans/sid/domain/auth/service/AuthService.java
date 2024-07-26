@@ -1,4 +1,4 @@
-package org.devjeans.sid.domain.member.service;
+package org.devjeans.sid.domain.auth.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -27,45 +27,16 @@ import org.springframework.web.client.RestTemplate;
 @RequiredArgsConstructor
 @Service
 @PropertySource("classpath:application-secret.properties")
-public class MemberService {
+public class AuthService {
     private final MemberRepository memberRepository;
 
     @Value("${auth.oauth.kakao.api}")
     private String authOauthKakaoApi;
-    public MemberInfoResponse getMemberInfo(Long memberId) {
-        // TODO: 인증, 인가 구현 후 멤버 아이디와 시큐리티 컨텍스트의 멤버가 동일한지 확인하는 로직 필요
-
-        Member member = memberRepository.findByIdOrThrow(memberId);
-        return MemberInfoResponse.fromEntity(member);
-    }
-
-    @Transactional
-    public UpdateMemberResponse updateMemberInfo(Long memberId,
-                                                 UpdateMemberRequest updateMemberRequest) {
-        Member member = memberRepository.findByIdOrThrow(memberId);
-
-        // 회원 정보 수정
-        member.updateMemberInfo(updateMemberRequest);
-        Member updatedMember = memberRepository.save(member);
-
-        return UpdateMemberResponse.fromEntity(updatedMember);
-    }
-
 
     public Long login(KakaoRedirect kakaoRedirect) throws JsonProcessingException {
         OAuthToken oAuthToken = getAccessToken(kakaoRedirect);
         Long kakaoId = getKakaoId(oAuthToken.getAccess_token());
         return kakaoId;
-    }
-
-    public void createMember(Long kakaoId){
-
-    }
-
-    public Member getMemberByKakaoId(Long kakaoId) {
-        Member member = memberRepository.findBySocialId(kakaoId).orElse(null);
-//        System.out.println(member);
-        return member;
     }
 
     public OAuthToken getAccessToken(KakaoRedirect kakaoRedirect) throws JsonProcessingException {
@@ -123,5 +94,15 @@ public class MemberService {
     public void registerMember(RegisterMemberRequest dto) {
         Member member = dto.toEntity();
         memberRepository.save(member);
+    }
+
+    public void createMember(Long kakaoId){
+
+    }
+
+    public Member getMemberByKakaoId(Long kakaoId) {
+        Member member = memberRepository.findBySocialId(kakaoId).orElse(null);
+//        System.out.println(member);
+        return member;
     }
 }
