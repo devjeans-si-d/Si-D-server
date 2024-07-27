@@ -1,16 +1,20 @@
-package org.devjeans.sid.domain.project.entity;
+package org.devjeans.sid.domain.projectMember.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.devjeans.sid.domain.common.BaseEntity;
 import org.devjeans.sid.domain.member.entity.Member;
+import org.devjeans.sid.domain.project.entity.Project;
+import org.devjeans.sid.domain.siderCard.entity.JobField;
 
 import javax.persistence.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Getter
 public class ProjectMember extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,6 +24,8 @@ public class ProjectMember extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="member_id")
     private Member member;
+
+    private JobField jobField;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="project_id")

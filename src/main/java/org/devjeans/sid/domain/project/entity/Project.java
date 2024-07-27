@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import org.devjeans.sid.domain.chatRoom.entity.ChatRoom;
 import org.devjeans.sid.domain.common.BaseEntity;
 import org.devjeans.sid.domain.member.entity.Member;
-
+import org.devjeans.sid.domain.projectMember.entity.ProjectMember;
 import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
@@ -15,11 +15,11 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-@Getter
-@Entity
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
+@Getter
+@Entity
 public class Project extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -50,20 +50,26 @@ public class Project extends BaseEntity {
     @JoinColumn(name = "pm_id")
     private Member pm;
 
-    @OneToMany(mappedBy = "project", cascade = CascadeType.PERSIST)
     @Builder.Default
+    @OneToMany(mappedBy = "project", cascade = CascadeType.PERSIST)
     private List<ProjectMember> projectMembers = new ArrayList<>();
 
-    @OneToMany(mappedBy = "project", cascade = CascadeType.PERSIST)
     @Builder.Default
+    @OneToMany(mappedBy = "project", cascade = CascadeType.PERSIST)
     private List<RecruitInfo> recruitInfos = new ArrayList<>();
 
-    // 얘는 cascade persist인지 all인지 체크 필요!!!!
-    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
     @Builder.Default
+    @OneToMany(mappedBy = "project", cascade = CascadeType.PERSIST)
     private List<ProjectScrap> projectScraps = new ArrayList<>();
 
-    @OneToMany(mappedBy = "project", cascade = CascadeType.PERSIST)
     @Builder.Default
+    @OneToMany(mappedBy = "project", cascade = CascadeType.PERSIST)
     private List<ChatRoom> chatRooms = new ArrayList<>();
+
+    public void updateProjectMembers(List<ProjectMember> projectMembers){
+        this.projectMembers = projectMembers;
+    }
+    public void updateRecruitInfos(List<RecruitInfo> recruitInfos){
+        this.recruitInfos = recruitInfos;
+    }
 }

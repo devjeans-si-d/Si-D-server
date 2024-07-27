@@ -1,10 +1,16 @@
 package org.devjeans.sid.domain.project.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
 import org.devjeans.sid.domain.common.BaseEntity;
 import org.devjeans.sid.domain.member.entity.Member;
 
 import javax.persistence.*;
 
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Entity
 public class ProjectScrap extends BaseEntity {
     @Id
