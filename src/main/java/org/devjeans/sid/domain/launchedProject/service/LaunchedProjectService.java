@@ -149,6 +149,6 @@ public class LaunchedProjectService {
                 .map(LaunchedProjectTechStackResponse::fromEntity)
                 .collect(Collectors.toList());
     }
-    
+
 
 }
