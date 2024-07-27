@@ -1,5 +1,6 @@
 package org.devjeans.sid.domain.project.dto.read;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -38,12 +39,14 @@ public class DetailProjectResponse {
 
     private Long views;
 
+    @JsonIgnore
+    // Todo Ignore 안 쓰면 detail 17번 불렀을 때 에러남!! 강사님께 여쭤보기
     private Member pm;
     private Integer scrapCount;
-
-    private List<ProjectMemberDto> projectMembers;
-
-    private List<RecruitInfoDto> recruitInfos;
+    @Builder.Default
+    private List<ProjectMemberDto> projectMembers=new ArrayList<>();
+    @Builder.Default
+    private List<RecruitInfoDto> recruitInfos=new ArrayList<>();
 
     @Data
     @Builder
