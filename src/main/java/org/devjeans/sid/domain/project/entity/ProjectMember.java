@@ -26,6 +26,7 @@ public class ProjectMember extends BaseEntity {
     @JoinColumn(name="member_id")
     private Member member;
 
+    @Enumerated(EnumType.STRING)
     private JobField jobField; // 이 프로젝트에서 맡은직무
 
     @ManyToOne(fetch = FetchType.LAZY)

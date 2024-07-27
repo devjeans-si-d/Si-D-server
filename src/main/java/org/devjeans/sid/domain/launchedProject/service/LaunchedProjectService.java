@@ -83,10 +83,7 @@ public class LaunchedProjectService {
         // dto에서 받은 projectId(Long)로 project 객체 찾음
         Project project = projectRepository.findByIdOrThrow(dto.getProjectId());
 
-        LaunchedProject savedLaunchedProject = null;
         Path imagePath;
-
-        log.info("line 87: {}", dto);
 
         try{
             byte[] bytes = launchedProjectImage.getBytes(); // 이미지 - > 바이트
@@ -95,41 +92,40 @@ public class LaunchedProjectService {
             // 파일 쓰기
             Files.write(imagePath, bytes, StandardOpenOption.CREATE, StandardOpenOption.WRITE); // 해당경로에 bytes 저장
 
-            //launchedProject.updateLaunchedProjectImage(path.toString());
         } catch (IOException e) {
             throw new BaseException(INVALID_PROJECT_IMAGE);
         }
 
-        List<LaunchedProjectTechStack> launchedProjectTechStacks = new ArrayList<>(); // Launched-Project에 사용된 기술스택 리스트
+        // LaunchedProject 객체 먼저 조립 (launchedProjectTechStacks 기술스택 리스트 빼고 먼저조립해줌)
+        LaunchedProject launchedProject = dto.toEntity(dto, imagePath.toString(), project, new ArrayList<>());
 
-        for(SaveLaunchedProjectRequest.LaunchedProjectTechStackRequest tech : dto.getLaunchedProjectTechStackRequestList()){
+        for(SaveLaunchedProjectRequest.LaunchedProjectTechStackRequest stackDto : dto.getLaunchedProjectTechStackRequestList()){
             //tech : {"JobField" : "BACKEND", "techStackName" : "Spring"}
 
-            TechStack techStack = techStackRepository.findByIdOrThrow(tech.getId());
+            TechStack techStack = techStackRepository.findByIdOrThrow(stackDto.getId());
 
             LaunchedProjectTechStack launchedProjectTechStack
                     = LaunchedProjectTechStack.builder()
-                    .launchedProject(savedLaunchedProject)
+                    .launchedProject(launchedProject)
                     .techStack(techStack)
                     .build();
 
-            launchedProjectTechStacks.add(launchedProjectTechStack);
+            // 일단 먼저 조립해준 launchedProject 객체의 기술스택 리스트 가져와서 add 해줌
+            launchedProject.getLaunchedProjectTechStacks().add(launchedProjectTechStack);
         }
-
-        List<ProjectMember> members = new ArrayList<>();
 
         for(LaunchedProjectMemberRequest memberDto : dto.getMembers()){
             Member member = memberRepository.findByIdOrThrow(memberDto.getId());
             ProjectMember projectMember = LaunchedProjectMemberRequest.toEntity(memberDto, member, project);
-            members.add(projectMember);
+
+            List<ProjectMember> projectMembers = launchedProject.getProject().getProjectMembers();
+            // 존재하지 않는 회원만 add (모집 이후 추가되었을 경우)
+            if(!projectMembers.contains(member)){
+                projectMembers.add(projectMember);
+            }
         }
 
-        // LaunchedProject 객체로 조립
-        LaunchedProject launchedProject = dto.toEntity(dto, imagePath.toString(), project, launchedProjectTechStacks);
-        savedLaunchedProject = launchedProjectRepository.save(launchedProject);
-
-        // 저장된 LaunchedProject -> Project -> ProjectMembers에 ProjectMembers 리스트 갈아끼우기
-        savedLaunchedProject.getProject().updateProjectMembers(members);
+        LaunchedProject savedLaunchedProject = launchedProjectRepository.save(launchedProject);
 
         return savedLaunchedProject;
     }
@@ -153,17 +149,6 @@ public class LaunchedProjectService {
                 .map(LaunchedProjectTechStackResponse::fromEntity)
                 .collect(Collectors.toList());
     }
-
-//    // LaunchedProject의 id를 기준으로 LaunchedProjectMember 리스트 조회
-//    public List<LaunchedProjectMemberResponse> getProjectMembers(Long projectId) {
-//        // LaunchedProject가 존재하는지 확인
-//        LaunchedProject launchedProject = launchedProjectRepository.findByIdOrThrow(projectId);
-//        List<LaunchedProjectMember> members =  launchedProject.getLaunchedProjectMembers();
-//
-//        // DTO로 변환
-//        return members.stream()
-//                .map(LaunchedProjectMemberResponse::fromEntity)
-//                .collect(Collectors.toList());
-//    }
+    
 
 }

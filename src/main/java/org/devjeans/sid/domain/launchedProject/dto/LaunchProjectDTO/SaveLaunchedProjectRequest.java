@@ -52,14 +52,15 @@ public class SaveLaunchedProjectRequest {
 
         return LaunchedProject.builder()
                 .launchedProjectImage(imagePath)
-                .launchedProjectContents(dto.launchedProjectContents)
-                .siteUrl(dto.siteUrl)
+                .launchedProjectContents(dto.getLaunchedProjectContents())
+                .siteUrl(dto.getSiteUrl())
                 .project(project)
                 .launchedProjectTechStacks(launchedProjectTechStacks)
                 .build();
     }
 
-    public static LaunchedProjectTechStack toLaunchedProjectTechStack (LaunchedProject launchedProject, TechStack techStack){
+    public static LaunchedProjectTechStack toLaunchedProjectTechStack (LaunchedProject launchedProject,
+                                                                       TechStack techStack){
         return LaunchedProjectTechStack.builder()
                 .launchedProject(launchedProject)
                 .techStack(techStack)
