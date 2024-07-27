@@ -26,7 +26,6 @@ import org.springframework.web.client.RestTemplate;
 
 @RequiredArgsConstructor
 @Service
-@PropertySource("classpath:application-secret.properties")
 public class MemberService {
     private final MemberRepository memberRepository;
 

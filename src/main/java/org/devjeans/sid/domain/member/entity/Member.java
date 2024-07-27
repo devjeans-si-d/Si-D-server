@@ -1,23 +1,23 @@
 package org.devjeans.sid.domain.member.entity;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.devjeans.sid.domain.common.BaseEntity;
-import org.devjeans.sid.domain.launchedProject.entity.LaunchedProjectScrap;
 import org.devjeans.sid.domain.member.dto.UpdateMemberRequest;
-import org.devjeans.sid.domain.projectMember.entity.ProjectMember;
-import org.devjeans.sid.domain.projectScrap.entity.ProjectScrap;
-import org.devjeans.sid.domain.siderCard.entity.SiderCard;
+
+
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@ToString
 @Getter
-@Entity
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Entity
 public class Member extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
