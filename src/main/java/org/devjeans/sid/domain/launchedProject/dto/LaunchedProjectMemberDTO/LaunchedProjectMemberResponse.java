@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.devjeans.sid.domain.launchedProject.entity.LaunchedProjectMember;
+import org.devjeans.sid.domain.siderCard.entity.JobField;
 
 @Getter
 @NoArgsConstructor
@@ -12,19 +13,10 @@ import org.devjeans.sid.domain.launchedProject.entity.LaunchedProjectMember;
 @Builder
 public class LaunchedProjectMemberResponse {
 
-    private Long id; // LaunchedProject - 회원 교차테이블 id
+    private Long memberId; // 회원 id (Member -> id)
 
-    private Long memberId; // 회원 id
+    private String nickname; // 회원 닉네임 (Member -> nickName)
 
-    private String memberName; // 회원 이름
+    private JobField jobField; // 이 프로젝트에서 맡은 직무 (ProjectMember -> jobField)
 
-
-    // LaunchedProjectMember 엔티티 -> LaunchedProjectMemberResponse (DTO)로 build
-    public static LaunchedProjectMemberResponse fromEntity(LaunchedProjectMember launchedProjectMember) {
-        return LaunchedProjectMemberResponse.builder()
-                .id(launchedProjectMember.getId())
-                .memberId(launchedProjectMember.getMember().getId()) // launchedProjectMember엔티티 member의 id
-                .memberName(launchedProjectMember.getMember().getName()) // launchedProjectMember엔티티 member의 이름
-                .build();
-    }
 }

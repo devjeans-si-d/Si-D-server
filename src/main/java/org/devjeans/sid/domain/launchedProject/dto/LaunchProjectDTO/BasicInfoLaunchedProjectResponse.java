@@ -21,7 +21,7 @@ public class BasicInfoLaunchedProjectResponse {
 
     private String siteUrl; // 프로젝트 사이트 링크
 
-    private Project project ; // 프로젝트 id(project테이블 FK)
+    private Long projectId ; // 프로젝트 id(project테이블 FK)
 
     private Long views; // Launched-Project 조회수
 
