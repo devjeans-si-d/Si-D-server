@@ -41,6 +41,7 @@ import static org.devjeans.sid.global.exception.exceptionType.MemberExceptionTyp
 public class MemberService {
     private final MemberRepository memberRepository;
     private final RedisTemplate<String, Object> redisTemplate;
+    private final SecurityUtil securityUtil;
 
     @Value("${auth.oauth.kakao.api}")
     private String authOauthKakaoApi;
@@ -64,7 +65,8 @@ public class MemberService {
     }
 
     @Transactional
-    public void updateEmail(Long memberId, String email, String code) {
+    public void updateEmail(String email, String code) {
+        Long memberId = securityUtil.
         Member member = memberRepository.findByIdOrThrow(memberId);
         if(getCodeFromRedis(memberId).equals(code)) {
             member.updateEmail(email); // 인증 성공
