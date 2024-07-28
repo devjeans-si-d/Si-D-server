@@ -36,6 +36,11 @@ public class Member extends BaseEntity {
     @Column(nullable = false)
     private SocialType socialType;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    @Builder.Default
+    private Role role = Role.USER;
+
     @Column(nullable=false)
     private Long socialId;
 
@@ -75,6 +80,9 @@ public class Member extends BaseEntity {
         this.name = updateMemberRequest.getName();
         this.nickname = updateMemberRequest.getNickname();
         this.phoneNumber = updateMemberRequest.getPhoneNumber();
+    }
+    public void deleteMember(){
+        this.updateDeleteAt();
     }
 
 }

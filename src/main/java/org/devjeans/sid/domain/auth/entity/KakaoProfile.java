@@ -1,4 +1,4 @@
-package org.devjeans.sid.domain.member.entity;
+package org.devjeans.sid.domain.auth.entity;
 import lombok.Data;
 
 @Data
