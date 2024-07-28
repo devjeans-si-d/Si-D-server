@@ -44,10 +44,9 @@ public class StompHandler implements ChannelInterceptor {
         if (StompCommand.CONNECT == accessor.getCommand()) {
             log.info("웹소켓 토큰 검증 시작!");
             // "Authorization"이라는 이름의 헤더를 찾아 그 헤더의 첫 번째 값을 반환.
-            // "Authorization" 헤더는 클라이언트가 서버로 보낸 요청에 대한 인증 정보(JWT 토큰)를 포함한다.
             // Authorization 헤더의 형식 => `Authorization: <type> <credentials>`
             // type: 사용하는 인증 방식.(e.g., Bearer)
-            // credentials: 인증 방식에 따른 인증 정보(토큰)를 의미한다. 발급받은 JWT 토큰!
+            // credentials: 인증 방식에 따른 인증 정보(토큰)를 의미한다. 발급받은 JWT 토큰
             final String authorization = accessor.getFirstNativeHeader("Authorization");
             log.info("line 52. authorization = {}", authorization);
             // 토큰 검증
