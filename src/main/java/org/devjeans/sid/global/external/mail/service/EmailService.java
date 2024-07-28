@@ -2,6 +2,8 @@ package org.devjeans.sid.global.external.mail.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.devjeans.sid.domain.member.dto.MemberIdEmailCode;
+import org.devjeans.sid.domain.member.dto.UpdateEmailResponse;
 import org.devjeans.sid.domain.member.repository.MemberRepository;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -30,14 +32,14 @@ public class EmailService {
     private final JavaMailSender javaMailSender;
     private final SpringTemplateEngine templateEngine;
     private final MemberRepository memberRepository;
-    private final RedisTemplate<String, Object> redisTemplate;
+    private final RedisTemplate<String, MemberIdEmailCode> redisTemplate;
 
     @Async
     public void sendEmailNotice(String email, Long memberId){
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         try {
             String randomCode = generateRandomCode();
-            saveRamdomCode(memberId, randomCode); // redis에 저장 (ttl: 10분)
+            saveRamdomCode(randomCode, memberId, email); // redis에 저장 (ttl: 10분)
 
             MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, false, "UTF-8");
             mimeMessageHelper.setTo(email); // 메일 수신자
@@ -63,8 +65,9 @@ public class EmailService {
         return templateEngine.process("emailVerification", context);
     }
 
-    private void saveRamdomCode(Long memberId, String randomCode) {
-        redisTemplate.opsForValue().set(memberId.toString(), randomCode, Duration.ofMinutes(10));
+    private void saveRamdomCode(String randomCode, Long memberId, String email) {
+        MemberIdEmailCode dto = new MemberIdEmailCode(memberId, email);
+        redisTemplate.opsForValue().set(randomCode, dto, Duration.ofMinutes(10));
     }
 
 

@@ -3,10 +3,8 @@ package org.devjeans.sid.domain.member.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import org.devjeans.sid.domain.member.dto.MemberInfoResponse;
-import org.devjeans.sid.domain.member.dto.RegisterMemberRequest;
-import org.devjeans.sid.domain.member.dto.UpdateMemberRequest;
-import org.devjeans.sid.domain.member.dto.UpdateMemberResponse;
+import lombok.extern.slf4j.Slf4j;
+import org.devjeans.sid.domain.member.dto.*;
 import org.devjeans.sid.domain.auth.entity.KakaoProfile;
 import org.devjeans.sid.domain.auth.entity.KakaoRedirect;
 import org.devjeans.sid.domain.member.entity.Member;
@@ -22,11 +20,12 @@ import org.springframework.transaction.annotation.Transactional;
 import static org.devjeans.sid.global.exception.exceptionType.MemberExceptionType.*;
 
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class MemberService {
     private final MemberRepository memberRepository;
-    private final RedisTemplate<String, Object> redisTemplate;
+    private final RedisTemplate<String, MemberIdEmailCode> redisTemplate;
     private final SecurityUtil securityUtil;
 
     @Value("${auth.oauth.kakao.api}")
@@ -50,17 +49,29 @@ public class MemberService {
         return UpdateMemberResponse.fromEntity(updatedMember);
     }
     @Transactional
-    public void updateEmail(String email, String code) {
-        Long memberId = securityUtil.getCurrentMemberId();
+    public UpdateEmailResponse updateMemberEmail(String code) {
+//        Long memberId = securityUtil.getCurrentMemberId();
+        Long memberId = 1L;
         Member member = memberRepository.findByIdOrThrow(memberId);
-        if(getEmailCodeFromRedis(memberId).equals(code)) {
-            member.updateEmail(email); // 인증 성공
+
+        if(getMemberIdFromRedis(code).equals(memberId)) { // 요청 멤버와 현재 멤버가 같다면
+            String updatedEmail = getEmailFromRedis(code);
+            member.updateEmail(updatedEmail); // 인증 성공
+            return new UpdateEmailResponse(memberId, updatedEmail);
         } else {
             throw new BaseException(INVALID_VERIFICATION);
         }
     }
 
-    private String getEmailCodeFromRedis(Long memberId) {
-        return (String) redisTemplate.opsForValue().get(memberId.toString());
+    private String getEmailFromRedis(String code) {
+        MemberIdEmailCode ret = (MemberIdEmailCode) redisTemplate.opsForValue().get(code);
+        assert ret != null;
+        return ret.getEmail();
+    }
+
+    private Long getMemberIdFromRedis(String code) {
+        MemberIdEmailCode ret = (MemberIdEmailCode) redisTemplate.opsForValue().get(code);
+        assert ret != null;
+        return ret.getMemberId();
     }
 }

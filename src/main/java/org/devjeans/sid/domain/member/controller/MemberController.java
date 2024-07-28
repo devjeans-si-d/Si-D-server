@@ -50,10 +50,12 @@ public class MemberController {
         return new ResponseEntity<>(null, HttpStatus.OK);
     }
 
-//    // FIXME: 인증 구현 후 경로 수정 필요
-//    @PostMapping("/code/{memberId}/{code}")
-//    public ResponseEntity<?> updateEmail(@PathVariable String code,) {
-//        memberService.updateEmail(code);
-//    }
+//    // FIXME: 프론트 개발하면서 html의 경로 변경 필요
+    @GetMapping("/email-code/{code}")
+    public ResponseEntity<UpdateEmailResponse> updateEmail(@PathVariable String code) {
+        log.info("code is {}", code);
+        UpdateEmailResponse updateEmailResponse = memberService.updateMemberEmail(code);
+        return new ResponseEntity<>(updateEmailResponse, HttpStatus.OK);
+    }
 
 }
