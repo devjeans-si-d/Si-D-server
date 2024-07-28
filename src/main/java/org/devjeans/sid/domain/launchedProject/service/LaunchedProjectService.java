@@ -131,10 +131,10 @@ public class LaunchedProjectService {
     }
 
     // LaunchedProject의 id를 기준으로 LaunchedProject의 BasicInfo 조회
-    public BasicInfoLaunchedProjectResponse getBasicInfoByProjectId(Long projectId) {
-        LaunchedProject launchedProject = launchedProjectRepository.findByIdOrThrow(projectId);
-//        BasicInfoLaunchedProjectResponse dto = launchedProject.fromEntity(launchedProject);
-        return null;
+    public BasicInfoLaunchedProjectResponse getBasicInfoByProjectId(Long id) {
+        LaunchedProject launchedProject = launchedProjectRepository.findByIdOrThrow(id);
+        BasicInfoLaunchedProjectResponse dto = launchedProject.fromEntity(launchedProject);
+        return dto;
     }
 
     // LaunchedProjectTechStack의 launchedProject 속성의 id를 기준으로 TechStack 리스트 조회

@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.devjeans.sid.domain.common.BaseEntity;
+import org.devjeans.sid.domain.launchedProject.dto.LaunchProjectDTO.BasicInfoLaunchedProjectResponse;
 import org.devjeans.sid.domain.member.entity.Member;
 import org.devjeans.sid.domain.project.entity.Project;
 
@@ -50,5 +51,17 @@ public class LaunchedProject extends BaseEntity {
     // 완성된 프로젝트 이미지 업로드
     public void updateLaunchedProjectImage(String imagePath){
         this.launchedProjectImage = imagePath;
+    }
+
+    // LaunchProject -> DetailBasicLaunchedProjectResponse(DTO)로 build (완성된 프로젝트 기본정보 조회)
+    public static BasicInfoLaunchedProjectResponse fromEntity(LaunchedProject launchedProject){
+        return BasicInfoLaunchedProjectResponse.builder()
+                .id(launchedProject.getId()) // 완성된 프로젝트 글id
+                .launchedProjectImage(launchedProject.getLaunchedProjectImage()) // 프로젝트 사진 url(String)
+                .launchedProjectContents(launchedProject.getLaunchedProjectContents()) // 프로젝트 글 내용
+                .siteUrl(launchedProject.getSiteUrl()) // 프로젝트 출시 사이트 링크
+                .project(launchedProject.getProject()) // FK걸린 프로젝트
+                .views(launchedProject.getViews()) // 조회수
+                .build();
     }
 }

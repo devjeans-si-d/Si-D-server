@@ -24,6 +24,7 @@ public class LaunchedProjectController {
         this.launchedProjectService = launchedProjectService;
     }
 
+    // 완성된 프로젝트 글 등록
     @PostMapping("/register")
     public ResponseEntity<Long> register(@RequestPart(value="dto") SaveLaunchedProjectRequest dto,
                                                     @RequestPart(value="launchedProjectImage") MultipartFile launchedProjectImage){
@@ -33,8 +34,8 @@ public class LaunchedProjectController {
 
     // Launched-Project id로 Launched-Project 기본정보 조회
     @GetMapping("/detail/{id}/basic-info")
-    public ResponseEntity<BasicInfoLaunchedProjectResponse> getDetailBasicInfo(@PathVariable Long projectId) {
-        BasicInfoLaunchedProjectResponse dto = launchedProjectService.getBasicInfoByProjectId(projectId);
+    public ResponseEntity<BasicInfoLaunchedProjectResponse> getDetailBasicInfo(@PathVariable Long id) {
+        BasicInfoLaunchedProjectResponse dto = launchedProjectService.getBasicInfoByProjectId(id);
         return ResponseEntity.ok(dto);
     }
 
