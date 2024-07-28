@@ -38,3 +38,6 @@ auth:
     kakao:
       api: f1a9f25e347069f2e5fedb6375c0b82d
 
+jwt:
+  expiration: 30
+  secretKey: my_token_secret

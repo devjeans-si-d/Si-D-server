@@ -1,19 +1,23 @@
 package org.devjeans.sid.domain.project.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.devjeans.sid.domain.chatRoom.entity.ChatRoom;
 import org.devjeans.sid.domain.common.BaseEntity;
 import org.devjeans.sid.domain.member.entity.Member;
-import org.devjeans.sid.domain.projectMember.entity.ProjectMember;
 import org.devjeans.sid.domain.projectScrap.entity.ProjectScrap;
 import org.hibernate.annotations.ColumnDefault;
-
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @Getter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Entity
 public class Project extends BaseEntity {
     @Id
@@ -56,4 +60,8 @@ public class Project extends BaseEntity {
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.PERSIST)
     private List<ChatRoom> chatRooms = new ArrayList<>();
+
+    public void updateProjectMembers(List<ProjectMember> projectMembers){
+        this.projectMembers = projectMembers;
+    }
 }
