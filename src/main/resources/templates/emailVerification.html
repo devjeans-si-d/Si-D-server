@@ -10,28 +10,31 @@
     </style>
 </head>
 <body>
-<div style="margin:0px; width:100%; background-color:#F2F0FF; padding:0px; padding-top:8px;">
+<div style="margin:0px; width:100%; background-color:#DEF5EC; padding:0px; padding-top:8px;">
     <table
-            style="width: 512px; align-content: center; position: relative; overflow: hidden; background: #fff;
-        margin: 0px auto; max-width:512px; background-color:#ffffff; padding:0px">
+            style="width: 80%; align-content: center; position: relative; overflow: hidden; background: #fff;
+        margin: 0px auto; background-color:#ffffff; padding:0px">
         <tr>
         </tr>
         <tr>
-            <td colspan="2" style="height: 1px; background-color: #3E426A; margin-bottom: 10px;"></td>
+<!--            <td colspan="2" style="height: 1px; background-color: #3E426A; margin-bottom: 10px;"></td>-->
+
         </tr>
         <tr>
             <td>
-                <p> 인증 링크: <a th:href="@{localhost:8080/email/verification/{code}(code=${randomCode})}"> http://localhost:8080/code/<span th:text="|${randomCode}|"></a></span></p>
+                <h3>Si-D</h3>
+                <p>수신 이메일 인증을 위한 메일입니다.</p> <br>
+                <p> 인증 링크: <a th:href="@{localhost:8080/email/verification/{code}(code=${randomCode})}"> http://localhost:8080/code/<span th:text="|${randomCode}|"></span></a></p><br>
                 <p>메일 발송 후 10분 내에 링크에 접속하세요</p>
             </td>
         </tr>
 
         <tr>
-            <td colspan="2" style="height: 1px; background-color: #3E426A; margin-bottom: 10px;"></td>
+            <td colspan="2" style="height: 1px; background-color: #8DBCA8; margin-bottom: 10px;"></td>
         </tr>
         <tr>
             <td colspan="2" style="font-size: 14px; font-weight: 300; text-align: center; color: #686868; padding-top: 5px;">
-                © 2024 Re:coding Service, All rights reserved.
+                © 2024 Si-D, All rights reserved.
             </td>
         </tr>
     </table>
