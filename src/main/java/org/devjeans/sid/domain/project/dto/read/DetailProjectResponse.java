@@ -53,6 +53,7 @@ public class DetailProjectResponse {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class RecruitInfoDto{
+        private Long id;
         private JobField jobField;
         private Integer count;
     }
@@ -63,6 +64,7 @@ public class DetailProjectResponse {
     @AllArgsConstructor
     public static class ProjectMemberDto{
         // Todo 사이더카드 연결
+        private Long id;
         private String memberName;
         private JobField jobField;
     }
@@ -80,7 +82,8 @@ public class DetailProjectResponse {
         // recruitInfo 조립
         List<DetailProjectResponse.RecruitInfoDto> recruitInfoDtos = new ArrayList<>();
         for( RecruitInfo recruitInfo :recruitInfoList){
-            DetailProjectResponse.RecruitInfoDto recruitInfoDto = DetailProjectResponse.RecruitInfoDto.builder()
+            DetailProjectResponse.RecruitInfoDto recruitInfoDto = RecruitInfoDto.builder()
+                    .id(recruitInfo.getId())
                     .count(recruitInfo.getCount())
                     .jobField(recruitInfo.getJobField())
                     .build();
@@ -91,6 +94,7 @@ public class DetailProjectResponse {
         List<DetailProjectResponse.ProjectMemberDto> projectMemberDtos = new ArrayList<>();
         for( ProjectMember projectMember :projectMemberList){
             DetailProjectResponse.ProjectMemberDto projectMemberDto = ProjectMemberDto.builder()
+                    .id(project.getId())
                     .memberName(projectMember.getMember().getName())
                     .jobField(projectMember.getJobField())
                     .build();
@@ -108,6 +112,7 @@ public class DetailProjectResponse {
                 .projectName(project.getProjectName())
                 .views(project.getViews())
                 .recruitInfos(recruitInfoDtos)
+                .recruitmemtContents(project.getRecruitmemtContents())
                 .projectMembers(projectMemberDtos)
                 .build();
     }
