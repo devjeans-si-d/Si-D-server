@@ -51,7 +51,7 @@ public class MemberController {
     }
 
 //    // FIXME: 프론트 개발하면서 html의 경로 변경 필요
-    @GetMapping("/email-code/{code}")
+    @PostMapping("/email-code/{code}")
     public ResponseEntity<UpdateEmailResponse> updateEmail(@PathVariable String code) {
         log.info("code is {}", code);
         UpdateEmailResponse updateEmailResponse = memberService.updateMemberEmail(code);
