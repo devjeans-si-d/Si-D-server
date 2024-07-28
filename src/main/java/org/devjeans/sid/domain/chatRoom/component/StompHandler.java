@@ -1,7 +1,12 @@
 package org.devjeans.sid.domain.chatRoom.component;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.devjeans.sid.domain.auth.JwtTokenProvider;
+import org.devjeans.sid.global.exception.BaseException;
+import org.devjeans.sid.global.exception.exceptionType.TokenException;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.messaging.Message;
@@ -11,14 +16,15 @@ import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.stereotype.Component;
 
+import static org.devjeans.sid.global.exception.exceptionType.TokenException.INVALID_TOKEN;
+
 @Slf4j
 @Component
 @RequiredArgsConstructor
 @Order(Ordered.HIGHEST_PRECEDENCE + 99) // 구성된 인터셉터들 간의 작업 우선순위를 지정해서 최우선순위를 부여
 public class StompHandler implements ChannelInterceptor {
     private final ConnectedMap connectedMap;
-
-//    private final JwtProvider jwtProvider;
+    private final JwtTokenProvider jwtTokenProvider;
 
     /**
      * 메시지가 실제로 채널로 전송되기 전에 호출된다.
@@ -42,14 +48,14 @@ public class StompHandler implements ChannelInterceptor {
             // Authorization 헤더의 형식 => `Authorization: <type> <credentials>`
             // type: 사용하는 인증 방식.(e.g., Bearer)
             // credentials: 인증 방식에 따른 인증 정보(토큰)를 의미한다. 발급받은 JWT 토큰!
-//            final String authorization = accessor.getFirstNativeHeader("Authorization");
-
+            final String authorization = accessor.getFirstNativeHeader("Authorization");
+            log.info("line 52. authorization = {}", authorization);
             // 토큰 검증
-//            jwtProvider.validateWebSocketToken(authorization);
+            jwtTokenProvider.validateWebSocketToken(authorization);
 
 
             // 토큰 검증 통과
-//            log.info("토큰 검증 통과! WebSocket CONNECT!");
+            log.info("토큰 검증 통과! WebSocket CONNECT!");
         }
 
         if (StompCommand.DISCONNECT == accessor.getCommand()) {
