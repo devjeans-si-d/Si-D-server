@@ -15,6 +15,7 @@ import org.devjeans.sid.domain.member.repository.MemberRepository;
 import org.devjeans.sid.domain.project.entity.Project;
 import org.devjeans.sid.domain.project.repository.ProjectRepository;
 import org.devjeans.sid.global.exception.BaseException;
+import org.devjeans.sid.global.util.SecurityUtil;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -35,8 +36,9 @@ public class ChatService {
     private final ChatParticipantRepository chatParticipantRepository;
     private final MemberRepository memberRepository;
     private final ProjectRepository projectRepository;
-
     private final ConnectedMap connectedMap;
+
+    private final SecurityUtil securityUtil;
 
     // 해당 회원이 속한 채팅방을 updatedAt DESC로 정렬해서 보여주기
     public Page<ChatRoomSimpleResponse> getChatRoomList(Pageable pageable, Long memberId) {
@@ -46,6 +48,9 @@ public class ChatService {
                 .map(p -> p.getChatRoom().getId())
                 .distinct()
                 .collect(Collectors.toList());
+        
+        // util test
+        log.info("[line 53] memberId: {}", securityUtil.getCurrentMemberId());
 
         // 최신 순 정렬
         Page<ChatRoom> chatRooms = chatRoomRepository.findAllByIds(pageable, chatRoomIds);
