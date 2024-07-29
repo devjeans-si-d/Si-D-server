@@ -109,8 +109,9 @@ public class ProjectService {
     // Todo page 적용 & deletedAt==null 인 것만 조회
     public Page<ListProjectResponse> projectReadAll(Pageable pageable){
         List<ListProjectResponse> listProjectResponses = new ArrayList<>();
-        // Todo isclosed 체크 & 최신순 정렬
-        Page<Project> projectList = projectRepository.findAll(pageable);
+//        Page<Project> projectList = projectRepository.findAll(pageable);
+//        Page<Project> projectList = projectRepository.findByDeletedAtIsNullOrderByUpdatedAtDesc(pageable);
+        Page<Project> projectList = projectRepository.findByIsClosedAndDeletedAtIsNullOrderByUpdatedAtDesc(pageable,"N");
         for(Project project : projectList){
             ListProjectResponse listProjectResponse = ListProjectResponse.builder()
                     .projectName(project.getProjectName())
@@ -173,4 +174,6 @@ public class ProjectService {
         }
         return "삭제 성공";
     }
+
+
 }
