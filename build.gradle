@@ -42,6 +42,16 @@ dependencies {
 	// SockJS
 	implementation 'org.webjars:sockjs-client:1.5.1'
 
+	// 메일 의존성 추가
+	//Mail
+	implementation 'org.springframework.boot:spring-boot-starter-mail'
+
+	//thymeleaf(for email service)
+	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+	implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect'
+
+	// validation
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	//	jwt토큰 관련 라이브러리 추가
 	implementation 'io.jsonwebtoken:jjwt:0.9.1'
 }

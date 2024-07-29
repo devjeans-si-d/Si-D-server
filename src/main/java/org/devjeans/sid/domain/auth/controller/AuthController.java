@@ -1,26 +1,20 @@
 package org.devjeans.sid.domain.auth.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.devjeans.sid.domain.auth.JwtTokenProvider;
+import org.devjeans.sid.domain.auth.dto.KakaoProfileResDto;
+import org.devjeans.sid.domain.auth.dto.CommonResDto;
+import org.devjeans.sid.domain.auth.entity.KakaoProfile;
 import org.devjeans.sid.domain.auth.service.AuthService;
-import org.devjeans.sid.domain.member.dto.MemberInfoResponse;
 import org.devjeans.sid.domain.member.dto.RegisterMemberRequest;
-import org.devjeans.sid.domain.member.dto.UpdateMemberRequest;
-import org.devjeans.sid.domain.member.dto.UpdateMemberResponse;
 import org.devjeans.sid.domain.auth.entity.KakaoRedirect;
 import org.devjeans.sid.domain.member.entity.Member;
-import org.devjeans.sid.domain.member.service.MemberService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-
-import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,16 +33,17 @@ public class AuthController {
 
     @GetMapping("/kakao/callback")
     public ResponseEntity<?> kakaoCallback(KakaoRedirect kakaoRedirect) throws JsonProcessingException {
-        Long kakaoId = authService.login(kakaoRedirect);
-        System.out.println(kakaoId);
+        KakaoProfile kakaoProfile = authService.login(kakaoRedirect);
+        System.out.println(kakaoProfile.getId());
 
 //            가입자 or 비가입자 체크해서 처리
-        Member originMember = authService.getMemberByKakaoId(kakaoId);
+        Member originMember = authService.getMemberByKakaoId(kakaoProfile.getId());
         System.out.println(originMember);
         if(originMember == null) {
 //           신규 회원일경우 errorResponse에 소셜id를 담아 예외를 프론트로 던지기
 //            프론트는 예외일경우 회원가입 화면으로 이동하여 회원가입 정보와 소셜id를 담아 다시 회원가입 요청
-            return new ResponseEntity<>(kakaoId,HttpStatus.UNAUTHORIZED);
+            CommonResDto commonResDto = new CommonResDto(HttpStatus.UNAUTHORIZED,"기존 회원이 아닙니다. 회원가입을 진행해주세요.",new KakaoProfileResDto(kakaoProfile.getId(),kakaoProfile.getKakao_account().email));
+            return new ResponseEntity<>(commonResDto,HttpStatus.UNAUTHORIZED);
         }
         String jwtToken = jwtTokenProvider.createToken(String.valueOf(originMember.getId()),originMember.getRole().toString());
         Map<String,Object> loginInfo = new HashMap<>();
@@ -58,13 +53,13 @@ public class AuthController {
         return new ResponseEntity<>(loginInfo,HttpStatus.OK);
     }
 
-    @GetMapping("register")
+    @PostMapping("register")
     public ResponseEntity<String> registerMember(@RequestBody RegisterMemberRequest dto) {
         authService.registerMember(dto);
         return new ResponseEntity<>("register succes!!", HttpStatus.OK);
     }
 
-    @GetMapping("delete")
+    @DeleteMapping("delete")
     public ResponseEntity<String> deleteMember() {
 //        String tmp = SecurityContextHolder.getContext().getAuthentication().getName();
         Member member = authService.delete();
