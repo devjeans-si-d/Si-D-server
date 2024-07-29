@@ -38,6 +38,7 @@ public class AuthController {
 
 //            가입자 or 비가입자 체크해서 처리
         Member originMember = authService.getMemberByKakaoId(kakaoProfile.getId());
+//        TODO: 탈퇴한 회원일 경우 처리해야함
         System.out.println(originMember);
         if(originMember == null) {
 //           신규 회원일경우 errorResponse에 소셜id를 담아 예외를 프론트로 던지기

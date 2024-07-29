@@ -16,7 +16,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @Entity
-public class TechStack extends BaseEntity {
+public class TechStack{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "tech_stack_id")

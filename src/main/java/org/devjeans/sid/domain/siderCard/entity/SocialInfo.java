@@ -12,13 +12,12 @@ public class SocialInfo extends BaseEntity {
     @Column(name="social_info_id")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "sider_card_id")
-    private SiderCard siderCard;
-
     @Enumerated(EnumType.STRING)
     private Platform platform;
     private String url;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "sider_card_id")
+    private SiderCard siderCard;
 
 }

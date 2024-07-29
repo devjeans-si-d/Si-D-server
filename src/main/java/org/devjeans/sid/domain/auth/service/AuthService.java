@@ -13,6 +13,8 @@ import org.devjeans.sid.domain.auth.entity.KakaoRedirect;
 import org.devjeans.sid.domain.member.entity.Member;
 import org.devjeans.sid.domain.auth.entity.OAuthToken;
 import org.devjeans.sid.domain.member.repository.MemberRepository;
+import org.devjeans.sid.domain.siderCard.entity.SiderCard;
+import org.devjeans.sid.domain.siderCard.repository.SiderCardRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.HttpEntity;
@@ -37,6 +39,7 @@ import static java.rmi.server.LogStream.log;
 @Transactional
 public class AuthService {
     private final MemberRepository memberRepository;
+    private final SiderCardRepository siderCardRepository;
 
     @Value("${auth.oauth.kakao.api}")
     private String authOauthKakaoApi;
@@ -100,8 +103,10 @@ public class AuthService {
     }
 
     public void registerMember(RegisterMemberRequest dto) {
+//        TODO: 탈퇴한 회원일 경우 처리해야함
         Member member = dto.toEntity();
         memberRepository.save(member);
+        siderCardRepository.save(new SiderCard());
     }
 
     public Member getMemberByKakaoId(Long kakaoId) {

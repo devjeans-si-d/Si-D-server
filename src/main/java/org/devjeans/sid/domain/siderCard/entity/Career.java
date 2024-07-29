@@ -1,13 +1,14 @@
-package org.devjeans.sid.domain.career.entity;
+package org.devjeans.sid.domain.siderCard.entity;
 
 import org.devjeans.sid.domain.common.BaseEntity;
-import org.devjeans.sid.domain.siderCard.entity.SiderCard;
+import org.devjeans.sid.domain.siderCard.dto.CareerResDto;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
-public class Career extends BaseEntity {
+public class Career{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "career_id")
@@ -24,11 +25,22 @@ public class Career extends BaseEntity {
     private EmployedYn employedYn;
 
     @Column(nullable = false)
-    private LocalDateTime employedStart;
+    private LocalDate employedStart;
 
-    private LocalDateTime employedEnd;
+    private LocalDate employedEnd;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sider_card_id")
     private SiderCard siderCard;
+
+    public CareerResDto fromEntity() {
+        return CareerResDto.builder()
+                .id(this.id)
+                .company(this.company)
+                .position(this.position)
+                .employedStart(this.employedStart)
+                .employedEnd(this.employedEnd)
+                .employedYn(this.employedYn)
+                .build();
+    }
 }
