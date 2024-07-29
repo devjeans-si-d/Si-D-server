@@ -1,6 +1,7 @@
 package org.devjeans.sid.domain.launchedProject.repository;
 
-import org.devjeans.sid.domain.launchedProject.entity.LaunchedProjectMember;
+//import org.devjeans.sid.domain.launchedProject.entity.LaunchedProjectMember;
+//import org.devjeans.sid.domain.project.entity.ProjectMember;
 import org.devjeans.sid.domain.launchedProject.entity.LaunchedProjectScrap;
 import org.devjeans.sid.global.exception.BaseException;
 import org.springframework.data.jpa.repository.JpaRepository;

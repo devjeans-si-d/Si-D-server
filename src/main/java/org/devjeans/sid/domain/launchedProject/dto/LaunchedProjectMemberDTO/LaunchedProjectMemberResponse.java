@@ -4,7 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.devjeans.sid.domain.launchedProject.entity.LaunchedProjectMember;
+//import org.devjeans.sid.domain.launchedProject.entity.LaunchedProjectMember;
+import org.devjeans.sid.domain.project.entity.ProjectMember;
 
 @Getter
 @NoArgsConstructor
@@ -20,7 +21,7 @@ public class LaunchedProjectMemberResponse {
 
 
     // LaunchedProjectMember 엔티티 -> LaunchedProjectMemberResponse (DTO)로 build
-    public static LaunchedProjectMemberResponse fromEntity(LaunchedProjectMember launchedProjectMember) {
+    public static LaunchedProjectMemberResponse fromEntity(ProjectMember launchedProjectMember) {
         return LaunchedProjectMemberResponse.builder()
                 .id(launchedProjectMember.getId())
                 .memberId(launchedProjectMember.getMember().getId()) // launchedProjectMember엔티티 member의 id
