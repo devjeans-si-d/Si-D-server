@@ -48,4 +48,20 @@ public class JwtTokenProvider {
             throw new BaseException(INVALID_TOKEN);
         }
     }
+
+    public Long getMemberIdFromToken(String bearerToken) {
+        try {
+            // log.info("line 40. 토큰 검증 {}", bearerToken);
+            String token = bearerToken.replace("Bearer ", "");
+
+            Claims claims = Jwts.parser()
+                    .setSigningKey(secretKey)
+                    .parseClaimsJws(token)
+                    .getBody();
+
+            return Long.parseLong(claims.getSubject());
+        } catch (Exception e) {
+            throw new BaseException(INVALID_TOKEN);
+        }
+    }
 }

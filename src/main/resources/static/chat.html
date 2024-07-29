@@ -32,10 +32,14 @@
             var socket = new SockJS('http://localhost:8080/chat');
             var stompClient = Stomp.over(socket);
             // enter chatroom api 시작
-            const response = axios.post("http://localhost:8080/api/chat/chatroom/1/entrance/member/"+userId);
+            const authToken = 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwicm9sZSI6IlVTRVIiLCJpYXQiOjE3MjIxNTMyNzcsImV4cCI6MTcyNDc0NTI3N30.mmOd-DSfAduSTWuTh5HdewBDP6dez2afR7RvvfDF8jE';
+            const response = axios.post("http://localhost:8080/api/chat/chatroom/" + userId+ "/entrance/member/"+userId, {}, {
+                headers: {
+                    Authorization: `Bearer ${authToken}`
+                }
+            });
 
             // 헤더에 토큰 끼워넣는 부분
-            const authToken = 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwicm9sZSI6IlVTRVIiLCJpYXQiOjE3MjIxNTMyNzcsImV4cCI6MTcyNDc0NTI3N30.mmOd-DSfAduSTWuTh5HdewBDP6dez2afR7RvvfDF8jE';
             stompClient.connect({Authorization: `Bearer ${authToken}`}, function (frame) {
                 console.log('Connected: ' + frame);
 

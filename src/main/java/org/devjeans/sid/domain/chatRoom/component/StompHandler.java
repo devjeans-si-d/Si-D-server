@@ -41,26 +41,33 @@ public class StompHandler implements ChannelInterceptor {
         log.info("[line 34] " + accessor);
         log.info("[line 34] " + message.getPayload());
         // 웹소켓 연결 시 헤더의 jwt token 유효성 검증
+        String bearerToken = null;
         if (StompCommand.CONNECT == accessor.getCommand()) {
             log.info("웹소켓 토큰 검증 시작!");
             // "Authorization"이라는 이름의 헤더를 찾아 그 헤더의 첫 번째 값을 반환.
             // Authorization 헤더의 형식 => `Authorization: <type> <credentials>`
             // type: 사용하는 인증 방식.(e.g., Bearer)
             // credentials: 인증 방식에 따른 인증 정보(토큰)를 의미한다. 발급받은 JWT 토큰
-            final String authorization = accessor.getFirstNativeHeader("Authorization");
-            log.info("line 52. authorization = {}", authorization);
+            bearerToken = accessor.getFirstNativeHeader("Authorization");
+            log.info("line 52. authorization = {}", bearerToken);
             // 토큰 검증
-            jwtTokenProvider.validateWebSocketToken(authorization);
-
+            jwtTokenProvider.validateWebSocketToken(bearerToken);
 
             // 토큰 검증 통과
             log.info("토큰 검증 통과! WebSocket CONNECT!");
+
+
+            // 저장
+            String sessionId = accessor.getSessionId();
+            Long memberId = jwtTokenProvider.getMemberIdFromToken(bearerToken);
+            connectedMap.addSession(sessionId, memberId);
         }
 
         if (StompCommand.DISCONNECT == accessor.getCommand()) {
             log.info("WebSocket DISCONNECT!");
-            // TODO: 여기서 토큰을 깐다음에, 멤버아이디 꺼내와서 세션에서 삭제해주면 되겠다.
-            connectedMap.exitRoom(1L); // FIXME: 현재는 1L로 고정이지만, 추후 memberId로 변경
+            String sessionId = accessor.getSessionId();
+            log.info("[line 63] Disconnect. token: {}", bearerToken); // null
+            connectedMap.exitRoom(sessionId);
         }
 
         return message;

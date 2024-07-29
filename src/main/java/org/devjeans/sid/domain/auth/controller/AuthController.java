@@ -1,26 +1,17 @@
 package org.devjeans.sid.domain.auth.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.devjeans.sid.domain.auth.JwtTokenProvider;
 import org.devjeans.sid.domain.auth.service.AuthService;
-import org.devjeans.sid.domain.member.dto.MemberInfoResponse;
 import org.devjeans.sid.domain.member.dto.RegisterMemberRequest;
-import org.devjeans.sid.domain.member.dto.UpdateMemberRequest;
-import org.devjeans.sid.domain.member.dto.UpdateMemberResponse;
 import org.devjeans.sid.domain.auth.entity.KakaoRedirect;
 import org.devjeans.sid.domain.member.entity.Member;
-import org.devjeans.sid.domain.member.service.MemberService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-
-import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
 
