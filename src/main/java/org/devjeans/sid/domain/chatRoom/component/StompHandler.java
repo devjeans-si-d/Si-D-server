@@ -37,9 +37,7 @@ public class StompHandler implements ChannelInterceptor {
         // 클라이언트에서 첫 연결 시 헤더에 TOKEN을 담아주면 인증 절차가 진행된다.
         final StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
 
-        log.info("preSend 진입했나?");
-        log.info("[line 34] " + accessor);
-        log.info("[line 34] " + message.getPayload());
+        log.info("preSend 진입");
         // 웹소켓 연결 시 헤더의 jwt token 유효성 검증
         String bearerToken = null;
         if (StompCommand.CONNECT == accessor.getCommand()) {
@@ -49,12 +47,11 @@ public class StompHandler implements ChannelInterceptor {
             // type: 사용하는 인증 방식.(e.g., Bearer)
             // credentials: 인증 방식에 따른 인증 정보(토큰)를 의미한다. 발급받은 JWT 토큰
             bearerToken = accessor.getFirstNativeHeader("Authorization");
-            log.info("line 52. authorization = {}", bearerToken);
             // 토큰 검증
             jwtTokenProvider.validateWebSocketToken(bearerToken);
 
             // 토큰 검증 통과
-            log.info("토큰 검증 통과! WebSocket CONNECT!");
+            log.info("토큰 검증 통과 WebSocket CONNECT");
 
 
             // 저장
@@ -64,9 +61,9 @@ public class StompHandler implements ChannelInterceptor {
         }
 
         if (StompCommand.DISCONNECT == accessor.getCommand()) {
-            log.info("WebSocket DISCONNECT!");
+            log.info("WebSocket DISCONNECT");
             String sessionId = accessor.getSessionId();
-            log.info("[line 63] Disconnect. token: {}", bearerToken); // null
+//            log.info("[line 63] Disconnect. token: {}", bearerToken); // null
             connectedMap.exitRoom(sessionId);
         }
 
