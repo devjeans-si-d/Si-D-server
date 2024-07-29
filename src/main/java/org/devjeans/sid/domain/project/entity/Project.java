@@ -52,11 +52,11 @@ public class Project extends BaseEntity {
     private Member pm;
 
     @Builder.Default
-    @OneToMany(mappedBy = "project", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
     private List<ProjectMember> projectMembers = new ArrayList<>();
 
     @Builder.Default
-    @OneToMany(mappedBy = "project", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
     private List<RecruitInfo> recruitInfos = new ArrayList<>();
 
     @Builder.Default

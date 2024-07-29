@@ -94,7 +94,7 @@ public class DetailProjectResponse {
         List<DetailProjectResponse.ProjectMemberDto> projectMemberDtos = new ArrayList<>();
         for( ProjectMember projectMember :projectMemberList){
             DetailProjectResponse.ProjectMemberDto projectMemberDto = ProjectMemberDto.builder()
-                    .id(project.getId())
+                    .id(projectMember.getId())
                     .memberName(projectMember.getMember().getName())
                     .jobField(projectMember.getJobField())
                     .build();

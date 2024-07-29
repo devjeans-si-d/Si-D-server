@@ -6,9 +6,8 @@ import org.springframework.http.HttpStatus;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 @RequiredArgsConstructor
-public enum ProjectExceptionType implements ExceptionType {
-    PROJECT_NOT_FOUND(BAD_REQUEST, "프로젝트가 존재하지 않습니다."),
-    PROJECT_ALREADY_DELETED(BAD_REQUEST, "해당 프로젝트는 이미 삭제되었습니다.");
+public enum RecruitInfoExceptionType implements ExceptionType {
+    RECRUIT_INFO_NOT_FOUND(BAD_REQUEST, "해당 프로젝트에 해당 리쿠르트 정보가 없습니다.");
 
     private final HttpStatus status;
     private final String message;

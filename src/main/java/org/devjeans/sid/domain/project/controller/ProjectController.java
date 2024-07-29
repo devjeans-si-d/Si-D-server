@@ -1,5 +1,6 @@
 package org.devjeans.sid.domain.project.controller;
 
+import org.apache.catalina.connector.Response;
 import org.devjeans.sid.domain.project.dto.create.CreateProjectRequest;
 import org.devjeans.sid.domain.project.dto.create.CreateProjectResponse;
 import org.devjeans.sid.domain.project.dto.read.DetailProjectResponse;
@@ -9,6 +10,12 @@ import org.devjeans.sid.domain.project.dto.update.UpdateProjectResponse;
 import org.devjeans.sid.domain.project.entity.Project;
 import org.devjeans.sid.domain.project.service.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,39 +30,36 @@ public class ProjectController {
 
     // create
     @PostMapping("/api/project/create")
-    public String projectCreatePost(@RequestBody CreateProjectRequest createProjectRequest){
+    public ResponseEntity<CreateProjectResponse> projectCreatePost(@RequestBody CreateProjectRequest createProjectRequest){
         Project project= projectService.projectCreate(createProjectRequest);
-       // Todo return 값 컨벤션 맞추기
-        return project.getProjectName();
+        CreateProjectResponse createProjectResponse = CreateProjectResponse.fromEntity(project);
+        return new ResponseEntity<>(createProjectResponse, HttpStatus.OK);
     }
 
     // read - list
-    // Todo pageable 적용하기
-    // Todo return 값 컨벤션 맞추기
     @GetMapping("/api/project/list")
-    public List<ListProjectResponse> projectListGet(){
-        return projectService.projectReadAll();
+    public ResponseEntity<Page<ListProjectResponse>> projectListGet(@PageableDefault(size=10, sort ="createdAt", direction = Sort.Direction.DESC) Pageable pageable){
+        return new ResponseEntity<>(projectService.projectReadAll(pageable),HttpStatus.OK);
     }
 
     // read - detail
-    // Todo return 값 컨벤션 맞추기
     @GetMapping("/api/project/{id}")
-    public DetailProjectResponse projectDetailGet(@PathVariable Long id){
-        return projectService.projectReadDetail(id);
+    public ResponseEntity<DetailProjectResponse> projectDetailGet(@PathVariable Long id){
+        return new ResponseEntity<>(projectService.projectReadDetail(id), HttpStatus.OK) ;
     }
 
     // update
-    // Todo return 값 컨벤션 맞추기
     @PutMapping("/api/project/{id}/update")
-    public UpdateProjectResponse projectUpdatePut(@RequestBody UpdateProjectRequest updateProjectRequest, @PathVariable Long id){
-        return projectService.projectUpdate(updateProjectRequest,id);
+    public ResponseEntity<UpdateProjectResponse> projectUpdatePut(@RequestBody UpdateProjectRequest updateProjectRequest, @PathVariable Long id){
+        UpdateProjectResponse updateProjectResponse= projectService.projectUpdate(updateProjectRequest,id);
+        return new ResponseEntity<>(updateProjectResponse, HttpStatus.OK);
     }
 
     // delete
-    // Todo return 값 컨벤션 맞추기
     @DeleteMapping("/api/project/{id}")
-    public void projectDelete(@PathVariable Long id) {
+    public ResponseEntity<String> projectDelete(@PathVariable Long id) {
         projectService.deleteProject(id);
+        return new ResponseEntity<>("delete success",HttpStatus.OK);
     }
 
 

@@ -26,15 +26,40 @@ public class UpdateProjectRequest {
     private String isClosed;
     private LocalDateTime deadline;
     @Builder.Default
-    private List<ProjectMemberAddRequest> addProjectMembers=new ArrayList<>();
+    private List<ProjectMemberUpdateRequest> projectMembers=new ArrayList<>();
     @Builder.Default
-    private List<ProjectMemberDeleteRequest> deleteProjectMembers=new ArrayList<>();
-    @Builder.Default
-    private List<RecruitInfoAddRequest> addRecruitInfos=new ArrayList<>();
-    @Builder.Default
-    private List<RecruitInfoDeleteRequest> deleteRecruitInfos=new ArrayList<>();
+    private List<RecruitInfoUpdateRequest> recruitInfos=new ArrayList<>();
+//    @Builder.Default
+//    private List<RecruitInfo> recruitInfos = new ArrayList<>();
+
+//    @Builder.Default
+//    private List<ProjectMemberAddRequest> addProjectMembers=new ArrayList<>();
+//    @Builder.Default
+//    private List<ProjectMemberDeleteRequest> deleteProjectMembers=new ArrayList<>();
+//    @Builder.Default
+//    private List<RecruitInfoAddRequest> addRecruitInfos=new ArrayList<>();
+//    @Builder.Default
+//    private List<RecruitInfoDeleteRequest> deleteRecruitInfos=new ArrayList<>();
 //    private List<ProjectScrap> projectScraps = new ArrayList<>();
 //    private List<ChatRoomCreateRequest> chatRooms;
+
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
+    public static class ProjectMemberUpdateRequest{
+        private Long memberId;
+        private JobField jobField;
+    }
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
+    public static class RecruitInfoUpdateRequest{
+        private JobField jobField;
+        private Integer count;
+    }
+
 
     @Data
     @AllArgsConstructor
