@@ -46,7 +46,7 @@ public class Project extends BaseEntity {
     private Long views=0L;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "pm_id")
+    @JoinColumn(name = "member_id")
     private Member pm;
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
