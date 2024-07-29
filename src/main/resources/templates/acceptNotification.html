@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
+    <style>
+        body {
+            font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
+        }
+    </style>
+</head>
+<body>
+<div style="margin:0px; width:100%; background-color:#DEF5EC; padding:0px; padding-top:8px;">
+    <table
+            style="width: 80%; align-content: center; position: relative; overflow: hidden; background: #fff;
+        margin: 0px auto; background-color:#ffffff; padding:0px">
+        <tr>
+        </tr>
+        <tr>
+            <!--            <td colspan="2" style="height: 1px; background-color: #3E426A; margin-bottom: 10px;"></td>-->
+
+        </tr>
+        <tr>
+            <td>
+                <h3>Si-D: 프로젝트 참여 승인 안내</h3>
+                <p><span th:text="${memberName}">이름</span>님, 축하합니다! </p> <br>
+                <p><span th:text = "${projectName}">프로젝트 제목</span> 프로젝트 참여가 승인 되었습니다.</p>
+                <p>사이디 바로가기</p><br>
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="2" style="height: 1px; background-color: #8DBCA8; margin-bottom: 10px;"></td>
+        </tr>
+        <tr>
+            <td colspan="2" style="font-size: 14px; font-weight: 300; text-align: center; color: #686868; padding-top: 5px;">
+                © 2024 Si-D, All rights reserved.
+            </td>
+        </tr>
+    </table>
+</div>
+</body>
+</html>

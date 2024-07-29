@@ -14,6 +14,7 @@ import org.devjeans.sid.domain.project.repository.ProjectRepository;
 import org.devjeans.sid.global.exception.BaseException;
 import org.devjeans.sid.global.exception.exceptionType.ProjectAcceptException;
 import org.devjeans.sid.global.exception.exceptionType.ProjectExceptionType;
+import org.devjeans.sid.global.external.mail.service.EmailService;
 import org.devjeans.sid.global.util.SecurityUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,6 +31,7 @@ public class ProjectAcceptService {
     private final ProjectRepository projectRepository;
     private final ProjectMemberRepository projectMemberRepository;
     private final ProjectApplicationRepository projectApplicationRepository;
+    private final EmailService emailService;
 
     @Transactional
     public void acceptApplicant(AcceptApplicantRequest acceptApplicantRequest) {
@@ -53,7 +55,9 @@ public class ProjectAcceptService {
         }
 
         // 검증 3. 해당 유저가 프로젝트에 지원한 내역이 있는지? 이미 승인 받진 않았는지?
-        ProjectApplication projectApplication = projectApplicationRepository.findByIdOrThrow(acceptApplicantRequest.getApplicantId());
+        ProjectApplication projectApplication = projectApplicationRepository
+                .findProjectApplicationByMemberIdAndProjectId(acceptApplicantRequest.getApplicantId(), acceptApplicantRequest.getProjectId())
+                .orElseThrow(() -> new BaseException(NO_APPLICATION_RECORD));
         if(projectApplication.isAccepted()) {
             throw new BaseException(DOUBLE_ACCEPT);
         }
@@ -69,6 +73,9 @@ public class ProjectAcceptService {
                 .build();
 
         projectMemberRepository.save(projectMember); // projectMember에 저장
+
+        //== 아래부터는 이메일 로직 ==//
+        emailService.sendEmailNoticeForAccept(member.getEmail(), member.getId(), project.getId());
     }
 
 }
