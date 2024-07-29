@@ -33,6 +33,7 @@ import static java.rmi.server.LogStream.log;
 @Slf4j
 @RequiredArgsConstructor
 @Service
+//@PropertySource("classpath:application.yml")
 @Transactional
 public class AuthService {
     private final MemberRepository memberRepository;
@@ -40,10 +41,10 @@ public class AuthService {
     @Value("${auth.oauth.kakao.api}")
     private String authOauthKakaoApi;
 
-    public Long login(KakaoRedirect kakaoRedirect) throws JsonProcessingException {
+    public KakaoProfile login(KakaoRedirect kakaoRedirect) throws JsonProcessingException {
         OAuthToken oAuthToken = getAccessToken(kakaoRedirect);
-        Long kakaoId = getKakaoId(oAuthToken.getAccess_token());
-        return kakaoId;
+        KakaoProfile kakaoProfile = getKakaoProfile(oAuthToken.getAccess_token());
+        return kakaoProfile;
     }
 
     public OAuthToken getAccessToken(KakaoRedirect kakaoRedirect) throws JsonProcessingException {
@@ -72,7 +73,7 @@ public class AuthService {
         return oAuthToken;
     }
 
-    public Long getKakaoId(String accessToken) throws JsonProcessingException {
+    public KakaoProfile getKakaoProfile(String accessToken) throws JsonProcessingException {
         RestTemplate rt = new RestTemplate();
 
 //        HttpHeader 오브젝트 생성
@@ -95,7 +96,7 @@ public class AuthService {
         ObjectMapper objectMapper2 = new ObjectMapper();
         KakaoProfile kakaoProfile = objectMapper2.readValue(response2.getBody(), KakaoProfile.class);
 
-        return kakaoProfile.getId();
+        return kakaoProfile;
     }
 
     public void registerMember(RegisterMemberRequest dto) {
