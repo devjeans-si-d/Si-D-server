@@ -39,15 +39,16 @@ public class LaunchedProject extends BaseEntity {
     @Column(columnDefinition = "bigint default 0")
     private Long views; // Launched-Project 조회수
 
-    @OneToMany(mappedBy = "launchedProject", cascade = CascadeType.ALL)
-    private List<LaunchedProjectTechStack> launchedProjectTechStacks = new ArrayList<>(); // Launched-Project에 사용된 기술스택 리스트
+//    orphanRemoval = true : 부모엔티티의 컬렉션에서 자식 엔티티가 제거될 때 자식 엔티티를 삭제해야 하는 경우에 사용ㄴ
 
-    @OneToMany(mappedBy = "launchedProject", cascade = CascadeType.ALL)
-    private List<LaunchedProjectScrap> launchedProjectScraps = new ArrayList<>(); // Launched-Project 스크랩(사이다) 리스트
+    @OneToMany(mappedBy = "launchedProject", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<LaunchedProjectTechStack> launchedProjectTechStacks; // Launched-Project에 사용된 기술스택 리스트
+
+    @OneToMany(mappedBy = "launchedProject", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<LaunchedProjectScrap> launchedProjectScraps; // Launched-Project 스크랩(사이다) 리스트
 
     // 완성된 프로젝트 이미지 업로드
     public void updateLaunchedProjectImage(String imagePath){
         this.launchedProjectImage = imagePath;
     }
-
 }

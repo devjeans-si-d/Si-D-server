@@ -6,7 +6,6 @@ import lombok.*;
 import org.devjeans.sid.domain.chatRoom.entity.ChatRoom;
 import org.devjeans.sid.domain.common.BaseEntity;
 import org.devjeans.sid.domain.member.entity.Member;
-import org.devjeans.sid.domain.projectMember.entity.ProjectMember;
 import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;

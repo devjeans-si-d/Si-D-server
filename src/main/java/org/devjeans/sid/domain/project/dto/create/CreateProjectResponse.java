@@ -10,7 +10,8 @@ import org.devjeans.sid.domain.project.dto.read.DetailProjectResponse;
 import org.devjeans.sid.domain.project.entity.Project;
 import org.devjeans.sid.domain.project.entity.RecruitInfo;
 import org.devjeans.sid.domain.siderCard.entity.JobField;
-import org.devjeans.sid.domain.projectMember.entity.ProjectMember;
+import org.devjeans.sid.domain.project.entity.ProjectMember;
+//import org.devjeans.sid.domain.projectMember.entity.ProjectMember;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -54,7 +55,7 @@ public class CreateProjectResponse {
 //    private List<ChatRoom> chatRooms;
     public static CreateProjectResponse fromEntity(Project project){
         List<RecruitInfo> recruitInfoList = project.getRecruitInfos();
-        List<org.devjeans.sid.domain.projectMember.entity.ProjectMember> projectMemberList = project.getProjectMembers();
+        List<ProjectMember> projectMemberList = project.getProjectMembers();
 
         List<CreateProjectResponse.RecruitInfoDto> recruitInfoDtos = new ArrayList<>();
         for( RecruitInfo recruitInfo :recruitInfoList){

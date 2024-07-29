@@ -15,7 +15,7 @@ import org.devjeans.sid.domain.siderCard.entity.JobField;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import org.devjeans.sid.domain.projectMember.entity.ProjectMember;
+import org.devjeans.sid.domain.project.entity.ProjectMember;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor

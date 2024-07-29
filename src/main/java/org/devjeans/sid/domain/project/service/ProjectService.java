@@ -8,8 +8,11 @@ import org.devjeans.sid.domain.project.dto.read.ListProjectResponse;
 import org.devjeans.sid.domain.project.dto.update.UpdateProjectRequest;
 import org.devjeans.sid.domain.project.dto.update.UpdateProjectRequest.ProjectMemberUpdateRequest;
 
+import org.devjeans.sid.domain.project.entity.ProjectMember;
+
 import org.devjeans.sid.domain.project.dto.update.UpdateProjectResponse;
 import org.devjeans.sid.domain.project.entity.Project;
+import org.devjeans.sid.domain.project.entity.ProjectMember;
 import org.devjeans.sid.domain.project.entity.RecruitInfo;
 import org.devjeans.sid.domain.project.repository.ProjectMemberRepository;
 import org.devjeans.sid.domain.project.repository.ProjectRepository;
@@ -22,7 +25,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.devjeans.sid.domain.projectMember.entity.ProjectMember;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package org.devjeans.sid.domain.projectMember.entity;
+package org.devjeans.sid.domain.project.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,11 +10,12 @@ import org.devjeans.sid.domain.project.entity.Project;
 import org.devjeans.sid.domain.siderCard.entity.JobField;
 
 import javax.persistence.*;
-@Builder
+
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Entity
-@Getter
 public class ProjectMember extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,7 +26,8 @@ public class ProjectMember extends BaseEntity {
     @JoinColumn(name="member_id")
     private Member member;
 
-    private JobField jobField;
+    @Enumerated(EnumType.STRING)
+    private JobField jobField; // 이 프로젝트에서 맡은직무
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="project_id")

@@ -9,7 +9,9 @@ import org.devjeans.sid.domain.project.dto.create.CreateProjectRequest;
 import org.devjeans.sid.domain.project.entity.Project;
 import org.devjeans.sid.domain.project.entity.RecruitInfo;
 import org.devjeans.sid.domain.siderCard.entity.JobField;
-import org.devjeans.sid.domain.projectMember.entity.ProjectMember;
+//import org.devjeans.sid.domain.projectMember.entity.ProjectMember;
+import org.devjeans.sid.domain.project.entity.ProjectMember;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;

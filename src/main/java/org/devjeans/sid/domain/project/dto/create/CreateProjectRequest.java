@@ -8,7 +8,8 @@ import org.devjeans.sid.domain.chatRoom.entity.ChatRoom;
 import org.devjeans.sid.domain.member.entity.Member;
 import org.devjeans.sid.domain.project.entity.Project;
 import org.devjeans.sid.domain.project.entity.RecruitInfo;
-import org.devjeans.sid.domain.projectMember.entity.ProjectMember;
+//import org.devjeans.sid.domain.projectMember.entity.ProjectMember;
+import org.devjeans.sid.domain.project.entity.ProjectMember;
 import org.devjeans.sid.domain.siderCard.entity.JobField;
 
 import java.time.LocalDateTime;

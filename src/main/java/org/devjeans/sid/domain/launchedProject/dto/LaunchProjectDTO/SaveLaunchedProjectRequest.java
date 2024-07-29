@@ -5,7 +5,7 @@ import org.devjeans.sid.domain.launchedProject.dto.LaunchedProjectMemberDTO.Laun
 import org.devjeans.sid.domain.launchedProject.entity.LaunchedProject;
 import org.devjeans.sid.domain.launchedProject.entity.LaunchedProjectTechStack;
 import org.devjeans.sid.domain.project.entity.Project;
-import org.devjeans.sid.domain.projectMember.entity.ProjectMember;
+import org.devjeans.sid.domain.project.entity.ProjectMember;
 
 import org.devjeans.sid.domain.siderCard.entity.JobField;
 import org.devjeans.sid.domain.siderCard.entity.TechStack;
@@ -53,14 +53,15 @@ public class SaveLaunchedProjectRequest {
 
         return LaunchedProject.builder()
                 .launchedProjectImage(imagePath)
-                .launchedProjectContents(dto.launchedProjectContents)
-                .siteUrl(dto.siteUrl)
+                .launchedProjectContents(dto.getLaunchedProjectContents())
+                .siteUrl(dto.getSiteUrl())
                 .project(project)
                 .launchedProjectTechStacks(launchedProjectTechStacks)
                 .build();
     }
 
-    public static LaunchedProjectTechStack toLaunchedProjectTechStack (LaunchedProject launchedProject, TechStack techStack){
+    public static LaunchedProjectTechStack toLaunchedProjectTechStack (LaunchedProject launchedProject,
+                                                                       TechStack techStack){
         return LaunchedProjectTechStack.builder()
                 .launchedProject(launchedProject)
                 .techStack(techStack)

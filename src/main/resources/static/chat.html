@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>STOMP WebSocket Chat</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.1.2/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <style>
+        .chat-container {
+            display: flex;
+            justify-content: space-between;
+        }
+        .chat-box {
+            width: 45%;
+            border: 1px solid #ccc;
+            padding: 10px;
+        }
+        .messages {
+            height: 300px;
+            overflow-y: auto;
+            border: 1px solid #ccc;
+            margin-bottom: 10px;
+            padding: 5px;
+        }
+    </style>
+    <script>
+        var stompClient1 = null;
+        var stompClient2 = null;
+        var chatRoomId = 1;
+
+        function connect(userId) {
+            var socket = new SockJS('http://localhost:8080/chat');
+            var stompClient = Stomp.over(socket);
+            // enter chatroom api 시작
+            const authToken = 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwicm9sZSI6IlVTRVIiLCJpYXQiOjE3MjIxNTMyNzcsImV4cCI6MTcyNDc0NTI3N30.mmOd-DSfAduSTWuTh5HdewBDP6dez2afR7RvvfDF8jE';
+            const response = axios.post("http://localhost:8080/api/chat/chatroom/" + userId+ "/entrance/member/"+userId, {}, {
+                headers: {
+                    Authorization: `Bearer ${authToken}`
+                }
+            });
+
+            // 헤더에 토큰 끼워넣는 부분
+            stompClient.connect({Authorization: `Bearer ${authToken}`}, function (frame) {
+                console.log('Connected: ' + frame);
+
+                // 수신할 메시지를 구독합니다.
+                stompClient.subscribe('/sub/chatroom/' + chatRoomId, async function (message) {
+                    console.log("line 38 구독 시작!" + userId);
+                    showMessage(userId, JSON.parse(message.body));
+                });
+            });
+
+
+            socket.onclose = function() {
+                console.log('WebSocket connection closed for user ' + userId);
+            }
+
+
+
+            return stompClient;
+        }
+
+        function disconnect(stompClient) {
+            if (stompClient !== null) {
+                stompClient.disconnect();
+            }
+            console.log("Disconnected");
+        }
+
+        async function sendMessage(stompClient, userId, receiverId) {
+            var messageInput = document.getElementById("messageInput" + userId).value;
+            // var content = document.getElementById("message" + userId).value;
+            if (messageInput && stompClient) {
+                var chatMessage = {
+                    senderId: userId,
+                    chatRoomId: 1,
+                    content: messageInput
+                };
+                stompClient.send("/pub/" + chatRoomId + "/receiver/" + receiverId, {}, JSON.stringify(chatMessage));
+                document.getElementById("messageInput" + userId).value = '';
+            }
+        }
+
+        async function showMessage(userId, message) {
+            var messagesDiv = document.getElementById("messages" + userId);
+            var messageElement = document.createElement('div');
+            messageElement.innerText = message.senderId + ": " + message.content + " (" + new Date(message.timestamp).toLocaleTimeString() + ")";
+            messagesDiv.appendChild(messageElement);
+        }
+
+        window.onload = function() {
+            stompClient1 = connect(1);
+            stompClient2 = connect(2);
+        };
+    </script>
+</head>
+<body>
+<div class="chat-container">
+    <div class="chat-box">
+        <h3>User 1</h3>
+        <div id="messages1" class="messages"></div>
+        <input type="text" id="messageInput1" placeholder="Type your message here...">
+        <button onclick="sendMessage(stompClient1, 1, 2)">Send</button>
+    </div>
+    <div class="chat-box">
+        <h3>User 2</h3>
+        <div id="messages2" class="messages"></div>
+        <input type="text" id="messageInput2" placeholder="Type your message here...">
+        <button onclick="sendMessage(stompClient2, 2, 1)">Send</button>
+    </div>
+</div>
+<button onclick="disconnect(stompClient1)">Disconnect User 1</button>
+<button onclick="disconnect(stompClient2)">Disconnect User 2</button>
+</body>
+</html>
