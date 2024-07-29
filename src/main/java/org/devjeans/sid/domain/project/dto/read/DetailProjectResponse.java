@@ -12,7 +12,10 @@ import org.devjeans.sid.domain.project.entity.ProjectScrap;
 import org.devjeans.sid.domain.project.entity.RecruitInfo;
 //import org.devjeans.sid.domain.projectMember.entity.ProjectMember;
 import org.devjeans.sid.domain.project.entity.ProjectMember;
-import org.devjeans.sid.domain.siderCard.entity.JobField;
+import org.devjeans.sid.domain.project.entity.JobField;
+
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +33,6 @@ public class DetailProjectResponse {
 
     private String description;
 
-    private String projectImage;
 
     private String recruitmemtContents;
 
@@ -55,6 +57,7 @@ public class DetailProjectResponse {
     @AllArgsConstructor
     public static class RecruitInfoDto{
         private Long id;
+        @Enumerated(EnumType.STRING)
         private JobField jobField;
         private Integer count;
     }
@@ -67,6 +70,7 @@ public class DetailProjectResponse {
         // Todo 사이더카드 연결
         private Long id;
         private String memberName;
+        @Enumerated(EnumType.STRING)
         private JobField jobField;
     }
 
@@ -106,7 +110,6 @@ public class DetailProjectResponse {
                 .id(project.getId())
                 .pm(project.getPm())
                 .scrapCount(projectScrapList.size())
-                .projectImage(project.getProjectImage())
                 .deadline(project.getDeadline())
                 .description(project.getDescription())
                 .isClosed(project.getIsClosed())

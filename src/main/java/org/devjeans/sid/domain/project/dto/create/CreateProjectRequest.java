@@ -10,9 +10,13 @@ import org.devjeans.sid.domain.project.entity.Project;
 import org.devjeans.sid.domain.project.entity.RecruitInfo;
 //import org.devjeans.sid.domain.projectMember.entity.ProjectMember;
 import org.devjeans.sid.domain.project.entity.ProjectMember;
-import org.devjeans.sid.domain.siderCard.entity.JobField;
+import org.devjeans.sid.domain.project.entity.JobField;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,7 +28,6 @@ public class CreateProjectRequest {
     private Long pmId;
     private String projectName;
     private String description;
-    private String projectImage;
     private String recruitmemtContents;
     private LocalDateTime deadline;
     @Builder.Default
@@ -40,6 +43,7 @@ public class CreateProjectRequest {
     @Builder
     public static class ProjectMemberCreateRequest{
         private Long memberId;
+        @Enumerated(EnumType.STRING)
         private JobField jobField;
     }
     @Data
@@ -47,17 +51,18 @@ public class CreateProjectRequest {
     @NoArgsConstructor
     @Builder
     public static class RecruitInfoCreateRequest{
+        @Enumerated(EnumType.STRING)
         private JobField jobField;
         private Integer count;
     }
 
 
     public Project toEntity(Member member){
+
         return Project.builder()
                 .pm(member)
                 .projectName(this.projectName)
                 .description(this.description)
-                .projectImage(this.projectImage)
                 .recruitmemtContents(this.recruitmemtContents)
                 .isClosed("N")
                 .deadline(this.deadline)

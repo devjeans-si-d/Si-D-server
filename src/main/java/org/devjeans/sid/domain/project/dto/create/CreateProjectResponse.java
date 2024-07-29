@@ -9,9 +9,11 @@ import org.devjeans.sid.domain.member.entity.Member;
 import org.devjeans.sid.domain.project.dto.read.DetailProjectResponse;
 import org.devjeans.sid.domain.project.entity.Project;
 import org.devjeans.sid.domain.project.entity.RecruitInfo;
-import org.devjeans.sid.domain.siderCard.entity.JobField;
+import org.devjeans.sid.domain.project.entity.JobField;
 import org.devjeans.sid.domain.project.entity.ProjectMember;
 //import org.devjeans.sid.domain.projectMember.entity.ProjectMember;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +26,6 @@ public class CreateProjectResponse {
     private Long id;
     private String projectName;
     private String description;
-    private String projectImage;
     private String recruitmemtContents;
     private String isClosed;
     private LocalDateTime deadline;
@@ -38,6 +39,7 @@ public class CreateProjectResponse {
     @AllArgsConstructor
     public static class RecruitInfoDto{
         private Long id;
+        @Enumerated(EnumType.STRING)
         private JobField jobField;
         private Integer count;
     }
@@ -50,6 +52,7 @@ public class CreateProjectResponse {
         // Todo 사이더카드 연결
         private Long id;
         private String memberName;
+        @Enumerated(EnumType.STRING)
         private JobField jobField;
     }
 //    private List<ChatRoom> chatRooms;
@@ -81,9 +84,9 @@ public class CreateProjectResponse {
                 .id(project.getId())
                 .projectName(project.getProjectName())
                 .description(project.getDescription())
-                .projectImage(project.getProjectImage())
                 .recruitmemtContents(project.getRecruitmemtContents())
                 .deadline(project.getDeadline())
+                .isClosed(project.getIsClosed())
                 .projectMembers(projectMemberDtos)
                 .recruitInfos(recruitInfoDtos)
                 .build();

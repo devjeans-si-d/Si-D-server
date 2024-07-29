@@ -8,10 +8,12 @@ import org.devjeans.sid.domain.member.entity.Member;
 import org.devjeans.sid.domain.project.dto.create.CreateProjectRequest;
 import org.devjeans.sid.domain.project.entity.Project;
 import org.devjeans.sid.domain.project.entity.RecruitInfo;
-import org.devjeans.sid.domain.siderCard.entity.JobField;
+import org.devjeans.sid.domain.project.entity.JobField;
 //import org.devjeans.sid.domain.projectMember.entity.ProjectMember;
 import org.devjeans.sid.domain.project.entity.ProjectMember;
 
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +25,6 @@ public class UpdateProjectRequest {
 //    private Long pmId; // pathvariable id !=pmId => error 처리
     private String projectName;
     private String description;
-    private String projectImage;
     private String recruitmemtContents;
     private String isClosed;
     private LocalDateTime deadline;
@@ -51,6 +52,7 @@ public class UpdateProjectRequest {
     @Builder
     public static class ProjectMemberUpdateRequest{
         private Long memberId;
+        @Enumerated(EnumType.STRING)
         private JobField jobField;
     }
     @Data
@@ -58,6 +60,7 @@ public class UpdateProjectRequest {
     @NoArgsConstructor
     @Builder
     public static class RecruitInfoUpdateRequest{
+        @Enumerated(EnumType.STRING)
         private JobField jobField;
         private Integer count;
     }
@@ -70,6 +73,7 @@ public class UpdateProjectRequest {
     public static class ProjectMemberDeleteRequest{
         private Long id;
         private Long memberId;
+        @Enumerated(EnumType.STRING)
         private JobField jobField;
     }
     @Data
@@ -78,6 +82,7 @@ public class UpdateProjectRequest {
     @Builder
     public static class ProjectMemberAddRequest{
         private Long memberId;
+        @Enumerated(EnumType.STRING)
         private JobField jobField;
     }
     @Data
@@ -86,6 +91,7 @@ public class UpdateProjectRequest {
     @Builder
     public static class RecruitInfoDeleteRequest{
         private Long id;
+        @Enumerated(EnumType.STRING)
         private JobField jobField;
         private Integer count;
     }
@@ -95,6 +101,7 @@ public class UpdateProjectRequest {
     @Builder
     public static class RecruitInfoAddRequest{
         private Long id;
+        @Enumerated(EnumType.STRING)
         private JobField jobField;
         private Integer count;
     }
@@ -103,7 +110,6 @@ public class UpdateProjectRequest {
     public static Project updateProject(Project project, UpdateProjectRequest dto){
          // Todo : pm은 수정 불가능한건지 팀원과 체크 필요
         project.setProjectName(dto.getProjectName());
-        project.setProjectImage(dto.getProjectImage());
         project.setDeadline(dto.getDeadline());
         project.setIsClosed(dto.getIsClosed());
         project.setDescription(dto.getDescription());

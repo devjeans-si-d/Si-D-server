@@ -10,12 +10,16 @@ import org.devjeans.sid.domain.project.dto.create.CreateProjectResponse;
 import org.devjeans.sid.domain.project.dto.update.UpdateProjectResponse;
 import org.devjeans.sid.domain.project.entity.Project;
 import org.devjeans.sid.domain.project.entity.RecruitInfo;
-import org.devjeans.sid.domain.siderCard.entity.JobField;
+import org.devjeans.sid.domain.project.entity.JobField;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import org.devjeans.sid.domain.project.entity.ProjectMember;
+
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -24,7 +28,6 @@ public class UpdateProjectResponse {
     private Long id;
     private String projectName;
     private String description;
-    private String projectImage;
     private String recruitmemtContents;
     @Builder.Default
     private List<UpdateProjectResponse.ProjectMemberDto> projectMembers=new ArrayList<>();
@@ -37,6 +40,7 @@ public class UpdateProjectResponse {
     @AllArgsConstructor
     public static class RecruitInfoDto{
         private Long id;
+        @Enumerated(EnumType.STRING)
         private JobField jobField;
         private Integer count;
     }
@@ -49,6 +53,7 @@ public class UpdateProjectResponse {
         // Todo 사이더카드 연결
         private Long id;
         private String memberName;
+        @Enumerated(EnumType.STRING)
         private JobField jobField;
     }
     public static UpdateProjectResponse fromEntity(Project project){
@@ -79,7 +84,6 @@ public class UpdateProjectResponse {
                 .id(project.getId())
                 .projectName(project.getProjectName())
                 .description(project.getDescription())
-                .projectImage(project.getProjectImage())
                 .recruitmemtContents(project.getRecruitmemtContents())
                 .projectMembers(projectMemberDtos)
                 .recruitInfos(recruitInfoDtos)

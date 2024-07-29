@@ -7,6 +7,7 @@ import org.devjeans.sid.domain.chatRoom.entity.ChatRoom;
 import org.devjeans.sid.domain.common.BaseEntity;
 import org.devjeans.sid.domain.member.entity.Member;
 import org.hibernate.annotations.ColumnDefault;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -30,8 +31,6 @@ public class Project extends BaseEntity {
     @Column(nullable = false)
     private String description;
 
-    @Column(nullable = false, length = 2083)
-    private String projectImage;
 
     @Column(nullable = false, length = 5000)
     private String recruitmemtContents;
@@ -72,4 +71,9 @@ public class Project extends BaseEntity {
     public void updateRecruitInfos(List<RecruitInfo> recruitInfos){
         this.recruitInfos = recruitInfos;
     }
+
+    public void updateIsClosed(String yn){
+        this.isClosed=yn;
+    }
+
 }

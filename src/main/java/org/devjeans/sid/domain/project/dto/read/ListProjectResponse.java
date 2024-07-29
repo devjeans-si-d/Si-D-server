@@ -15,7 +15,6 @@ public class ListProjectResponse {
 
     private String description;
 
-    private String projectImage;
     private String isClosed;
 
     private LocalDateTime deadline;
