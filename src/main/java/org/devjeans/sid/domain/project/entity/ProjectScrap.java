@@ -1,4 +1,4 @@
-package org.devjeans.sid.domain.projectScrap.entity;
+package org.devjeans.sid.domain.project.entity;
 
 import org.devjeans.sid.domain.common.BaseEntity;
 import org.devjeans.sid.domain.member.entity.Member;

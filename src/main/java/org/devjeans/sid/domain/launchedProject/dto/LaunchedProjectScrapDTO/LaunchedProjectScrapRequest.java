@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.devjeans.sid.domain.launchedProject.entity.LaunchedProject;
 import org.devjeans.sid.domain.launchedProject.entity.LaunchedProjectScrap;
+import org.devjeans.sid.domain.launchedProject.entity.ToggleStatus;
 import org.devjeans.sid.domain.member.entity.Member;
 
 @Getter
@@ -17,7 +18,6 @@ public class LaunchedProjectScrapRequest {
     private Long memberId; // 스크랩(사이다) 누른 회원 id
 
     private Long launchedProjectId; // Launched-Project 글 id
-
 
     public static LaunchedProjectScrap toEntity(LaunchedProjectScrapRequest dto,
                                                 Member member,

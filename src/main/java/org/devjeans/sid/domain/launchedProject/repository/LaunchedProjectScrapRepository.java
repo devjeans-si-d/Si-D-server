@@ -1,7 +1,6 @@
 package org.devjeans.sid.domain.launchedProject.repository;
 
 import org.devjeans.sid.domain.launchedProject.entity.LaunchedProject;
-import org.devjeans.sid.domain.launchedProject.entity.LaunchedProjectMember;
 import org.devjeans.sid.domain.launchedProject.entity.LaunchedProjectScrap;
 import org.devjeans.sid.domain.member.entity.Member;
 import org.devjeans.sid.global.exception.BaseException;

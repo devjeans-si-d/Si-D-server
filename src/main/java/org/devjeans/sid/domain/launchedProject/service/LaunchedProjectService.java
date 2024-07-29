@@ -12,6 +12,7 @@ import org.devjeans.sid.domain.launchedProject.dto.LaunchedProjectTechStackDTO.L
 import org.devjeans.sid.domain.launchedProject.entity.LaunchedProject;
 import org.devjeans.sid.domain.launchedProject.entity.LaunchedProjectScrap;
 import org.devjeans.sid.domain.launchedProject.entity.LaunchedProjectTechStack;
+import org.devjeans.sid.domain.launchedProject.entity.ToggleStatus;
 import org.devjeans.sid.domain.launchedProject.repository.LaunchedProjectRepository;
 import org.devjeans.sid.domain.launchedProject.repository.LaunchedProjectScrapRepository;
 import org.devjeans.sid.domain.member.entity.Member;
@@ -22,6 +23,7 @@ import org.devjeans.sid.domain.project.repository.ProjectRepository;
 import org.devjeans.sid.domain.siderCard.entity.TechStack;
 import org.devjeans.sid.domain.siderCard.repository.TechStackRepository;
 import org.devjeans.sid.global.exception.BaseException;
+import org.devjeans.sid.global.util.SecurityUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -51,7 +53,7 @@ public class LaunchedProjectService {
     private final ProjectRepository projectRepository; // project가 존재하는지 검증하기 위해서 의존성 주입
     private final TechStackRepository techStackRepository;
     private final MemberRepository memberRepository;
-
+    private final SecurityUtil securityUtil;
 
 
     @Autowired
@@ -59,13 +61,15 @@ public class LaunchedProjectService {
                                   LaunchedProjectScrapRepository launchedProjectScrapRepository,
                                   ProjectRepository projectRepository,
                                   TechStackRepository techStackRepository,
-                                  MemberRepository memberRepository
+                                  MemberRepository memberRepository,
+                                  SecurityUtil securityUtil
                                   ){
         this.launchedProjectRepository = launchedProjectRepository;
         this.launchedProjectScrapRepository = launchedProjectScrapRepository;
         this.projectRepository = projectRepository;
         this.techStackRepository = techStackRepository;
         this.memberRepository = memberRepository;
+        this.securityUtil = securityUtil;
     }
 
     // 파일이 저장될 디렉토리 경로 (아직 로컬 저장소 경로)
@@ -85,7 +89,6 @@ public class LaunchedProjectService {
 //        // 로컬 경로 반환
 //        return path.toString();
 //    }
-
     // CREATE
     // Launched-Project 등록
     // => 한 Project에 대해서 create 1번만 할 수 있고, PM만 등록할 수 있도록 리팩토링 해야됨.
@@ -144,23 +147,36 @@ public class LaunchedProjectService {
     }
 
     // Scrap create/delete : 유저는 한 LaunchedProject 글에 한번만 좋아요를 누를 수 있다 (이미 누른 사용자라면 또 좋아요 눌렀을 때에는 delete처리)
-    public String toggleScrap(LaunchedProjectScrapRequest dto){
+    public LaunchedProjectScrapResponse toggleScrap(LaunchedProjectScrapRequest dto){
+        log.info("line151 memberId :",securityUtil.getCurrentMemberId());
+
         Member member = memberRepository.findByIdOrThrow(dto.getMemberId());
         LaunchedProject launchedProject = launchedProjectRepository.findByIdOrThrow(dto.getLaunchedProjectId());
 
+        // member와 Project 기준으로 scrap 찾음
         Optional<LaunchedProjectScrap> existingScrap = launchedProjectScrapRepository.findByMemberAndLaunchedProject(member, launchedProject);
 
+        LaunchedProjectScrapResponse scrapResponse;
+        ToggleStatus toggleStatus = ToggleStatus.FALSE;
         if(existingScrap.isPresent()){
             // 만약 해당 글에 이미 scrap을 누른 회원이라면 scrap 삭제 처리
             LaunchedProjectScrap scrap = existingScrap.get();
             launchedProjectScrapRepository.delete(scrap);
-            return "스크랩이 삭제되었습니다.";
         }else{
-            // 해당 프로젝트 글에 scrap을 누른 회원이 아니라면 scrap 추가 처리
-            LaunchedProjectScrap launchedProjectScrap = dto.toEntity(dto, member, launchedProject);
-            launchedProjectScrapRepository.save(launchedProjectScrap);
-            return "스크랩이 추가되었습니다.";
+            // 해당 프로젝트 글에 scrap을 누른 회원이 아니라면 scrap 추가 처리, toggle상태 = true
+            LaunchedProjectScrap scrap = dto.toEntity(dto, member, launchedProject);
+            scrapResponse = LaunchedProjectScrap.scrapResfromEntity(launchedProject,scrap,ToggleStatus.TRUE);
+            launchedProjectScrapRepository.save(scrap);
+            toggleStatus = ToggleStatus.TRUE;
         }
+        // 카운트 구하기
+        int scrapCount = launchedProject.getLaunchedProjectScraps().size();
+
+        return LaunchedProjectScrapResponse.builder()
+                .launchedProjectId(dto.getLaunchedProjectId())
+                .scrapCount(scrapCount)
+                .toggleStatus(toggleStatus)
+                .build();
     }
 
     // READ
@@ -203,20 +219,22 @@ public class LaunchedProjectService {
         return memberDtoList;
     }
 
-    // Launched-Project의 id를 기준으로 스크랩 리스트 조회
-    public List<LaunchedProjectScrapResponse> getScraps(Long id){
-        // LaunchedProject가 존재하는지 확인
-        LaunchedProject launchedProject = launchedProjectRepository.findByIdOrThrow(id);
-
-        // LaunchedProject -> LaunchedProjectScraps 리스트
-        List<LaunchedProjectScrap> launchedProjectScraps = launchedProject.getLaunchedProjectScraps();
-
-        List<LaunchedProjectScrapResponse> scrapDtoList = launchedProjectScraps.stream()
-                .map(LaunchedProjectScrap::scrapResfromEntity)
-                .collect(Collectors.toList());
-
-        return scrapDtoList;
-    }
+    // 기능삭제
+//    // Launched-Project의 id를 기준으로 스크랩 리스트 조회
+//    public List<LaunchedProjectScrapResponse> getScraps(Long id){
+//        // LaunchedProject가 존재하는지 확인
+//        LaunchedProject launchedProject = launchedProjectRepository.findByIdOrThrow(id);
+//
+//        // LaunchedProject -> LaunchedProjectScraps 리스트
+//        List<LaunchedProjectScrap> launchedProjectScraps = launchedProject.getLaunchedProjectScraps();
+//
+//        List<LaunchedProjectScrapResponse> scrapDtoList = new ArrayList<>();
+//        for(LaunchedProjectScrap scrap : launchedProjectScraps){
+//            LaunchedProjectScrapResponse scrapRes = LaunchedProjectScrap.scrapResfromEntity(launchedProject,scrap);
+//            scrapDtoList.add(scrapRes);
+//        }
+//        return scrapDtoList;
+//    }
 
     // LaunchedProject 리스트 조회
     public Page<ListLaunchedProjectResponse> getList(Pageable pageable){
@@ -226,5 +244,10 @@ public class LaunchedProjectService {
         return listDtoPage;
     }
 
+    // 글을 올린사람은 Launched-Project 글을 삭제할 수 있다.
+    public String delete(Long id){
+
+        return "성공적으로 삭제되었습니다.";
+    }
 
 }

@@ -30,10 +30,13 @@ public class LaunchedProjectScrap extends BaseEntity {
     @JoinColumn(name="launched_project_id")
     private LaunchedProject launchedProject; // 스크랩(사이다) 누른 해당 프로젝트
 
-    public static LaunchedProjectScrapResponse scrapResfromEntity(LaunchedProjectScrap launchedProjectScrap){
+    public static LaunchedProjectScrapResponse scrapResfromEntity(LaunchedProject launchedProject,
+                                                                  LaunchedProjectScrap launchedProjectScrap,
+                                                                  ToggleStatus toggleStatus){
         return LaunchedProjectScrapResponse.builder()
-                .memberId(launchedProjectScrap.getMember().getId())
-                .launchedProjectId(launchedProjectScrap.getLaunchedProject().getId())
+                .launchedProjectId(launchedProjectScrap.getLaunchedProject().getId()) // 글 id
+                .scrapCount(launchedProject.getLaunchedProjectScraps().size()) // 스크랩 수
+                .toggleStatus(toggleStatus)
                 .build();
     }
 

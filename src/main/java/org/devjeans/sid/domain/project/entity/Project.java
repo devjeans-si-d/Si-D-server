@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import org.devjeans.sid.domain.chatRoom.entity.ChatRoom;
 import org.devjeans.sid.domain.common.BaseEntity;
 import org.devjeans.sid.domain.member.entity.Member;
-import org.devjeans.sid.domain.projectScrap.entity.ProjectScrap;
 import org.hibernate.annotations.ColumnDefault;
 import javax.persistence.*;
 import java.time.LocalDateTime;

@@ -13,8 +13,6 @@ public class ListLaunchedProjectResponse {
 
     private Long id; // 프로젝트 전시(Launched-Project) id
 
-//    private Long projectId; // 프로젝트(Project) id => ????? 없어도 될 것 같음..
-
     private String launchedProjectImage; // 프로젝트 사진(기본사진 url)
 
     private String projectName; // 프로젝트 이름 (LaunchedProject -> Project -> projectName)

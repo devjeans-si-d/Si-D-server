@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.devjeans.sid.domain.launchedProject.entity.LaunchedProjectMember;
 import org.devjeans.sid.domain.siderCard.entity.JobField;
 
 @Getter

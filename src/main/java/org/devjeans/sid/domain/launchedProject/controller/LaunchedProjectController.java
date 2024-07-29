@@ -41,9 +41,9 @@ public class LaunchedProjectController {
 
     // 유저는 프로젝트 완성글에 사이다를 누를 수 있다.
     @PostMapping("/scrap")
-    public ResponseEntity<String> scrap (@RequestBody LaunchedProjectScrapRequest scrapRequest){
-        String message = launchedProjectService.toggleScrap(scrapRequest);
-        return ResponseEntity.ok(message);
+    public ResponseEntity<LaunchedProjectScrapResponse> toggleScrap(@RequestBody LaunchedProjectScrapRequest scrapRequest){
+        LaunchedProjectScrapResponse scrapResponse = launchedProjectService.toggleScrap(scrapRequest);
+        return ResponseEntity.ok(scrapResponse);
     }
 
     // Launched-Project id로 Launched-Project 기본정보 조회
@@ -67,17 +67,24 @@ public class LaunchedProjectController {
         return ResponseEntity.ok(members);
     }
 
-    // Launched-Project id로 해당 글에 눌린 scrap(사이다) 조회
-    @GetMapping("/detail/{id}/scraps")
-    public ResponseEntity<List<LaunchedProjectScrapResponse>> getScraps(@PathVariable Long id){
-        List<LaunchedProjectScrapResponse> scraps = launchedProjectService.getScraps(id);
-        return ResponseEntity.ok(scraps);
-    }
+//    // Launched-Project id로 해당 글에 눌린 scrap(사이다) 조회 => 기능삭제
+//    @GetMapping("/detail/{id}/scraps")
+//    public ResponseEntity<List<LaunchedProjectScrapResponse>> getScraps(@PathVariable Long id){
+//        List<LaunchedProjectScrapResponse> scraps = launchedProjectService.getScraps(id);
+//        return ResponseEntity.ok(scraps);
+//    }
 
+    // Launched-Project의 전체 리스트(페이지) 조회
     @GetMapping("/list")
     public ResponseEntity<Page<ListLaunchedProjectResponse>> getList(@PageableDefault(size=10, sort ="createdAt", direction = Sort.Direction.DESC) Pageable pageable){
         Page<ListLaunchedProjectResponse> launchedProjectList = launchedProjectService.getList(pageable);
         return ResponseEntity.ok(launchedProjectList);
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<String> delete(@PathVariable Long id){
+        String message = launchedProjectService.delete(id);
+        return ResponseEntity.ok(message);
     }
 
 }
