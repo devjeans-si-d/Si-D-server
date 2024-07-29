@@ -85,4 +85,7 @@ public class Member extends BaseEntity {
         this.updateDeleteAt();
     }
 
+    public void updateEmail(String email) {
+        this.email = email;
+    }
 }

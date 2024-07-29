@@ -1,0 +1,43 @@
+spring:
+  datasource:
+    url: jdbc:mariadb://localhost:3310/sid?characterEncoding=UTF-8&serverTimezone=UTC
+    username: root
+    password: 1234
+    driver-class-name: org.mariadb.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    database: mysql
+    database-platform: org.hibernate.dialect.MariaDBDialect
+    generate-ddl: true
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+9
+  redis:
+    host: localhost
+    port: 6380
+    password:
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: "clearrworld@gmail.com"
+    password: "ddtq pucr hreu nwue"
+    properties:
+      mail.smtp.debug: true
+      mail.smtp.connectiontimeout: 1000 #1초
+      mail.starttls.enable: true
+      mail.smtp.auth: true
+
+logging:
+  level:
+    org.hibernate.sql: debug
+    org.hibernate.type: trace
+
+auth:
+  oauth:
+    kakao:
+      api: f1a9f25e347069f2e5fedb6375c0b82d
+
+jwt:
+  expiration: 30
+  secretKey: my_token_secret
