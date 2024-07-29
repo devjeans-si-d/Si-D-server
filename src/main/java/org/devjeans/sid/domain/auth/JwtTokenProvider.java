@@ -34,16 +34,32 @@ public class JwtTokenProvider {
     }
 
     public void validateWebSocketToken(String bearerToken) {
-        log.info("validateWebSocketToken() 진입! 웹소켓 연결 시 헤더의 토큰 유효성 검증 시작!");
         try {
-            // BEARER 뒤의 실제 토큰 데이터만 남긴다.
-            log.info("line 68. 토큰 검증 {}", bearerToken);
+            // log.info("line 40. 토큰 검증 {}", bearerToken);
             String token = bearerToken.replace("Bearer ", "");
 
             Claims claims = Jwts.parser()
                     .setSigningKey(secretKey)
                     .parseClaimsJws(token)
                     .getBody();
+
+            // log.info("[line 48] 멤버 아이디: {}", claims.getSubject());
+        } catch (Exception e) {
+            throw new BaseException(INVALID_TOKEN);
+        }
+    }
+
+    public Long getMemberIdFromToken(String bearerToken) {
+        try {
+            // log.info("line 40. 토큰 검증 {}", bearerToken);
+            String token = bearerToken.replace("Bearer ", "");
+
+            Claims claims = Jwts.parser()
+                    .setSigningKey(secretKey)
+                    .parseClaimsJws(token)
+                    .getBody();
+
+            return Long.parseLong(claims.getSubject());
         } catch (Exception e) {
             throw new BaseException(INVALID_TOKEN);
         }
