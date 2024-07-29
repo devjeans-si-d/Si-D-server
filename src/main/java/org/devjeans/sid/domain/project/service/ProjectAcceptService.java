@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.devjeans.sid.domain.member.entity.Member;
 import org.devjeans.sid.domain.member.repository.MemberRepository;
 import org.devjeans.sid.domain.project.dto.AcceptApplicantRequest;
+import org.devjeans.sid.domain.project.dto.ApplicantResponse;
 import org.devjeans.sid.domain.project.entity.Project;
 import org.devjeans.sid.domain.project.entity.ProjectApplication;
 import org.devjeans.sid.domain.project.entity.ProjectMember;
@@ -12,14 +13,16 @@ import org.devjeans.sid.domain.project.repository.ProjectApplicationRepository;
 import org.devjeans.sid.domain.project.repository.ProjectMemberRepository;
 import org.devjeans.sid.domain.project.repository.ProjectRepository;
 import org.devjeans.sid.global.exception.BaseException;
-import org.devjeans.sid.global.exception.exceptionType.ProjectAcceptException;
 import org.devjeans.sid.global.exception.exceptionType.ProjectExceptionType;
 import org.devjeans.sid.global.external.mail.service.EmailService;
 import org.devjeans.sid.global.util.SecurityUtil;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.devjeans.sid.global.exception.exceptionType.ProjectAcceptException.*;
+import static org.devjeans.sid.global.exception.exceptionType.ProjectExceptionType.*;
 
 // TODO: 추후 ProjectService로 통합 예정
 @Slf4j
@@ -58,7 +61,7 @@ public class ProjectAcceptService {
         ProjectApplication projectApplication = projectApplicationRepository
                 .findProjectApplicationByMemberIdAndProjectId(acceptApplicantRequest.getApplicantId(), acceptApplicantRequest.getProjectId())
                 .orElseThrow(() -> new BaseException(NO_APPLICATION_RECORD));
-        if(projectApplication.isAccepted()) {
+        if(projectApplication.getIsAccepted()) {
             throw new BaseException(DOUBLE_ACCEPT);
         }
 
@@ -74,8 +77,27 @@ public class ProjectAcceptService {
 
         projectMemberRepository.save(projectMember); // projectMember에 저장
 
-        //== 아래부터는 이메일 로직 ==//
+        //== 승인 이메일 전송 ==//
         emailService.sendEmailNoticeForAccept(member.getEmail(), member.getId(), project.getId());
+    }
+
+    public Page<ApplicantResponse> getApplicants(Pageable pageable, Long projectId) {
+        Long currentMemberId = securityUtil.getCurrentMemberId();
+        Project project = projectRepository.findByIdOrThrow(projectId);
+
+        // 검증 1. 로그인한 유저가 해당 프로젝트의 PM이 맞는지?
+        if(!currentMemberId.equals(project.getPm().getId())) {
+            throw new BaseException(NOT_A_PM_MEMBER);
+        }
+
+        Page<ProjectApplication> applicationList = projectApplicationRepository
+                .findAllByProjectIdOrderByCreatedAtDesc(pageable, projectId);
+
+        return applicationList.map(a -> {
+            Member member = memberRepository.findByIdOrThrow(a.getMemberId());
+
+            return ApplicantResponse.fromEntity(a, member);
+        });
     }
 
 }

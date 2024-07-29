@@ -2,7 +2,7 @@ package org.devjeans.sid.domain.launchedProject.controller;
 
 import org.devjeans.sid.domain.launchedProject.dto.LaunchProjectDTO.BasicInfoLaunchedProjectResponse;
 import org.devjeans.sid.domain.launchedProject.dto.LaunchProjectDTO.SaveLaunchedProjectRequest;
-import org.devjeans.sid.domain.launchedProject.dto.LaunchedProjectMemberDTO.LaunchedProjectMemberResponse;
+//import org.devjeans.sid.domain.launchedProject.dto.LaunchedProjectMemberDTO.LaunchedProjectMemberResponse;
 import org.devjeans.sid.domain.launchedProject.dto.LaunchedProjectTechStackDTO.LaunchedProjectTechStackResponse;
 import org.devjeans.sid.domain.launchedProject.entity.LaunchedProject;
 import org.devjeans.sid.domain.launchedProject.service.LaunchedProjectService;
