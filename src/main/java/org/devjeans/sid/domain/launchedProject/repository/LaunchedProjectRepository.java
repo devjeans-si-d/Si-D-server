@@ -2,6 +2,7 @@ package org.devjeans.sid.domain.launchedProject.repository;
 
 import io.lettuce.core.dynamic.annotation.Param;
 import org.devjeans.sid.domain.launchedProject.entity.LaunchedProject;
+import org.devjeans.sid.domain.project.entity.Project;
 import org.devjeans.sid.global.exception.BaseException;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -9,7 +10,9 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
-import static org.devjeans.sid.global.exception.exceptionType.TechStackExceptionType.TECH_STACK_NOT_FOUND;
+import static org.devjeans.sid.global.exception.exceptionType.LaunchedProjectExceptionType.LAUNCHED_PROJECT_NOT_FOUND;
+
+
 
 @Repository
 public interface LaunchedProjectRepository extends JpaRepository<LaunchedProject, Long> {
@@ -22,7 +25,8 @@ public interface LaunchedProjectRepository extends JpaRepository<LaunchedProject
 
         default LaunchedProject findByIdOrThrow(Long id) {
                 return findByIdAndDeletedAtIsNull(id)
-                        .orElseThrow(() -> new BaseException(TECH_STACK_NOT_FOUND));
+                        .orElseThrow(() -> new BaseException(LAUNCHED_PROJECT_NOT_FOUND));
         }
+
 
 }

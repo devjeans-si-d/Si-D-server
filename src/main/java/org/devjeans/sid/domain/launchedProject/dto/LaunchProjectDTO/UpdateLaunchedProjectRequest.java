@@ -5,10 +5,7 @@ import org.devjeans.sid.domain.launchedProject.dto.LaunchedProjectMemberDTO.Laun
 import org.devjeans.sid.domain.launchedProject.entity.LaunchedProject;
 import org.devjeans.sid.domain.launchedProject.entity.LaunchedProjectTechStack;
 import org.devjeans.sid.domain.project.entity.Project;
-import org.devjeans.sid.domain.project.entity.ProjectMember;
-import org.devjeans.sid.domain.siderCard.entity.JobField;
 import org.devjeans.sid.domain.siderCard.entity.TechStack;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -17,9 +14,9 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class SaveLaunchedProjectRequest {
+public class UpdateLaunchedProjectRequest {
 
-    private Long projectId; // 프로젝트의 id (project테이블 id FK)
+    private Long id; // launched-project글 id
 
     private String launchedProjectContents; // Launched-Project 글 내용
 
@@ -42,7 +39,7 @@ public class SaveLaunchedProjectRequest {
 
 
     // SaveLaunchedProjectRequest(DTO) -> LaunchedProject
-    public static LaunchedProject toEntity(SaveLaunchedProjectRequest dto,
+    public static LaunchedProject toEntity(UpdateLaunchedProjectRequest dto,
                                            String imagePath,
                                            Project project,
                                            List<LaunchedProjectTechStack> launchedProjectTechStacks

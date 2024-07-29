@@ -55,6 +55,14 @@ public class LaunchedProject extends BaseEntity {
         this.launchedProjectImage = imagePath;
     }
 
+    public void updateLaunchedProjectContents(String launchedProjectContents){
+        this.launchedProjectContents = launchedProjectContents;
+    }
+
+    public void updateSiteUrl(String siteUrl){
+        this.siteUrl = siteUrl;
+    }
+
     // LaunchProject -> DetailBasicLaunchedProjectResponse(DTO)로 build (완성된 프로젝트 기본정보 조회)
     public static BasicInfoLaunchedProjectResponse BasicInfoResfromEntity(LaunchedProject launchedProject){
         return BasicInfoLaunchedProjectResponse.builder()
@@ -81,5 +89,13 @@ public class LaunchedProject extends BaseEntity {
                 .views(launchedProject.getViews())
                 .scrapCount(launchedProject.getLaunchedProjectScraps().size()) // Launched-Project 스크랩 수
                 .build();
+    }
+
+    // LaunchedProject의 기존TechStack 리스트를 새로운 TechStack 리스트로 업데이트하는 메서드
+    public void updateLaunchedProjectTechStacks(List<LaunchedProjectTechStack> newTechStacks) {
+        this.launchedProjectTechStacks.clear(); // 기존 기술스택 삭제
+        if (newTechStacks != null) {
+            this.launchedProjectTechStacks.addAll(newTechStacks); // 새 기술스택 추가
+        }
     }
 }

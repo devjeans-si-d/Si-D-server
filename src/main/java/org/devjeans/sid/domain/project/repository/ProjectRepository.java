@@ -8,7 +8,8 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
-import static org.devjeans.sid.global.exception.exceptionType.LaunchedProjectExceptionType.PROJECT_NOT_FOUND;
+import static org.devjeans.sid.global.exception.exceptionType.ProjectExceptionType.PROJECT_NOT_FOUND;
+
 
 @Repository
 public interface ProjectRepository extends JpaRepository<Project,Long> {

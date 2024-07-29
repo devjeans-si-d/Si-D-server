@@ -21,8 +21,6 @@ public class SaveLaunchedProjectRequest {
 
     private Long projectId; // 프로젝트의 id (project테이블 id FK)
 
-//    private MultipartFile launchedProjectImage; // 프로젝트 사진 -> 이후 String으로 변환필요
-
     private String launchedProjectContents; // Launched-Project 글 내용
 
     private String siteUrl; // 프로젝트 사이트 링크

@@ -3,6 +3,7 @@ package org.devjeans.sid.domain.launchedProject.controller;
 import org.devjeans.sid.domain.launchedProject.dto.LaunchProjectDTO.BasicInfoLaunchedProjectResponse;
 import org.devjeans.sid.domain.launchedProject.dto.LaunchProjectDTO.ListLaunchedProjectResponse;
 import org.devjeans.sid.domain.launchedProject.dto.LaunchProjectDTO.SaveLaunchedProjectRequest;
+import org.devjeans.sid.domain.launchedProject.dto.LaunchProjectDTO.UpdateLaunchedProjectRequest;
 import org.devjeans.sid.domain.launchedProject.dto.LaunchedProjectMemberDTO.LaunchedProjectMemberResponse;
 import org.devjeans.sid.domain.launchedProject.dto.LaunchedProjectScrapDTO.LaunchedProjectScrapRequest;
 import org.devjeans.sid.domain.launchedProject.dto.LaunchedProjectScrapDTO.LaunchedProjectScrapResponse;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/api/launched-project")
@@ -34,9 +36,17 @@ public class LaunchedProjectController {
     // 완성된 프로젝트 글 등록
     @PostMapping("/register")
     public ResponseEntity<Long> register(@RequestPart(value="saveRequest") SaveLaunchedProjectRequest saveRequest,
-                                                    @RequestPart(value="launchedProjectImage") MultipartFile launchedProjectImage){
+                                         @RequestPart(value="launchedProjectImage") MultipartFile launchedProjectImage){
         LaunchedProject launchedProject = launchedProjectService.register(saveRequest,launchedProjectImage);
         return ResponseEntity.ok(launchedProject.getId()); // 등록된 글 id 반환
+    }
+
+    // 완성된 프로젝트 글 수정
+    @PutMapping("/update/{id}")
+    public ResponseEntity<Object> update(@RequestPart(value="updateRequest") UpdateLaunchedProjectRequest updateRequest,
+                                         @RequestPart(value="launchedProjectImage") MultipartFile launchedProjectImage){
+        String message = launchedProjectService.update(updateRequest,launchedProjectImage);
+        return ResponseEntity.ok(message); // 수정된 글 id 반환
     }
 
     // 유저는 프로젝트 완성글에 사이다를 누를 수 있다.
@@ -86,5 +96,7 @@ public class LaunchedProjectController {
         String message = launchedProjectService.delete(id);
         return ResponseEntity.ok(message);
     }
+
+
 
 }
