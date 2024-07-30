@@ -44,9 +44,8 @@ public class LaunchedProjectController {
     // 완성된 프로젝트 글 수정
     @PostMapping("/update/{launchedProjectId}")
     public ResponseEntity<Object> update(@PathVariable Long launchedProjectId,
-                                         @RequestPart(value="updateRequest") UpdateLaunchedProjectRequest updateRequest,
-                                         @RequestPart(value="launchedProjectImage") MultipartFile launchedProjectImage){
-        String message = launchedProjectService.update(launchedProjectId, updateRequest,launchedProjectImage);
+                                         @RequestBody UpdateLaunchedProjectRequest updateRequest){
+        String message = launchedProjectService.update(launchedProjectId, updateRequest);
         return ResponseEntity.ok(message); // 수정된 글 id 반환
     }
 

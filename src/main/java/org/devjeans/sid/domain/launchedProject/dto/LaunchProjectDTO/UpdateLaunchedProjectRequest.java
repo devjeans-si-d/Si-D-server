@@ -23,18 +23,19 @@ public class UpdateLaunchedProjectRequest {
 
     private List<Long> techStackList;
 
+    private String imageUrl;
+
 
     public static LaunchedProject toEntity(UpdateLaunchedProjectRequest dto,
-                                           String imagePath,
                                            Project project,
                                            List<LaunchedProjectTechStack> launchedProjectTechStacks
                                            ){
 
         return LaunchedProject.builder()
-                .launchedProjectImage(imagePath)
                 .launchedProjectContents(dto.getLaunchedProjectContents())
                 .siteUrl(dto.getSiteUrl())
                 .project(project)
+                .launchedProjectImage(dto.getImageUrl())
                 .launchedProjectTechStacks(launchedProjectTechStacks)
                 .build();
     }

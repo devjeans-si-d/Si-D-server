@@ -166,20 +166,17 @@ public class LaunchedProjectService {
     }
 
     public String update(Long launchedProjectId,
-                         UpdateLaunchedProjectRequest dto,
-                         MultipartFile launchedProjectImage) {
+                         UpdateLaunchedProjectRequest dto) {
         // LaunchedProject 객체 찾아서 수정
         LaunchedProject launchedProject = launchedProjectRepository.findByIdOrThrow(launchedProjectId);
 
         // project 객체 찾음
         Project project = projectRepository.findByIdOrThrow(launchedProject.getProject().getId());
 
-        // 이미지 수정 TODO: presigned로 수정
-//        if (launchedProjectImage != null) {
-//            // && !launchedProjectImage.isEmpty()
-//            String imagePath = saveImage(launchedProjectImage);
-//            launchedProject.updateLaunchedProjectImage(imagePath);
-//        }
+        // 이미지 수정
+        if (dto.getImageUrl() != null) {
+            launchedProject.updateLaunchedProjectImage(dto.getImageUrl());
+        }
 
         // 글내용 수정
         if (dto.getLaunchedProjectContents() != null) {
