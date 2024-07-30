@@ -65,12 +65,7 @@ public class Project extends BaseEntity {
     private List<ChatRoom> chatRooms = new ArrayList<>();
 
     public void updateNewProjectMembers(List<ProjectMember> newProjectMembers){
-        // 기존 리스트 삭제
-//        this.projectMembers.clear();
-        // 새로운 리스트 추가
-//        if (newProjectMembers != null) {
-            this.projectMembers.addAll(newProjectMembers);
-//        }
+        this.projectMembers = newProjectMembers;
     }
     public void updateRecruitInfos(List<RecruitInfo> recruitInfos){
         this.recruitInfos = recruitInfos;

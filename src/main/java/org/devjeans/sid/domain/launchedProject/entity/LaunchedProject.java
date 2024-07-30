@@ -98,4 +98,5 @@ public class LaunchedProject extends BaseEntity {
             this.launchedProjectTechStacks.addAll(newTechStacks); // 새 기술스택 추가z
         }
     }
+
 }

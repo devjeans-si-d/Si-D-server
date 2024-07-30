@@ -30,6 +30,7 @@ import org.devjeans.sid.global.util.SecurityUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -45,6 +46,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static org.devjeans.sid.global.exception.exceptionType.LaunchedProjectExceptionType.DOUBLE_CREATE;
 import static org.devjeans.sid.global.exception.exceptionType.LaunchedProjectExceptionType.INVALID_PROJECT_IMAGE;
 
 @Slf4j
@@ -100,33 +102,33 @@ public class LaunchedProjectService {
     // CREATE
     // Launched-Project 등록
     // => 한 Project에 대해서 create 1번만 할 수 있고, PM만 등록할 수 있도록 리팩토링 해야됨.
-    public LaunchedProject register(SaveLaunchedProjectRequest dto,
-                                    MultipartFile launchedProjectImage
-                                    ){
+    @Transactional
+    public LaunchedProject register(SaveLaunchedProjectRequest dto){
+        // 검증 1. 이미 글이 있지 않은지 확인. 완성글은 프로젝트마다 하나씩 쓸 수 있다.
+        Optional<LaunchedProject> projectOpt = launchedProjectRepository.findByProjectIdAndDeletedAtIsNull(dto.getProjectId());
+        if(projectOpt.isPresent()) {
+            throw new BaseException(DOUBLE_CREATE);
+        }
 
         // dto에서 받은 projectId(Long)로 project 객체 찾음
         Project project = projectRepository.findByIdOrThrow(dto.getProjectId());
 
-        Path imagePath;
+        // 우선 기존 프로젝트 멤버를 모두 delete 해준다.
+        List<ProjectMember> projectMembers = project.getProjectMembers();
+        projectMemberRepository.deleteAll(projectMembers); // deleteAll -> 벌크성 쿼리를 줄여줌
 
-        try{
-            byte[] bytes = launchedProjectImage.getBytes(); // 이미지 - > 바이트
-            // 경로지정
-            imagePath = Paths.get(STORAGE_DIR,  "_"+ launchedProjectImage.getOriginalFilename());
-            // 파일 쓰기
-            Files.write(imagePath, bytes, StandardOpenOption.CREATE, StandardOpenOption.WRITE); // 해당경로에 bytes 저장
 
-        } catch (IOException e) {
-            throw new BaseException(INVALID_PROJECT_IMAGE);
-        }
+        Path imagePath = null;
+        //== TODO: 사진 저장 로직 => S3 presigned url 방식으로 변경한 후 수정 예정 ==//
+
 
         // LaunchedProject 객체 먼저 조립 (launchedProjectTechStacks 기술스택 리스트 빼고 먼저조립해줌)
-        LaunchedProject launchedProject = dto.toEntity(dto, imagePath.toString(), project, new ArrayList<>());
+        LaunchedProject launchedProject = dto.toEntity(dto, project, new ArrayList<>());
 
-        for(SaveLaunchedProjectRequest.LaunchedProjectTechStackRequest stackDto : dto.getLaunchedProjectTechStackRequestList()){
+        for(Long stackId : dto.getTechStackList()){
             //tech : {"JobField" : "BACKEND", "techStackName" : "Spring"}
 
-            TechStack techStack = techStackRepository.findByIdOrThrow(stackDto.getId());
+            TechStack techStack = techStackRepository.findByIdOrThrow(stackId);
 
             LaunchedProjectTechStack launchedProjectTechStack
                     = LaunchedProjectTechStack.builder()
@@ -139,35 +141,29 @@ public class LaunchedProjectService {
         }
 
 
-        for(LaunchedProjectMemberRequest memberDto : dto.getMembers()){
+        // memberDto를 ProjectMember로 변환
+        List<LaunchedProjectMemberRequest> memberDtos = dto.getMembers();
+        List<ProjectMember> newMembers = memberDtos.stream().map(memberDto -> {
             Member member = memberRepository.findByIdOrThrow(memberDto.getId());
-            ProjectMember projectMember = LaunchedProjectMemberRequest.toEntity(memberDto, member, project);
 
-            List<ProjectMember> projectMembers = launchedProject.getProject().getProjectMembers();
-            // 존재하지 않는 회원만 add (모집 이후 추가되었을 경우)
-            if(!projectMembers.contains(member)){
-                projectMembers.add(projectMember);
-            }
-        }
+            return LaunchedProjectMemberRequest.toEntity(memberDto, member, project);
+        }).collect(Collectors.toList());
 
-        LaunchedProject savedLaunchedProject = launchedProjectRepository.save(launchedProject);
-
-        return savedLaunchedProject;
+        launchedProject.getProject().updateNewProjectMembers(newMembers); // project에 갈아 끼워주기
+        return launchedProjectRepository.save(launchedProject);
     }
 
-    public String update(UpdateLaunchedProjectRequest dto,
-                         MultipartFile launchedProjectImage){
+    public String update(Long launchedProjectId,
+                         UpdateLaunchedProjectRequest dto) {
         // LaunchedProject 객체 찾아서 수정
-        LaunchedProject launchedProject = launchedProjectRepository.findByIdOrThrow(dto.getId());
+        LaunchedProject launchedProject = launchedProjectRepository.findByIdOrThrow(launchedProjectId);
 
         // project 객체 찾음
         Project project = projectRepository.findByIdOrThrow(launchedProject.getProject().getId());
 
         // 이미지 수정
-        if (launchedProjectImage != null) {
-            // && !launchedProjectImage.isEmpty()
-            String imagePath = saveImage(launchedProjectImage);
-            launchedProject.updateLaunchedProjectImage(imagePath);
+        if (dto.getImageUrl() != null) {
+            launchedProject.updateLaunchedProjectImage(dto.getImageUrl());
         }
 
         // 글내용 수정
@@ -182,9 +178,9 @@ public class LaunchedProjectService {
 
         // 새로운 기술 스택 리스트 업데이트
         List<LaunchedProjectTechStack> newTechStacks = new ArrayList<>();
-        if (dto.getLaunchedProjectTechStackRequestList() != null) {
-            for (UpdateLaunchedProjectRequest.LaunchedProjectTechStackRequest stackDto : dto.getLaunchedProjectTechStackRequestList()) {
-                TechStack techStack = techStackRepository.findByIdOrThrow(stackDto.getId());
+        if (dto.getTechStackList() != null) {
+            for (Long stackId : dto.getTechStackList()) {
+                TechStack techStack = techStackRepository.findByIdOrThrow(stackId);
                 LaunchedProjectTechStack launchedProjectTechStack = UpdateLaunchedProjectRequest.toLaunchedProjectTechStack(launchedProject, techStack);
                 newTechStacks.add(launchedProjectTechStack);
             }
@@ -192,25 +188,17 @@ public class LaunchedProjectService {
         }
 
         // 새로운 프로젝트 멤버 리스트 업데이트
-        if (dto.getMembers() != null) {
-            List<ProjectMember> currentProjectMembers = project.getProjectMembers();
-            for(ProjectMember member : currentProjectMembers){
-                projectMemberRepository.delete(member);
-            }
-
-            List<ProjectMember> newProjectMembers = new ArrayList<>();
-            for (LaunchedProjectMemberRequest memberDto : dto.getMembers()) {
-                Member member = memberRepository.findByIdOrThrow(memberDto.getId());
-                ProjectMember projectMember = LaunchedProjectMemberRequest.toEntity(memberDto, member, project);
-                newProjectMembers.add(projectMember);
-
-            }
-            project.updateNewProjectMembers(newProjectMembers);
-            projectRepository.save(project);
-        }
-
-        // 변경된 LaunchedProject 저장
-        launchedProjectRepository.save(launchedProject);
+        // 우선 기존 프로젝트 멤버를 모두 delete 해준다.
+        List<ProjectMember> projectMembers = project.getProjectMembers();
+        projectMemberRepository.deleteAll(projectMembers); // deleteAll -> 벌크성 쿼리를 줄여줌
+        
+        // memberDto를 ProjectMember로 변환
+        List<LaunchedProjectMemberRequest> memberDtos = dto.getMembers();
+        List<ProjectMember> newMembers = memberDtos.stream().map(memberDto -> {
+            Member member = memberRepository.findByIdOrThrow(memberDto.getId());
+            return LaunchedProjectMemberRequest.toEntity(memberDto, member, project);
+        }).collect(Collectors.toList());
+        launchedProject.getProject().updateNewProjectMembers(newMembers); // project에 갈아 끼워주기
 
         return "수정완료";
     }
