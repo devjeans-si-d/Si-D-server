@@ -5,7 +5,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.devjeans.sid.domain.member.entity.Member;
-import org.devjeans.sid.domain.project.entity.Project;
 import org.devjeans.sid.domain.project.entity.ProjectApplication;
 
 @Data
