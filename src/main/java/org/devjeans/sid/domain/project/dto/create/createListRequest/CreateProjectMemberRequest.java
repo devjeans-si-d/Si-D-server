@@ -1,23 +1,21 @@
-package org.devjeans.sid.domain.launchedProject.dto.LaunchedProjectTechStackDTO;
+package org.devjeans.sid.domain.project.dto.create.createListRequest;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.devjeans.sid.domain.project.entity.JobField;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 
-@Getter
-@NoArgsConstructor
+@Data
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
-public class LaunchedProjectTechStackResponse {
-
+public class CreateProjectMemberRequest {
+    private Long memberId;
     @Enumerated(EnumType.STRING)
-    private JobField jobField; // 직무 명
-
-    private String techStackName; // 기술스택 명
-
+    private JobField jobField;
+    private Long projectId;
 }

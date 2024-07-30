@@ -7,8 +7,6 @@ import lombok.NoArgsConstructor;
 import org.devjeans.sid.domain.common.BaseEntity;
 import org.devjeans.sid.domain.launchedProject.dto.LaunchedProjectMemberDTO.LaunchedProjectMemberResponse;
 import org.devjeans.sid.domain.member.entity.Member;
-import org.devjeans.sid.domain.project.entity.Project;
-import org.devjeans.sid.domain.siderCard.entity.JobField;
 
 import javax.persistence.*;
 

@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.devjeans.sid.domain.common.BaseEntity;
 import org.devjeans.sid.domain.launchedProject.entity.LaunchedProjectTechStack;
+import org.devjeans.sid.domain.project.entity.JobField;
 
 import javax.persistence.*;
 import java.util.ArrayList;
