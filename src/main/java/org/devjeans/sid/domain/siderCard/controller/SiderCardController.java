@@ -23,4 +23,6 @@ public class SiderCardController {
         CommonResDto commonResDto = new CommonResDto(HttpStatus.OK,"order list is successfully retrieved",siderCardResDto);
         return new ResponseEntity<>(commonResDto,HttpStatus.OK);
     }
+
+
 }
