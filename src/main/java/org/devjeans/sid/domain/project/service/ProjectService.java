@@ -5,8 +5,8 @@ import org.devjeans.sid.domain.member.repository.MemberRepository;
 import org.devjeans.sid.domain.project.dto.create.CreateProjectRequest;
 import org.devjeans.sid.domain.project.dto.read.DetailProjectResponse;
 import org.devjeans.sid.domain.project.dto.read.ListProjectResponse;
+import org.devjeans.sid.domain.project.dto.scrap.ScrapResponse;
 import org.devjeans.sid.domain.project.dto.update.UpdateProjectRequest;
-import org.devjeans.sid.domain.project.dto.update.UpdateProjectRequest.ProjectMemberUpdateRequest;
 
 import org.devjeans.sid.domain.project.entity.*;
 
@@ -14,6 +14,7 @@ import org.devjeans.sid.domain.project.dto.update.UpdateProjectResponse;
 import org.devjeans.sid.domain.project.entity.ProjectMember;
 import org.devjeans.sid.domain.project.repository.ProjectMemberRepository;
 import org.devjeans.sid.domain.project.repository.ProjectRepository;
+import org.devjeans.sid.domain.project.repository.ProjectScrapRepository;
 import org.devjeans.sid.domain.project.repository.RecruitInfoRepository;
 import org.devjeans.sid.global.exception.BaseException;
 import org.devjeans.sid.global.util.SecurityUtil;
@@ -23,23 +24,13 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.EntityNotFoundException;
-
 import static org.devjeans.sid.global.exception.exceptionType.MemberExceptionType.MEMBER_NOT_FOUND;
 import static org.devjeans.sid.global.exception.exceptionType.ProjectExceptionType.*;
-import static org.devjeans.sid.global.exception.exceptionType.ProjectMemberExceptionType.PROJECTMEMBER_NOT_FOUND;
-import static org.devjeans.sid.global.exception.exceptionType.RecruitInfoExceptionType.RECRUIT_INFO_NOT_FOUND;
 
 //Todo ResponseEntity() 적용
 @Service
@@ -51,13 +42,15 @@ public class ProjectService {
     private final ProjectMemberRepository projectMemberRepository;
     private final RecruitInfoRepository recruitInfoRepository;
     private final SecurityUtil securityUtil;
+    private final ProjectScrapRepository projectScrapRepository;
     @Autowired
-    public ProjectService(ProjectRepository projectRepository, MemberRepository memberRepository, ProjectMemberRepository projectMemberRepository, RecruitInfoRepository recruitInfoRepository, SecurityUtil securityUtil) {
+    public ProjectService(ProjectRepository projectRepository, MemberRepository memberRepository, ProjectMemberRepository projectMemberRepository, RecruitInfoRepository recruitInfoRepository, SecurityUtil securityUtil, ProjectScrapRepository projectScrapRepository) {
         this.projectRepository = projectRepository;
         this.memberRepository = memberRepository;
         this.projectMemberRepository = projectMemberRepository;
         this.recruitInfoRepository = recruitInfoRepository;
         this.securityUtil = securityUtil;
+        this.projectScrapRepository = projectScrapRepository;
     }
     //create
     // Todo : imageurl multipart
@@ -175,5 +168,50 @@ public class ProjectService {
         return "삭제 성공";
     }
 
+    // ProjectScrap 생성
+    public ScrapResponse createScrap(Long id){
+        Member member = memberRepository.findById(securityUtil.getCurrentMemberId()).orElseThrow(()->new BaseException(MEMBER_NOT_FOUND));
+        Project project = projectRepository.findById(id).orElseThrow(()->new BaseException(PROJECT_NOT_FOUND));
+        ScrapResponse scrapResponse = ScrapResponse.builder().memberId(member.getId()).projectId(id).status(true).build();
+        // Todo : 이미 있으면...error
+        projectScrapRepository.save(ScrapResponse.toEntity(project, member));
+        return scrapResponse;
+    }
+
+    // 해당 프로젝트의 projectScrap 리스트
+    public Page<ScrapResponse> projectScrap(Long id, Pageable pageable){
+        Page<ProjectScrap> projectScraps = projectScrapRepository.findByProjectId(id,pageable);
+        List<ScrapResponse> scrapResponseList= new ArrayList<>();
+        for(ProjectScrap projectScrap: projectScraps){
+            scrapResponseList.add(ScrapResponse.builder()
+                    .memberId(projectScrap.getMember().getId())
+                    .projectId(projectScrap.getProject().getId())
+                    .build());
+        }
+        return new PageImpl<>(scrapResponseList,pageable,projectScraps.getTotalElements());
+    }
+
+    // 사용중인 유저의 project scrap list
+    public Page<ScrapResponse> myProjectScrap(Pageable pageable){
+        Page<ProjectScrap> projectScraps = projectScrapRepository.findByMemberId(securityUtil.getCurrentMemberId(),pageable);
+        List<ScrapResponse> scrapResponseList= new ArrayList<>();
+        for(ProjectScrap projectScrap: projectScraps){
+            scrapResponseList.add(ScrapResponse.builder()
+                    .memberId(projectScrap.getMember().getId())
+                    .projectId(projectScrap.getProject().getId())
+                    .build());
+        }
+        return new PageImpl<>(scrapResponseList,pageable,projectScraps.getTotalElements());
+    }
+
+    // project scrap delete
+    public String projectDeleteScrap(Long id){
+        Member member = memberRepository.findById(securityUtil.getCurrentMemberId()).orElseThrow(()->new BaseException(MEMBER_NOT_FOUND));
+        Project project = projectRepository.findById(id).orElseThrow(()->new BaseException(PROJECT_NOT_FOUND));
+        ProjectScrap projectScrap = projectScrapRepository.findByProjectIdAndMemberId(project.getId(), member.getId());
+        // Todo : 이미 없으면 에러 처리
+        projectScrapRepository.delete(projectScrap);
+        return "삭제 완료";
+    }
 
 }
