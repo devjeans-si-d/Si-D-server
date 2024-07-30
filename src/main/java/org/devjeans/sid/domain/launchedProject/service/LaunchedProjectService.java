@@ -106,7 +106,7 @@ public class LaunchedProjectService {
     public LaunchedProject register(SaveLaunchedProjectRequest dto,
                                     MultipartFile launchedProjectImage){
         // 검증 1. 이미 글이 있지 않은지 확인. 완성글은 프로젝트마다 하나씩 쓸 수 있다.
-        Optional<Project> projectOpt = projectRepository.findByIdAndDeletedAtIsNull(dto.getProjectId());
+        Optional<LaunchedProject> projectOpt = launchedProjectRepository.findByProjectIdAndDeletedAtIsNull(dto.getProjectId());
         if(projectOpt.isPresent()) {
             throw new BaseException(DOUBLE_CREATE);
         }
@@ -136,10 +136,10 @@ public class LaunchedProjectService {
         // LaunchedProject 객체 먼저 조립 (launchedProjectTechStacks 기술스택 리스트 빼고 먼저조립해줌)
         LaunchedProject launchedProject = dto.toEntity(dto, imagePath.toString(), project, new ArrayList<>());
 
-        for(SaveLaunchedProjectRequest.LaunchedProjectTechStackRequest stackDto : dto.getLaunchedProjectTechStackRequestList()){
+        for(Long stackId : dto.getTechStackList()){
             //tech : {"JobField" : "BACKEND", "techStackName" : "Spring"}
 
-            TechStack techStack = techStackRepository.findByIdOrThrow(stackDto.getId());
+            TechStack techStack = techStackRepository.findByIdOrThrow(stackId);
 
             LaunchedProjectTechStack launchedProjectTechStack
                     = LaunchedProjectTechStack.builder()
@@ -193,9 +193,9 @@ public class LaunchedProjectService {
 
         // 새로운 기술 스택 리스트 업데이트
         List<LaunchedProjectTechStack> newTechStacks = new ArrayList<>();
-        if (dto.getLaunchedProjectTechStackRequestList() != null) {
-            for (UpdateLaunchedProjectRequest.LaunchedProjectTechStackRequest stackDto : dto.getLaunchedProjectTechStackRequestList()) {
-                TechStack techStack = techStackRepository.findByIdOrThrow(stackDto.getId());
+        if (dto.getTechStackList() != null) {
+            for (Long stackId : dto.getTechStackList()) {
+                TechStack techStack = techStackRepository.findByIdOrThrow(stackId);
                 LaunchedProjectTechStack launchedProjectTechStack = UpdateLaunchedProjectRequest.toLaunchedProjectTechStack(launchedProject, techStack);
                 newTechStacks.add(launchedProjectTechStack);
             }
