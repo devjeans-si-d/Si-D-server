@@ -5,7 +5,11 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import org.devjeans.sid.domain.common.BaseEntity;
+import org.devjeans.sid.domain.mainPage.dto.TopListMemberResponse;
 import org.devjeans.sid.domain.member.dto.UpdateMemberRequest;
+
+import org.devjeans.sid.domain.project.entity.ProjectMember;
+
 
 import javax.persistence.*;
 
@@ -85,4 +89,13 @@ public class Member extends BaseEntity {
     public void updateEmail(String email) {
         this.email = email;
     }
+
+    public static TopListMemberResponse topListResFromMember(Member member){
+        return TopListMemberResponse.builder()
+                .id(member.getId())
+                .nickname(member.getNickname())
+                .profileImageUrl(member.getProfileImageUrl())
+                .build();
+    }
+
 }

@@ -2,6 +2,7 @@ package org.devjeans.sid.domain.siderCard.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.devjeans.sid.domain.career.entity.Career;
 import org.devjeans.sid.domain.common.BaseEntity;
@@ -10,7 +11,7 @@ import org.devjeans.sid.domain.member.entity.Member;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
-
+@Getter
 @Entity
 @Builder
 @AllArgsConstructor
