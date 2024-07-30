@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.devjeans.sid.domain.common.BaseEntity;
 import org.devjeans.sid.domain.launchedProject.entity.LaunchedProjectTechStack;
+import org.devjeans.sid.domain.project.entity.JobField;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -20,13 +21,13 @@ public class TechStack extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "tech_stack_id")
-    private Long id;
+    private Long id; // 기술스택 id
 
     @Column(nullable = false)
-    private String techStackName;
+    private String techStackName; // 기술스택 명
 
     @Enumerated(EnumType.STRING)
-    private JobField jobField;
+    private JobField jobField; // 직무명
 
     @OneToMany(mappedBy = "techStack", cascade = CascadeType.REFRESH)
     private List<SiderCardTechStack> siderCardTechStacks = new ArrayList<>();

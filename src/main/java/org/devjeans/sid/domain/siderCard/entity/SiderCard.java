@@ -31,8 +31,8 @@ public class SiderCard extends BaseEntity {
 
     private String introduction;
 
-    @OneToMany(mappedBy = "siderCard", cascade = CascadeType.ALL)
-    private List<SocialInfo> socialInfos = new ArrayList<>();
+//    @OneToMany(mappedBy = "siderCard", cascade = CascadeType.ALL)
+//    private List<SocialInfo> socialInfos = new ArrayList<>();
 
     @OneToMany(mappedBy = "siderCard", cascade = CascadeType.ALL)
     private List<SiderCardTechStack> siderCardTechStacks = new ArrayList<>();
