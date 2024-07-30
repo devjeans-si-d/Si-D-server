@@ -45,8 +45,7 @@ public class Project extends BaseEntity {
     private Long views=0L;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "pm_id")
-    @JsonIgnore
+    @JoinColumn(name = "member_id")
     private Member pm;
 
     @Builder.Default
