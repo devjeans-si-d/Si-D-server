@@ -65,7 +65,7 @@ public class Project extends BaseEntity {
     private List<ChatRoom> chatRooms = new ArrayList<>();
 
     public void updateNewProjectMembers(List<ProjectMember> newProjectMembers){
-        this.projectMembers.addAll(newProjectMembers);
+        this.projectMembers = newProjectMembers;
     }
     public void updateRecruitInfos(List<RecruitInfo> recruitInfos){
         this.recruitInfos = recruitInfos;

@@ -100,6 +100,7 @@ public class LaunchedProjectService {
     // CREATE
     // Launched-Project 등록
     // => 한 Project에 대해서 create 1번만 할 수 있고, PM만 등록할 수 있도록 리팩토링 해야됨.
+    @Transactional
     public LaunchedProject register(SaveLaunchedProjectRequest dto,
                                     MultipartFile launchedProjectImage
                                     ){
@@ -109,9 +110,7 @@ public class LaunchedProjectService {
 
         // 우선 기존 프로젝트 멤버를 모두 delete 해준다.
         List<ProjectMember> projectMembers = project.getProjectMembers();
-        for (ProjectMember projectMember : projectMembers) {
-            projectMemberRepository.delete(projectMember);
-        }
+        projectMemberRepository.deleteAll(projectMembers); // deleteAll -> 벌크성 쿼리를 줄여줌
 
 
         Path imagePath = null;
@@ -121,7 +120,8 @@ public class LaunchedProjectService {
             // 경로지정
             imagePath = Paths.get(STORAGE_DIR,  "_"+ launchedProjectImage.getOriginalFilename());
             // 파일 쓰기
-            Files.write(imagePath, bytes, StandardOpenOption.CREATE, StandardOpenOption.WRITE); // 해당경로에 bytes 저장
+//            Files.write(imagePath, bytes, StandardOpenOption.CREATE, StandardOpenOption.WRITE); // 해당경로에 bytes 저장
+            log.info("사진 경로: {}", imagePath);
 
         } catch (IOException e) {
             throw new BaseException(INVALID_PROJECT_IMAGE);
@@ -149,13 +149,13 @@ public class LaunchedProjectService {
 
         // memberDto를 ProjectMember로 변환
         List<LaunchedProjectMemberRequest> memberDtos = dto.getMembers();
-        memberDtos.stream().map(memberDto -> {
+        List<ProjectMember> collect = memberDtos.stream().map(memberDto -> {
             Member member = memberRepository.findByIdOrThrow(memberDto.getId());
 
             return LaunchedProjectMemberRequest.toEntity(memberDto, member, project);
-        });
+        }).collect(Collectors.toList());
 
-        launchedProject.getProject().updateNewProjectMembers(projectMembers); // project에 갈아 끼워주기
+        launchedProject.getProject().updateNewProjectMembers(collect); // project에 갈아 끼워주기
         return launchedProjectRepository.save(launchedProject);
     }
 
