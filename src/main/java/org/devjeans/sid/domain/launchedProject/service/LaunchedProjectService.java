@@ -103,8 +103,7 @@ public class LaunchedProjectService {
     // Launched-Project 등록
     // => 한 Project에 대해서 create 1번만 할 수 있고, PM만 등록할 수 있도록 리팩토링 해야됨.
     @Transactional
-    public LaunchedProject register(SaveLaunchedProjectRequest dto,
-                                    MultipartFile launchedProjectImage){
+    public LaunchedProject register(SaveLaunchedProjectRequest dto){
         // 검증 1. 이미 글이 있지 않은지 확인. 완성글은 프로젝트마다 하나씩 쓸 수 있다.
         Optional<LaunchedProject> projectOpt = launchedProjectRepository.findByProjectIdAndDeletedAtIsNull(dto.getProjectId());
         if(projectOpt.isPresent()) {
@@ -121,20 +120,10 @@ public class LaunchedProjectService {
 
         Path imagePath = null;
         //== TODO: 사진 저장 로직 => S3 presigned url 방식으로 변경한 후 수정 예정 ==//
-        try{
-            byte[] bytes = launchedProjectImage.getBytes(); // 이미지 - > 바이트
-            // 경로지정
-            imagePath = Paths.get(STORAGE_DIR,  "_"+ launchedProjectImage.getOriginalFilename());
-            // 파일 쓰기
-//            Files.write(imagePath, bytes, StandardOpenOption.CREATE, StandardOpenOption.WRITE); // 해당경로에 bytes 저장
-            log.info("사진 경로: {}", imagePath);
 
-        } catch (IOException e) {
-            throw new BaseException(INVALID_PROJECT_IMAGE);
-        }
 
         // LaunchedProject 객체 먼저 조립 (launchedProjectTechStacks 기술스택 리스트 빼고 먼저조립해줌)
-        LaunchedProject launchedProject = dto.toEntity(dto, imagePath.toString(), project, new ArrayList<>());
+        LaunchedProject launchedProject = dto.toEntity(dto, project, new ArrayList<>());
 
         for(Long stackId : dto.getTechStackList()){
             //tech : {"JobField" : "BACKEND", "techStackName" : "Spring"}
@@ -150,7 +139,6 @@ public class LaunchedProjectService {
             // 일단 먼저 조립해준 launchedProject 객체의 기술스택 리스트 가져와서 add 해줌
             launchedProject.getLaunchedProjectTechStacks().add(launchedProjectTechStack);
         }
-        //== TODO: 사진 저장 로직 END ==//
 
 
         // memberDto를 ProjectMember로 변환

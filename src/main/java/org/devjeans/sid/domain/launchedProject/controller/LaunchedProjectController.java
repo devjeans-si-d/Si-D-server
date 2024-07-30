@@ -35,9 +35,8 @@ public class LaunchedProjectController {
 
     // 완성된 프로젝트 글 등록
     @PostMapping("/register")
-    public ResponseEntity<Long> register(@RequestPart(value="saveRequest") SaveLaunchedProjectRequest saveRequest,
-                                         @RequestPart(value="launchedProjectImage") MultipartFile launchedProjectImage){
-        LaunchedProject launchedProject = launchedProjectService.register(saveRequest,launchedProjectImage);
+    public ResponseEntity<Long> register(@RequestBody SaveLaunchedProjectRequest saveRequest){
+        LaunchedProject launchedProject = launchedProjectService.register(saveRequest);
         return ResponseEntity.ok(launchedProject.getId()); // 등록된 글 id 반환
     }
 
