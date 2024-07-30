@@ -95,7 +95,7 @@ public class LaunchedProject extends BaseEntity {
     public void updateLaunchedProjectTechStacks(List<LaunchedProjectTechStack> newTechStacks) {
         this.launchedProjectTechStacks.clear(); // 기존 기술스택 삭제
         if (newTechStacks != null) {
-            this.launchedProjectTechStacks.addAll(newTechStacks); // 새 기술스택 추가
+            this.launchedProjectTechStacks.addAll(newTechStacks); // 새 기술스택 추가z
         }
     }
 }

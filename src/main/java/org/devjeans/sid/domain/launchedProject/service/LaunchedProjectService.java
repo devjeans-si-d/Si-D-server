@@ -20,6 +20,7 @@ import org.devjeans.sid.domain.member.entity.Member;
 import org.devjeans.sid.domain.member.repository.MemberRepository;
 import org.devjeans.sid.domain.project.entity.Project;
 import org.devjeans.sid.domain.project.entity.ProjectMember;
+import org.devjeans.sid.domain.project.repository.ProjectMemberRepository;
 import org.devjeans.sid.domain.project.repository.ProjectRepository;
 import org.devjeans.sid.domain.siderCard.entity.TechStack;
 import org.devjeans.sid.domain.siderCard.repository.TechStackRepository;
@@ -57,6 +58,7 @@ public class LaunchedProjectService {
     private final TechStackRepository techStackRepository;
     private final MemberRepository memberRepository;
     private final SecurityUtil securityUtil;
+    private final ProjectMemberRepository projectMemberRepository;
 
 
     @Autowired
@@ -65,7 +67,8 @@ public class LaunchedProjectService {
                                   ProjectRepository projectRepository,
                                   TechStackRepository techStackRepository,
                                   MemberRepository memberRepository,
-                                  SecurityUtil securityUtil
+                                  SecurityUtil securityUtil,
+                                  ProjectMemberRepository projectMemberRepository
                                   ){
         this.launchedProjectRepository = launchedProjectRepository;
         this.launchedProjectScrapRepository = launchedProjectScrapRepository;
@@ -73,6 +76,7 @@ public class LaunchedProjectService {
         this.techStackRepository = techStackRepository;
         this.memberRepository = memberRepository;
         this.securityUtil = securityUtil;
+        this.projectMemberRepository = projectMemberRepository;
     }
 
     // 파일이 저장될 디렉토리 경로 (아직 로컬 저장소 경로)
@@ -152,7 +156,7 @@ public class LaunchedProjectService {
     }
 
     public String update(UpdateLaunchedProjectRequest dto,
-                                  MultipartFile launchedProjectImage){
+                         MultipartFile launchedProjectImage){
         // LaunchedProject 객체 찾아서 수정
         LaunchedProject launchedProject = launchedProjectRepository.findByIdOrThrow(dto.getId());
 
@@ -160,7 +164,8 @@ public class LaunchedProjectService {
         Project project = projectRepository.findByIdOrThrow(launchedProject.getProject().getId());
 
         // 이미지 수정
-        if (launchedProjectImage != null && !launchedProjectImage.isEmpty()) {
+        if (launchedProjectImage != null) {
+            // && !launchedProjectImage.isEmpty()
             String imagePath = saveImage(launchedProjectImage);
             launchedProject.updateLaunchedProjectImage(imagePath);
         }
@@ -188,13 +193,20 @@ public class LaunchedProjectService {
 
         // 새로운 프로젝트 멤버 리스트 업데이트
         if (dto.getMembers() != null) {
+            List<ProjectMember> currentProjectMembers = project.getProjectMembers();
+            for(ProjectMember member : currentProjectMembers){
+                projectMemberRepository.delete(member);
+            }
+
             List<ProjectMember> newProjectMembers = new ArrayList<>();
             for (LaunchedProjectMemberRequest memberDto : dto.getMembers()) {
                 Member member = memberRepository.findByIdOrThrow(memberDto.getId());
                 ProjectMember projectMember = LaunchedProjectMemberRequest.toEntity(memberDto, member, project);
                 newProjectMembers.add(projectMember);
+
             }
-            project.updateProjectMembers(newProjectMembers);
+            project.updateNewProjectMembers(newProjectMembers);
+            projectRepository.save(project);
         }
 
         // 변경된 LaunchedProject 저장
