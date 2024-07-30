@@ -19,9 +19,11 @@ import org.devjeans.sid.domain.project.repository.RecruitInfoRepository;
 import org.devjeans.sid.global.exception.BaseException;
 import org.devjeans.sid.global.util.SecurityUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,14 +43,18 @@ public class ProjectService {
     private final MemberRepository memberRepository;
     private final ProjectMemberRepository projectMemberRepository;
     private final RecruitInfoRepository recruitInfoRepository;
+
+    private final RedisTemplate<String,String> redisTemplate;
     private final SecurityUtil securityUtil;
     private final ProjectScrapRepository projectScrapRepository;
+    private static final String VIEWS_KEY_PREFIX="project_views:";
     @Autowired
-    public ProjectService(ProjectRepository projectRepository, MemberRepository memberRepository, ProjectMemberRepository projectMemberRepository, RecruitInfoRepository recruitInfoRepository, SecurityUtil securityUtil, ProjectScrapRepository projectScrapRepository) {
+    public ProjectService(ProjectRepository projectRepository, MemberRepository memberRepository, ProjectMemberRepository projectMemberRepository, RecruitInfoRepository recruitInfoRepository, RedisTemplate<String, String> redisTemplate, SecurityUtil securityUtil, ProjectScrapRepository projectScrapRepository) {
         this.projectRepository = projectRepository;
         this.memberRepository = memberRepository;
         this.projectMemberRepository = projectMemberRepository;
         this.recruitInfoRepository = recruitInfoRepository;
+        this.redisTemplate = redisTemplate;
         this.securityUtil = securityUtil;
         this.projectScrapRepository = projectScrapRepository;
     }
@@ -94,7 +100,7 @@ public class ProjectService {
         // Todo 에러처리
         // Todo 추후 isclosed 체크
         Project project = projectRepository.findById(id).orElseThrow(()->new BaseException(MEMBER_NOT_FOUND));
-
+        incrementViews(id);
         return DetailProjectResponse.fromEntity(project);
     }
 
@@ -205,13 +211,19 @@ public class ProjectService {
     }
 
     // project scrap delete
-    public String projectDeleteScrap(Long id){
-        Member member = memberRepository.findById(securityUtil.getCurrentMemberId()).orElseThrow(()->new BaseException(MEMBER_NOT_FOUND));
-        Project project = projectRepository.findById(id).orElseThrow(()->new BaseException(PROJECT_NOT_FOUND));
+    public String projectDeleteScrap(Long id) {
+        Member member = memberRepository.findById(securityUtil.getCurrentMemberId()).orElseThrow(() -> new BaseException(MEMBER_NOT_FOUND));
+        Project project = projectRepository.findById(id).orElseThrow(() -> new BaseException(PROJECT_NOT_FOUND));
         ProjectScrap projectScrap = projectScrapRepository.findByProjectIdAndMemberId(project.getId(), member.getId());
         // Todo : 이미 없으면 에러 처리
         projectScrapRepository.delete(projectScrap);
         return "삭제 완료";
     }
 
+    // 조회수 증가
+    public void incrementViews(Long id){
+        String key = VIEWS_KEY_PREFIX + id;
+        Long views = redisTemplate.opsForValue().increment(key);
+
+    }
 }
