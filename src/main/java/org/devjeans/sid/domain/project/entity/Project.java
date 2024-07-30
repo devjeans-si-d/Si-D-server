@@ -65,8 +65,13 @@ public class Project extends BaseEntity {
     @OneToMany(mappedBy = "project", cascade = CascadeType.PERSIST)
     private List<ChatRoom> chatRooms = new ArrayList<>();
 
-    public void updateProjectMembers(List<ProjectMember> projectMembers){
-        this.projectMembers = projectMembers;
+    public void updateNewProjectMembers(List<ProjectMember> newProjectMembers){
+        // 기존 리스트 삭제
+//        this.projectMembers.clear();
+        // 새로운 리스트 추가
+//        if (newProjectMembers != null) {
+            this.projectMembers.addAll(newProjectMembers);
+//        }
     }
     public void updateRecruitInfos(List<RecruitInfo> recruitInfos){
         this.recruitInfos = recruitInfos;

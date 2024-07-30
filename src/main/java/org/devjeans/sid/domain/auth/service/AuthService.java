@@ -33,7 +33,6 @@ import static java.rmi.server.LogStream.log;
 @Slf4j
 @RequiredArgsConstructor
 @Service
-//@PropertySource("classpath:application.yml")
 @Transactional
 public class AuthService {
     private final MemberRepository memberRepository;
