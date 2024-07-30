@@ -107,8 +107,15 @@ public class LaunchedProjectService {
         // dto에서 받은 projectId(Long)로 project 객체 찾음
         Project project = projectRepository.findByIdOrThrow(dto.getProjectId());
 
-        Path imagePath;
+        // 우선 기존 프로젝트 멤버를 모두 delete 해준다.
+        List<ProjectMember> projectMembers = project.getProjectMembers();
+        for (ProjectMember projectMember : projectMembers) {
+            projectMemberRepository.delete(projectMember);
+        }
 
+
+        Path imagePath = null;
+        //== TODO: 사진 저장 로직 => S3 presigned url 방식으로 변경한 후 수정 예정 ==//
         try{
             byte[] bytes = launchedProjectImage.getBytes(); // 이미지 - > 바이트
             // 경로지정
@@ -137,22 +144,19 @@ public class LaunchedProjectService {
             // 일단 먼저 조립해준 launchedProject 객체의 기술스택 리스트 가져와서 add 해줌
             launchedProject.getLaunchedProjectTechStacks().add(launchedProjectTechStack);
         }
+        //== TODO: 사진 저장 로직 END ==//
 
 
-        for(LaunchedProjectMemberRequest memberDto : dto.getMembers()){
+        // memberDto를 ProjectMember로 변환
+        List<LaunchedProjectMemberRequest> memberDtos = dto.getMembers();
+        memberDtos.stream().map(memberDto -> {
             Member member = memberRepository.findByIdOrThrow(memberDto.getId());
-            ProjectMember projectMember = LaunchedProjectMemberRequest.toEntity(memberDto, member, project);
 
-            List<ProjectMember> projectMembers = launchedProject.getProject().getProjectMembers();
-            // 존재하지 않는 회원만 add (모집 이후 추가되었을 경우)
-            if(!projectMembers.contains(member)){
-                projectMembers.add(projectMember);
-            }
-        }
+            return LaunchedProjectMemberRequest.toEntity(memberDto, member, project);
+        });
 
-        LaunchedProject savedLaunchedProject = launchedProjectRepository.save(launchedProject);
-
-        return savedLaunchedProject;
+        launchedProject.getProject().updateNewProjectMembers(projectMembers); // project에 갈아 끼워주기
+        return launchedProjectRepository.save(launchedProject);
     }
 
     public String update(UpdateLaunchedProjectRequest dto,
