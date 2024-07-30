@@ -15,9 +15,6 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class UpdateLaunchedProjectRequest {
-
-    private Long id; // launched-project글 id
-
     private String launchedProjectContents; // Launched-Project 글 내용
 
     private String siteUrl; // 프로젝트 사이트 링크
