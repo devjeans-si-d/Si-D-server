@@ -29,8 +29,6 @@ public class Project extends BaseEntity {
     @Column(nullable = false)
     private String description;
 
-    @Column(nullable = false, length = 2083)
-    private String projectImage;
 
     @Column(nullable = false, length = 5000)
     private String recruitmemtContents;
@@ -48,25 +46,31 @@ public class Project extends BaseEntity {
     @JoinColumn(name = "pm_id")
     private Member pm;
 
+    @Builder.Default
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
     private List<ProjectMember> projectMembers = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
     private List<RecruitInfo> recruitInfos = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
     private List<ProjectScrap> projectScraps = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "project", cascade = CascadeType.PERSIST)
     private List<ChatRoom> chatRooms = new ArrayList<>();
 
     public void updateNewProjectMembers(List<ProjectMember> newProjectMembers){
-        // 기존 리스트 삭제
-//        this.projectMembers.clear();
-        // 새로운 리스트 추가
-//        if (newProjectMembers != null) {
-            this.projectMembers.addAll(newProjectMembers);
-//        }
+        this.projectMembers = newProjectMembers;
+    }
+    public void updateRecruitInfos(List<RecruitInfo> recruitInfos){
+        this.recruitInfos = recruitInfos;
+    }
+
+    public void updateIsClosed(String yn){
+        this.isClosed=yn;
     }
 
     public static TopListProjectResponse topListResFromEntity (Project project){

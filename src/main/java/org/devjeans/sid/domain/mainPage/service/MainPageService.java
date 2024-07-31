@@ -51,7 +51,7 @@ public class MainPageService {
         return topListLaunchedProjectResPage;
     }
 
-    // 진행한 프로젝트 개수 내림차 순 6개
+    // 최신회원 3명
     public Page<TopListMemberResponse> getTopMembers(Pageable pageable){
         Page<Member> members = memberRepository.findAllByOrderByUpdatedAtDesc(pageable);
         Page<TopListMemberResponse> topListMemberResponsePage = members.map(member -> member.topListResFromMember(member));
