@@ -27,11 +27,11 @@ public class TechStack{
 
     @Enumerated(EnumType.STRING)
     private JobField jobField;
-
-    @OneToMany(mappedBy = "techStack", cascade = CascadeType.REFRESH)
-    private List<SiderCardTechStack> siderCardTechStacks = new ArrayList<>();
-
-    @OneToMany(mappedBy = "techStack", cascade = CascadeType.REFRESH)
-    private List<LaunchedProjectTechStack> launchedProjectTechStacks = new ArrayList<>();
+//
+//    @OneToMany(mappedBy = "techStack", cascade = CascadeType.REFRESH)
+//    private List<SiderCardTechStack> siderCardTechStacks = new ArrayList<>();
+//
+//    @OneToMany(mappedBy = "techStack", cascade = CascadeType.REFRESH)
+//    private List<LaunchedProjectTechStack> launchedProjectTechStacks = new ArrayList<>();
 
 }

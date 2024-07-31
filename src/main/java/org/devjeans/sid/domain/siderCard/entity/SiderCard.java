@@ -6,10 +6,7 @@ import lombok.NoArgsConstructor;
 import org.devjeans.sid.domain.common.BaseEntity;
 import org.devjeans.sid.domain.member.entity.Member;
 import org.devjeans.sid.domain.project.entity.JobField;
-import org.devjeans.sid.domain.siderCard.dto.CareerResDto;
-import org.devjeans.sid.domain.siderCard.dto.SiderCardResDto;
-import org.devjeans.sid.domain.siderCard.dto.SocialLinkResDto;
-import org.devjeans.sid.domain.siderCard.dto.TeckStackResDto;
+import org.devjeans.sid.domain.siderCard.dto.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -62,9 +59,26 @@ public class SiderCard extends BaseEntity {
                 .jobField(this.jobField)
                 .introduction(this.introduction)
                 .image(this.image)
-                .socialLinkRes(new SocialLinkResDto(this.email,this.github,this.behance,this.linkedin,this.etc))
+                .socialLinkRes(new SocialLinkDto(this.email,this.github,this.behance,this.linkedin,this.etc))
                 .careerRes(careerResDtos)
                 .teckStackRes(teckStackResDtos)
                 .build();
+    }
+
+    public void update(SiderCardUpdateReqDto dto,SiderCard siderCard,List<SiderCardTechStack> techStacks) {
+        List<Career> careers = new ArrayList<>();
+        for (CareerReqDto career : dto.getCareers()) {
+            careers.add(career.toEntity(siderCard));
+        }
+        this.jobField = dto.getJobField();
+        this.introduction = dto.getIntroduction();
+        this.image = dto.getImage();
+        this.email = dto.getSocialLink().getEmail();
+        this.github = dto.getSocialLink().getGithub();
+        this.behance = dto.getSocialLink().getBehance();
+        this.linkedin = dto.getSocialLink().getLinkedin();
+        this.etc = dto.getSocialLink().getEtc();
+        this.careers = careers;
+        this.siderCardTechStacks =techStacks;
     }
 }

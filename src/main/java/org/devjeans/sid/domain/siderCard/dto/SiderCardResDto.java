@@ -18,7 +18,7 @@ public class SiderCardResDto {
     private JobField jobField;
     private String introduction;
     private String image;
-    private SocialLinkResDto socialLinkRes;
+    private SocialLinkDto socialLinkRes;
     private List<CareerResDto> careerRes;
     private List<TeckStackResDto> teckStackRes;
 }

@@ -1,5 +1,6 @@
 package org.devjeans.sid.domain.siderCard.entity;
 
+import lombok.*;
 import org.devjeans.sid.domain.common.BaseEntity;
 import org.devjeans.sid.domain.siderCard.dto.CareerResDto;
 
@@ -8,6 +9,10 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
+@Getter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Career{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,7 +40,6 @@ public class Career{
 
     public CareerResDto fromEntity() {
         return CareerResDto.builder()
-                .id(this.id)
                 .company(this.company)
                 .position(this.position)
                 .employedStart(this.employedStart)

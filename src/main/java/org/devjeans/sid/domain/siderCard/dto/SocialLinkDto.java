@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class SocialLinkResDto {
+public class SocialLinkDto {
     private String email;
     private String github;
     private String behance;

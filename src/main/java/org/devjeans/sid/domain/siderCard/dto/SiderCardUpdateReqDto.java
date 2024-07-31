@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.devjeans.sid.domain.project.entity.JobField;
 
 import java.util.List;
 
@@ -12,10 +13,10 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SiderCardUpdateReqDto {
-    private String domain;
+    private JobField jobField;
     private String introduction;
     private String image;
-    private SocialLinkResDto socialLinkRes;
-    private List<CareerResDto> careerRes;
-    private List<TeckStackResDto> teckStackRes;
+    private SocialLinkDto socialLink;
+    private List<CareerReqDto> careers;
+    private List<TeckStackReqDto> teckStacks;
 }
