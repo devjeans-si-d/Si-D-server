@@ -108,16 +108,17 @@ public class ProjectAcceptService {
         });
     }
 
-    public Page<MyProjectResponse> getMyProjectList(Pageable pageable) {
+    public List<MyProjectResponse> getMyProjectList(Pageable pageable) {
         Long currentMemberId = securityUtil.getCurrentMemberId();
 
-        Page<ProjectMember> projectMember = projectMemberRepository.findAllByMemberIdOrderByProjectCreatedAtDesc(pageable, currentMemberId);
+        List<ProjectMember> projectMember = projectMemberRepository.findAllMyProjects(currentMemberId);
 
-        return projectMember.map(p -> {
-                    Optional<LaunchedProject> opt = launchedProjectRepository.findByIdAndDeletedAtIsNull(p.getProject().getId());
+        return projectMember.stream().map(p -> {
+                    // 프로젝트 아이디로 찾기
+                    Optional<LaunchedProject> opt = launchedProjectRepository.findByProjectIdAndDeletedAtIsNull(p.getProject().getId());
                     String isLaunched = opt.isPresent() ? "Y" : "N";
                     return MyProjectResponse.fromEntity(p, isLaunched);
-                });
+                }).collect(Collectors.toList());
 
     }
 }

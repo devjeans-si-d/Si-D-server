@@ -4,10 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.devjeans.sid.domain.member.entity.Member;
 import org.devjeans.sid.domain.project.entity.Project;
 import org.devjeans.sid.domain.project.entity.ProjectMember;
 
+@Slf4j
 @Data
 @Builder
 @AllArgsConstructor
@@ -23,7 +25,9 @@ public class MyProjectResponse {
     private String isLaunched;
 
     public static MyProjectResponse fromEntity(ProjectMember projectMember, String isLaunched) {
-        String isPm = projectMember.getProject().getPm().getId().equals(projectMember.getId()) ? "Y" : "N";
+        log.info("line 28 {}, {}", projectMember.getProject().getPm().getId(), projectMember.getMember().getId());
+
+        String isPm = projectMember.getProject().getPm().getId().equals(projectMember.getMember().getId()) ? "Y" : "N";
         String isClosed = projectMember.getProject().getIsClosed();
 
         return MyProjectResponse.builder()

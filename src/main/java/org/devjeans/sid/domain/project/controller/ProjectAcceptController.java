@@ -11,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 // TODO: 추후 프로젝트 Controller와 통합 예정
 @RequiredArgsConstructor
 @RequestMapping("/api/project")
@@ -30,8 +32,8 @@ public class ProjectAcceptController {
     }
 
     @GetMapping("/my-projects")
-    public ResponseEntity<Page<MyProjectResponse>> getMyProjects(Pageable pageable) {
-        Page<MyProjectResponse> projectList = projectAcceptService.getMyProjectList(pageable);
+    public ResponseEntity<List<MyProjectResponse>> getMyProjects(Pageable pageable) {
+        List<MyProjectResponse> projectList = projectAcceptService.getMyProjectList(pageable);
         return new ResponseEntity<>(projectList, HttpStatus.OK);
     }
 }

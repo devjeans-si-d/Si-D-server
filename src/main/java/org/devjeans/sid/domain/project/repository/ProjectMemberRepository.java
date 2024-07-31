@@ -15,6 +15,9 @@ public interface ProjectMemberRepository extends JpaRepository<ProjectMember,Lon
     void delete(ProjectMember member);
 
     //
-    @Query("select pm from ProjectMember pm join fetch pm.member, pm.project where pm.member.id = :memberId order by pm.project.createdAt desc")
-    Page<ProjectMember> findAllByMemberIdOrderByProjectCreatedAtDesc(Pageable pageable, @Param("memberId") Long memberId);
+    @Query("select pm from ProjectMember pm join fetch pm.member join fetch pm.project p where pm.member.id = :memberId order by pm.project.createdAt desc")
+    List<ProjectMember> findAllMyProjects(@Param("memberId") Long memberId);
+
+//    @Query("select pm from ProjectMember pm join fetch pm.member, pm.project where pm.member.id = :memberId order by pm.project.createdAt desc")
+    Page<ProjectMember> findAllByMemberIdOrderByCreatedAtDesc(Pageable pageable, @Param("memberId") Long memberId);
 }
