@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.NoArgsConstructor;
 import org.devjeans.sid.domain.common.BaseEntity;
 import org.devjeans.sid.domain.member.entity.Member;
+import org.devjeans.sid.domain.project.entity.JobField;
 import org.devjeans.sid.domain.siderCard.dto.CareerResDto;
 import org.devjeans.sid.domain.siderCard.dto.SiderCardResDto;
 import org.devjeans.sid.domain.siderCard.dto.SocialLinkResDto;
@@ -25,12 +26,12 @@ import java.util.List;
 @NoArgsConstructor
 public class SiderCard extends BaseEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="sider_card_id")
     private Long id;
 
-    @Column(length=10)
-    private String domain;
+    @Enumerated(EnumType.STRING)
+    private JobField jobField;
     private String introduction;
     private String image;
 
@@ -46,9 +47,6 @@ public class SiderCard extends BaseEntity {
     @OneToMany(mappedBy = "siderCard", cascade = CascadeType.ALL)
     private List<SiderCardTechStack> siderCardTechStacks = new ArrayList<>();
 
-//    @OneToMany(mappedBy = "siderCard", cascade = CascadeType.ALL)
-//    private List<SocialInfo> socialInfos = new ArrayList<>();
-
     public SiderCardResDto fromEntity(Member member) {
         List<CareerResDto> careerResDtos = new ArrayList<>();
         for (Career career : this.careers) {
@@ -61,7 +59,7 @@ public class SiderCard extends BaseEntity {
         return SiderCardResDto.builder()
                 .id(this.id)
                 .nickname(member.getNickname())
-                .domain(this.domain)
+                .jobField(this.jobField)
                 .introduction(this.introduction)
                 .image(this.image)
                 .socialLinkRes(new SocialLinkResDto(this.email,this.github,this.behance,this.linkedin,this.etc))

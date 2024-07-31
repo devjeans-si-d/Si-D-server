@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.devjeans.sid.domain.project.entity.JobField;
 
 import java.util.List;
 
@@ -14,7 +15,7 @@ import java.util.List;
 public class SiderCardResDto {
     private Long id;
     private String nickname;
-    private String domain;
+    private JobField jobField;
     private String introduction;
     private String image;
     private SocialLinkResDto socialLinkRes;

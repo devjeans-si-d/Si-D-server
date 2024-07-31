@@ -105,8 +105,8 @@ public class AuthService {
     public void registerMember(RegisterMemberRequest dto) {
 //        TODO: 탈퇴한 회원일 경우 처리해야함
         Member member = dto.toEntity();
-        memberRepository.save(member);
-        siderCardRepository.save(new SiderCard());
+        Member savedMember = memberRepository.save(member);
+        siderCardRepository.save(SiderCard.builder().id(savedMember.getId()).build());
     }
 
     public Member getMemberByKakaoId(Long kakaoId) {

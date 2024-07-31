@@ -1,7 +1,6 @@
 package org.devjeans.sid.domain.project.entity;
 
 import org.devjeans.sid.domain.common.BaseEntity;
-import org.devjeans.sid.domain.siderCard.entity.JobField;
 
 
 import javax.persistence.*;
