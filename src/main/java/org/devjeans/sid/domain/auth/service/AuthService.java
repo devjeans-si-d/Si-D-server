@@ -28,6 +28,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
 
 import static java.rmi.server.LogStream.log;
@@ -119,7 +120,9 @@ public class AuthService {
         Long id = Long.valueOf(SecurityContextHolder.getContext().getAuthentication().getName());
 //        System.out.println(id);
         Member member = memberRepository.findByIdOrThrow(id);
+        SiderCard siderCard = siderCardRepository.findById(id).orElseThrow(()->new EntityNotFoundException("siderCard not found"));
         member.updateDeleteAt();
+        siderCard.updateDeleteAt();
         return member;
     }
 }
