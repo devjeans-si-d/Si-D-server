@@ -24,6 +24,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.SetOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,13 +44,15 @@ public class ProjectService {
     private final MemberRepository memberRepository;
     private final ProjectMemberRepository projectMemberRepository;
     private final RecruitInfoRepository recruitInfoRepository;
-
     private final RedisTemplate<String,String> redisTemplate;
+
     private final SecurityUtil securityUtil;
     private final ProjectScrapRepository projectScrapRepository;
     private static final String VIEWS_KEY_PREFIX="project_views:";
+    private static final String SCRAP_KEY_PREFIX="project_scraps:";
+
     @Autowired
-    public ProjectService(ProjectRepository projectRepository, MemberRepository memberRepository, ProjectMemberRepository projectMemberRepository, RecruitInfoRepository recruitInfoRepository, RedisTemplate<String, String> redisTemplate, SecurityUtil securityUtil, ProjectScrapRepository projectScrapRepository) {
+    public ProjectService(ProjectRepository projectRepository, MemberRepository memberRepository, ProjectMemberRepository projectMemberRepository, RecruitInfoRepository recruitInfoRepository,RedisTemplate<String, String> redisTemplate, SecurityUtil securityUtil, ProjectScrapRepository projectScrapRepository) {
         this.projectRepository = projectRepository;
         this.memberRepository = memberRepository;
         this.projectMemberRepository = projectMemberRepository;
@@ -101,6 +104,7 @@ public class ProjectService {
         // Todo 추후 isclosed 체크
         Project project = projectRepository.findById(id).orElseThrow(()->new BaseException(MEMBER_NOT_FOUND));
         incrementViews(id);
+
         return DetailProjectResponse.fromEntity(project);
     }
 
@@ -176,11 +180,23 @@ public class ProjectService {
 
     // ProjectScrap 생성
     public ScrapResponse createScrap(Long id){
+        Long memberId = securityUtil.getCurrentMemberId();
+        SetOperations<String,String> scrapRedis = redisTemplate.opsForSet();
+        Long check=scrapRedis.add("scrap key: "+id.toString(),"scrap value: "+memberId.toString());
+        System.out.println("check: "+check+ ", size: "+scrapRedis.size("scrap key: "+id.toString())+"key:"+scrapRedis.members(id.toString()));
+
+
+
+
         Member member = memberRepository.findById(securityUtil.getCurrentMemberId()).orElseThrow(()->new BaseException(MEMBER_NOT_FOUND));
         Project project = projectRepository.findById(id).orElseThrow(()->new BaseException(PROJECT_NOT_FOUND));
-        ScrapResponse scrapResponse = ScrapResponse.builder().memberId(member.getId()).projectId(id).status(true).build();
-        // Todo : 이미 있으면...error
+
+
+        ScrapResponse scrapResponse = ScrapResponse.builder().memberId(member.getId()).projectId(id).build();
+
         projectScrapRepository.save(ScrapResponse.toEntity(project, member));
+        // Todo : scrap create 원래 있는지 체크 있으면 에러
+        // Todo : scrap create 시 redis 보내기
         return scrapResponse;
     }
 
@@ -215,7 +231,8 @@ public class ProjectService {
         Member member = memberRepository.findById(securityUtil.getCurrentMemberId()).orElseThrow(() -> new BaseException(MEMBER_NOT_FOUND));
         Project project = projectRepository.findById(id).orElseThrow(() -> new BaseException(PROJECT_NOT_FOUND));
         ProjectScrap projectScrap = projectScrapRepository.findByProjectIdAndMemberId(project.getId(), member.getId());
-        // Todo : 이미 없으면 에러 처리
+        // Todo : 없으면 에러 처리
+        // Todo : redis 감소 시키기
         projectScrapRepository.delete(projectScrap);
         return "삭제 완료";
     }

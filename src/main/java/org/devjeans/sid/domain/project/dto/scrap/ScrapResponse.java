@@ -15,8 +15,7 @@ import org.devjeans.sid.domain.project.entity.ProjectScrap;
 public class ScrapResponse {
     private Long memberId;
     private Long projectId;
-    @Builder.Default
-    private boolean status=true;
+
 
     public static ProjectScrap toEntity(Project project, Member member){
         return ProjectScrap.builder().project(project).member(member).build();

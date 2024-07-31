@@ -1,5 +1,6 @@
 package org.devjeans.sid.domain.project.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.devjeans.sid.domain.project.entity.Project;
 import org.devjeans.sid.domain.project.repository.ProjectRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import java.time.LocalDateTime;
 @Component
 public class ProjectScheduler {
     private static final String VIEWS_KEY_PREFIX="project_views:";
+    private static final String SCRAP_KEY_PREFIX="project_scraps:";
 
     private final ProjectRepository projectRepository;
     private final RedisTemplate<String,String> redisTemplate;
@@ -38,7 +40,8 @@ public class ProjectScheduler {
         }
     }
 
-    @Scheduled(cron = "0 0/1 * * * *")
+    @Qualifier("VIEWS")
+    @Scheduled(cron = "0 0 4 * * *")
     @Transactional
     public void syncViews(){
         for(Project p : projectRepository.findAll()){
