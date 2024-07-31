@@ -27,8 +27,8 @@ public class SiderCard extends BaseEntity {
 //    @JoinColumn(name="member_id")
 //    private Member member;
 
-    @Column(length=10)
-    private String domain;
+//    @Column(length=10)
+//    private String domain;
 
     private String introduction;
 

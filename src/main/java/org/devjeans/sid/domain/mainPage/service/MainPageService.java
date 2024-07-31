@@ -18,8 +18,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
-
 @Service
 @Transactional(readOnly = true)
 public class MainPageService {
@@ -56,8 +54,7 @@ public class MainPageService {
     // 진행한 프로젝트 개수 내림차 순 6개
     public Page<TopListMemberResponse> getTopMembers(Pageable pageable){
         Page<Member> members = memberRepository.findAllByOrderByUpdatedAtDesc(pageable);
-        Page<TopListMemberResponse> topListMemberResponsePage = members.map(a->a.topListResFromMember(a));
-
+        Page<TopListMemberResponse> topListMemberResponsePage = members.map(member -> member.topListResFromMember(member));
         return topListMemberResponsePage;
     }
 

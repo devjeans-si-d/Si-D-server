@@ -4,8 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.devjeans.sid.domain.siderCard.entity.JobField;
-import org.devjeans.sid.domain.siderCard.entity.TechStack;
 
 import java.util.List;
 

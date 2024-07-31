@@ -14,8 +14,6 @@ public class TopListMemberResponse {
 
     private String nickname; // 닉네임
 
-//    private String domain; // 사이더 카드 url 도메인
-
     private String profileImageUrl; // 프로필 이미지 Url
 
 }
