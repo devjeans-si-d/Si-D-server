@@ -1,16 +1,15 @@
-package org.devjeans.sid.domain.project;
+package org.devjeans.sid.domain.project.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.devjeans.sid.domain.project.dto.AcceptApplicantRequest;
 import org.devjeans.sid.domain.project.dto.ApplicantResponse;
+import org.devjeans.sid.domain.project.dto.MyProjectResponse;
 import org.devjeans.sid.domain.project.service.ProjectAcceptService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 // TODO: 추후 프로젝트 Controller와 통합 예정
 @RequiredArgsConstructor
@@ -28,5 +27,11 @@ public class ProjectAcceptController {
     public ResponseEntity<Page<ApplicantResponse>> getApplicants(Pageable pageable, @PathVariable Long projectId) {
         Page<ApplicantResponse> applicants = projectAcceptService.getApplicants(pageable, projectId);
         return new ResponseEntity<>(applicants, HttpStatus.OK);
+    }
+
+    @GetMapping("/my-projects")
+    public ResponseEntity<Page<MyProjectResponse>> getMyProjects(Pageable pageable) {
+        Page<MyProjectResponse> projectList = projectAcceptService.getMyProjectList(pageable);
+        return new ResponseEntity<>(projectList, HttpStatus.OK);
     }
 }

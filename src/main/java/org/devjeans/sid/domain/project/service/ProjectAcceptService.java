@@ -2,10 +2,13 @@ package org.devjeans.sid.domain.project.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.devjeans.sid.domain.launchedProject.entity.LaunchedProject;
+import org.devjeans.sid.domain.launchedProject.repository.LaunchedProjectRepository;
 import org.devjeans.sid.domain.member.entity.Member;
 import org.devjeans.sid.domain.member.repository.MemberRepository;
 import org.devjeans.sid.domain.project.dto.AcceptApplicantRequest;
 import org.devjeans.sid.domain.project.dto.ApplicantResponse;
+import org.devjeans.sid.domain.project.dto.MyProjectResponse;
 import org.devjeans.sid.domain.project.entity.Project;
 import org.devjeans.sid.domain.project.entity.ProjectApplication;
 import org.devjeans.sid.domain.project.entity.ProjectMember;
@@ -21,6 +24,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 import static org.devjeans.sid.global.exception.exceptionType.ProjectAcceptException.*;
 import static org.devjeans.sid.global.exception.exceptionType.ProjectExceptionType.*;
 
@@ -34,6 +41,7 @@ public class ProjectAcceptService {
     private final ProjectRepository projectRepository;
     private final ProjectMemberRepository projectMemberRepository;
     private final ProjectApplicationRepository projectApplicationRepository;
+    private final LaunchedProjectRepository launchedProjectRepository;
     private final EmailService emailService;
 
     @Transactional
@@ -100,4 +108,16 @@ public class ProjectAcceptService {
         });
     }
 
+    public Page<MyProjectResponse> getMyProjectList(Pageable pageable) {
+        Long currentMemberId = securityUtil.getCurrentMemberId();
+
+        Page<ProjectMember> projectMember = projectMemberRepository.findAllByMemberIdOrderByProjectCreatedAtDesc(pageable, currentMemberId);
+
+        return projectMember.map(p -> {
+                    Optional<LaunchedProject> opt = launchedProjectRepository.findByIdAndDeletedAtIsNull(p.getProject().getId());
+                    String isLaunched = opt.isPresent() ? "Y" : "N";
+                    return MyProjectResponse.fromEntity(p, isLaunched);
+                });
+
+    }
 }

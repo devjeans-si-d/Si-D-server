@@ -30,4 +30,5 @@ public interface ProjectRepository extends JpaRepository<Project,Long> {
 
     //deletedat!=null, orderby updatedAt
     Page<Project> findByDeletedAtIsNullOrderByUpdatedAtDesc(Pageable pageable);
+
 }
