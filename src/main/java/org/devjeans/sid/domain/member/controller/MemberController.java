@@ -43,7 +43,6 @@ public class MemberController {
         return new ResponseEntity<>(updateMemberResponse, HttpStatus.OK);
     }
 
-
     @PostMapping("/{memberId}/update/email")
     public ResponseEntity<?> sendEmail(@Valid @RequestBody UpdateEmailRequest updateEmailRequest, @PathVariable Long memberId) {
         emailService.sendEmailNotice(updateEmailRequest.getEmail(), memberId);

@@ -38,6 +38,7 @@ public class AuthController {
 
 //            가입자 or 비가입자 체크해서 처리
         Member originMember = authService.getMemberByKakaoId(kakaoProfile.getId());
+//        TODO: 탈퇴한 회원일 경우 처리해야함
         System.out.println(originMember);
         if(originMember == null) {
 //           신규 회원일경우 errorResponse에 소셜id를 담아 예외를 프론트로 던지기
@@ -64,6 +65,28 @@ public class AuthController {
 //        String tmp = SecurityContextHolder.getContext().getAuthentication().getName();
         Member member = authService.delete();
         return new ResponseEntity<>(member.getDeletedAt().toString(), HttpStatus.OK);
+    }
+
+    // 클라이언트에서 토큰을 받아 로그인 처리
+    @PostMapping("login")
+    public ResponseEntity<?> login(@RequestHeader String token) throws JsonProcessingException {
+        KakaoProfile kakaoProfile = authService.getKakaoProfile(token);
+
+        Member originMember = authService.getMemberByKakaoId(kakaoProfile.getId());
+//        TODO: 탈퇴한 회원일 경우 처리해야함
+        System.out.println(originMember);
+        if(originMember == null) {
+//           신규 회원일경우 errorResponse에 소셜id를 담아 예외를 프론트로 던지기
+//            프론트는 예외일경우 회원가입 화면으로 이동하여 회원가입 정보와 소셜id를 담아 다시 회원가입 요청
+            CommonResDto commonResDto = new CommonResDto(HttpStatus.UNAUTHORIZED,"기존 회원이 아닙니다. 회원가입을 진행해주세요.",new KakaoProfileResDto(kakaoProfile.getId(),kakaoProfile.getKakao_account().email));
+            return new ResponseEntity<>(commonResDto,HttpStatus.UNAUTHORIZED);
+        }
+        String jwtToken = jwtTokenProvider.createToken(String.valueOf(originMember.getId()),originMember.getRole().toString());
+        Map<String,Object> loginInfo = new HashMap<>();
+        loginInfo.put("id",originMember.getId());
+        loginInfo.put("token",jwtToken);
+//            로그인 처리
+        return new ResponseEntity<>(loginInfo,HttpStatus.OK);
     }
 
 }
