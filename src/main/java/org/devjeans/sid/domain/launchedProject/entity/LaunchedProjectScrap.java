@@ -31,12 +31,11 @@ public class LaunchedProjectScrap extends BaseEntity {
     private LaunchedProject launchedProject; // 스크랩(사이다) 누른 해당 프로젝트
 
     public static LaunchedProjectScrapResponse scrapResfromEntity(LaunchedProject launchedProject,
-                                                                  LaunchedProjectScrap launchedProjectScrap,
-                                                                  ToggleStatus toggleStatus){
+                                                                  LaunchedProjectScrap launchedProjectScrap){
         return LaunchedProjectScrapResponse.builder()
                 .launchedProjectId(launchedProjectScrap.getLaunchedProject().getId()) // 글 id
                 .scrapCount(launchedProject.getLaunchedProjectScraps().size()) // 스크랩 수
-                .toggleStatus(toggleStatus)
+//                .toggleStatus(toggleStatus)
                 .build();
     }
 

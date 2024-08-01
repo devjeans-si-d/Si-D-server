@@ -2,6 +2,7 @@ package org.devjeans.sid.config;
 
 
 import org.devjeans.sid.domain.member.dto.MemberIdEmailCode;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,6 +12,7 @@ import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
+import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
@@ -54,6 +56,45 @@ public class RedisConfig {
         return redisTemplate;
     }
 
+    @Bean
+    @Qualifier("LaunchedProjectView") // 완성된프로젝트 조회수 RedisConnectionFactory
+    public RedisConnectionFactory LPviewRedisConnectionFactory() {
+        RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
+        redisStandaloneConfiguration.setHostName(host);
+        redisStandaloneConfiguration.setPort(port);
+        redisStandaloneConfiguration.setDatabase(10);
+        redisStandaloneConfiguration.setPassword(password);
+        return new LettuceConnectionFactory(redisStandaloneConfiguration);
+    }
 
+    @Bean
+    @Qualifier("LaunchedProjectView") // 완성된프로젝트 조회수 RedisTemplate
+    public RedisTemplate<String, String> LPviewRedisTemplate(@Qualifier("LaunchedProjectView")RedisConnectionFactory LPviewRedisConnectionFactory){
+        RedisTemplate<String, String> redisTemplate = new RedisTemplate<>();
+        redisTemplate.setKeySerializer(new StringRedisSerializer());
+        redisTemplate.setValueSerializer(new StringRedisSerializer());
+        redisTemplate.setConnectionFactory(LPviewRedisConnectionFactory);
+        return redisTemplate;
+    }
 
+    @Bean
+    @Qualifier("LaunchedProjectScrap") // 완성된프로젝트 스크랩 RedisConnectionFactory
+    public RedisConnectionFactory LPscrapRedisConnectionFactory() {
+        RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
+        redisStandaloneConfiguration.setHostName(host);
+        redisStandaloneConfiguration.setPort(port);
+        redisStandaloneConfiguration.setDatabase(11);
+        redisStandaloneConfiguration.setPassword(password);
+        return new LettuceConnectionFactory(redisStandaloneConfiguration);
+    }
+
+    @Bean
+    @Qualifier("LaunchedProjectScrap") // 완성된프로젝트 스크랩 RedisTemplate
+    public RedisTemplate<String, Object> LPscrapRedisTemplate(@Qualifier("LaunchedProjectScrap")RedisConnectionFactory LPscrapRedisConnectionFactory){
+        RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
+        redisTemplate.setKeySerializer(new StringRedisSerializer()); // String 형태를 직렬화 시키겠다. (String으로 직렬화), Redis의 키를 문자열로 직렬화
+        redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer()); //json으로 직렬화, Redis의 값을 JSON형태로 직렬화
+        redisTemplate.setConnectionFactory(LPscrapRedisConnectionFactory);
+        return redisTemplate;
+    }
 }
