@@ -100,11 +100,7 @@ public class ProjectAcceptService {
         Page<ProjectApplication> applicationList = projectApplicationRepository
                 .findAllByProjectIdOrderByCreatedAtDesc(pageable, projectId);
 
-        return applicationList.map(a -> {
-            Member member = memberRepository.findByIdOrThrow(a.getMemberId());
-
-            return ApplicantResponse.fromEntity(a, member);
-        });
+        return applicationList.map(ApplicantResponse::fromEntity);
     }
 
     public List<MyProjectResponse> getMyProjectList(Pageable pageable) {
@@ -121,8 +117,11 @@ public class ProjectAcceptService {
 
     }
 
+    // 지원하기
     public ApplyProjectResponse applyProject(Long projectId, ApplyProjectRequest applyProjectRequest) {
         Long currentMemberId = securityUtil.getCurrentMemberId();
+
+        Member member = memberRepository.findByIdOrThrow(currentMemberId);
 
         // 검증 1: 프로젝트가 존재하는지
         Project project = projectRepository.findByIdAndDeletedAtIsNull(projectId)
@@ -144,9 +143,16 @@ public class ProjectAcceptService {
             throw new BaseException(PROJECT_PM_APPLICATION);
         }
 
-        ProjectApplication projectApplication = ApplyProjectRequest.toEntity(projectId, currentMemberId, applyProjectRequest);
+        ProjectApplication projectApplication = ApplyProjectRequest.toEntity(project, member, applyProjectRequest);
         ProjectApplication savedApplication = projectApplicationRepository.save(projectApplication);
 
         return ApplyProjectResponse.fromEntity(savedApplication);
+    }
+
+    public Page<ApplicationResponse> getMyApplicationList(Pageable pageable) {
+        Long currentMemberId = securityUtil.getCurrentMemberId();
+        Page<ProjectApplication> applyList = projectApplicationRepository.findAllByMemberIdOrderByCreatedAtDesc(pageable, currentMemberId);
+
+        return applyList.map(ApplicationResponse::fromEntity);
     }
 }

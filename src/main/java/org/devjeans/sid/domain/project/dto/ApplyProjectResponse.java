@@ -18,8 +18,8 @@ public class ApplyProjectResponse {
     public static ApplyProjectResponse fromEntity(ProjectApplication apply) {
         return ApplyProjectResponse.builder()
                 .applyId(apply.getId())
-                .projectId(apply.getProjectId())
-                .memberId(apply.getMemberId())
+                .projectId(apply.getProject().getId())
+                .memberId(apply.getMember().getId())
                 .build();
     }
 }

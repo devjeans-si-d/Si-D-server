@@ -2,6 +2,7 @@ package org.devjeans.sid.domain.project.entity;
 
 import lombok.*;
 import org.devjeans.sid.domain.common.BaseEntity;
+import org.devjeans.sid.domain.member.entity.Member;
 
 import javax.persistence.*;
 
@@ -16,9 +17,15 @@ public class ProjectApplication extends BaseEntity {
     @Column(name="project_application_id")
     private Long id;
 
-    private Long memberId;
 
-    private Long projectId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "project_id")
+    private Project project;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private Member member;
+
 
     @Enumerated(EnumType.STRING)
     private JobField jobField;
