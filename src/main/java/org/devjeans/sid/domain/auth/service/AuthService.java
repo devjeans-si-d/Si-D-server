@@ -13,6 +13,8 @@ import org.devjeans.sid.domain.auth.entity.KakaoRedirect;
 import org.devjeans.sid.domain.member.entity.Member;
 import org.devjeans.sid.domain.auth.entity.OAuthToken;
 import org.devjeans.sid.domain.member.repository.MemberRepository;
+import org.devjeans.sid.domain.siderCard.entity.SiderCard;
+import org.devjeans.sid.domain.siderCard.repository.SiderCardRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.HttpEntity;
@@ -26,6 +28,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
 
 import static java.rmi.server.LogStream.log;
@@ -36,6 +39,7 @@ import static java.rmi.server.LogStream.log;
 @Transactional
 public class AuthService {
     private final MemberRepository memberRepository;
+    private final SiderCardRepository siderCardRepository;
 
     @Value("${auth.oauth.kakao.api}")
     private String authOauthKakaoApi;
@@ -99,8 +103,10 @@ public class AuthService {
     }
 
     public void registerMember(RegisterMemberRequest dto) {
+//        TODO: 탈퇴한 회원일 경우 처리해야함
         Member member = dto.toEntity();
-        memberRepository.save(member);
+        Member savedMember = memberRepository.save(member);
+        siderCardRepository.save(SiderCard.builder().id(savedMember.getId()).build());
     }
 
     public Member getMemberByKakaoId(Long kakaoId) {
@@ -113,7 +119,9 @@ public class AuthService {
         Long id = Long.valueOf(SecurityContextHolder.getContext().getAuthentication().getName());
 //        System.out.println(id);
         Member member = memberRepository.findByIdOrThrow(id);
+        SiderCard siderCard = siderCardRepository.findById(id).orElseThrow(()->new EntityNotFoundException("siderCard not found"));
         member.updateDeleteAt();
+        siderCard.updateDeleteAt();
         return member;
     }
 }
