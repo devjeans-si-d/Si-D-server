@@ -59,6 +59,32 @@ public class RedisConfig {
     }
 
     @Bean
+    public RedisConnectionFactory viewsRedisConnectionFactory() {
+        RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
+        redisStandaloneConfiguration.setHostName(host);
+        redisStandaloneConfiguration.setPort(port);
+        redisStandaloneConfiguration.setPassword(password);
+        redisStandaloneConfiguration.setDatabase(3);
+        return new LettuceConnectionFactory(redisStandaloneConfiguration);
+
+    }
+
+    @Bean
+    @Qualifier("viewRedisTemplate")
+    RedisTemplate<String, String> viewsRedisTemplate() {
+        RedisTemplate<String, String> redisTemplate = new RedisTemplate<>();
+        redisTemplate.setConnectionFactory(redisConnectionFactory());
+
+        // String - String
+        redisTemplate.setKeySerializer(new StringRedisSerializer());
+        redisTemplate.setValueSerializer(new StringRedisSerializer());
+
+
+        return redisTemplate;
+
+    }
+
+    @Bean
     @Qualifier("scrapRedisTemplate")
     public RedisTemplate<String, Object> scrapRedisTemplate(@Qualifier("scrapConnectionFactory") RedisConnectionFactory connectionFactory) {
         RedisTemplate<String, Object> template = new RedisTemplate<>();

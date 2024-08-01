@@ -44,9 +44,9 @@ public class DetailProjectResponse {
     private Long views;
     private Long scrapCount;
 
-    @JsonIgnore
+//    @JsonIgnore
     // Todo Ignore 안 쓰면 detail 17번 불렀을 때 에러남!! 강사님께 여쭤보기
-    private Member pm;
+    private Long pmId;
     @Builder.Default
     private List<ProjectMemberDto> projectMembers=new ArrayList<>();
     @Builder.Default
@@ -80,7 +80,7 @@ public class DetailProjectResponse {
 
 //    private List<ChatRoomDto> chatRooms;
 
-    public static DetailProjectResponse fromEntity(Project project, Long scrapCount){
+    public static DetailProjectResponse fromEntity(Project project, Long scrapCount, Long views){
         List<RecruitInfo> recruitInfoList = project.getRecruitInfos();
         List<ProjectScrap> projectScrapList = project.getProjectScraps();
         List<ChatRoom> chatRoomList=project.getChatRooms();
@@ -111,13 +111,13 @@ public class DetailProjectResponse {
 
         return DetailProjectResponse.builder()
                 .id(project.getId())
-                .pm(project.getPm())
+                .pmId(project.getPm().getId())
                 .scrapCount(scrapCount)
                 .deadline(project.getDeadline())
                 .description(project.getDescription())
                 .isClosed(project.getIsClosed())
                 .projectName(project.getProjectName())
-                .views(project.getViews())
+                .views(views)
                 .recruitInfos(recruitInfoDtos)
                 .recruitmemtContents(project.getRecruitmemtContents())
                 .projectMembers(projectMemberDtos)

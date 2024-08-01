@@ -53,8 +53,9 @@ public class ProjectService {
     private static final String VIEWS_KEY_PREFIX="project_views:";
     private static final String SCRAP_KEY_PREFIX="project_scraps:";
 
+
     @Autowired
-    public ProjectService(@Qualifier("scrapRedisTemplate") RedisTemplate<String, Object> scrapRedisTemplate,ProjectRepository projectRepository, MemberRepository memberRepository, ProjectMemberRepository projectMemberRepository, RecruitInfoRepository recruitInfoRepository,RedisTemplate<String, String> redisTemplate, SecurityUtil securityUtil, ProjectScrapRepository projectScrapRepository) {
+    public ProjectService(@Qualifier("scrapRedisTemplate") RedisTemplate<String, Object> scrapRedisTemplate,ProjectRepository projectRepository, MemberRepository memberRepository, ProjectMemberRepository projectMemberRepository, RecruitInfoRepository recruitInfoRepository,@Qualifier("viewRedisTemplate")RedisTemplate<String, String> redisTemplate, SecurityUtil securityUtil, ProjectScrapRepository projectScrapRepository) {
         this.projectRepository = projectRepository;
         this.memberRepository = memberRepository;
         this.projectMemberRepository = projectMemberRepository;
@@ -106,8 +107,15 @@ public class ProjectService {
     public DetailProjectResponse projectReadDetail(Long id){
         // Todo 에러처리
         // Todo 추후 isclosed 체크
-        Project project = projectRepository.findById(id).orElseThrow(()->new BaseException(MEMBER_NOT_FOUND));
+        Project project = projectRepository.findById(id).orElseThrow(()->new BaseException(PROJECT_NOT_FOUND));
         incrementViews(id);
+
+
+        // view redis 가져오기
+        String viewKey = VIEWS_KEY_PREFIX + project.getId();
+        String views = redisTemplate.opsForValue().get(viewKey);
+        Long viewCount = (views != null) ? Long.parseLong(views) : 0L;
+
 
         // scrap redis 가져오기
         String projectKey = "project_scrap_count:" + project.getId();
@@ -116,14 +124,7 @@ public class ProjectService {
         Long scrapCount = count != null ? Long.valueOf(count.toString()) : 0L;
 
 
-        //view redis에서 가져오기
-//        String viewKey = "project_views:"+project.getId();
-//        String viewValue = redisTemplate.opsForValue().get(viewKey);
-//        Long view = 0L;
-//        if(viewValue!=null) view = Long.valueOf(viewValue);
-//
-//        return DetailProjectResponse.fromEntity(project,scrapCount,view);
-        return DetailProjectResponse.fromEntity(project,scrapCount);
+        return DetailProjectResponse.fromEntity(project,scrapCount,viewCount);
     }
 
     // read-list
@@ -131,20 +132,25 @@ public class ProjectService {
     public Page<ListProjectResponse> projectReadAll(Pageable pageable){
         List<ListProjectResponse> listProjectResponses = new ArrayList<>();
 //        Page<Project> projectList = projectRepository.findAll(pageable);
-
+//        Page<Project> projectList = projectRepository.findByIsClosedAndDeletedAtIsNullOrderByUpdatedAtDesc(pageable,"N");
         Page<Project> projectList = projectRepository.findByDeletedAtIsNullOrderByUpdatedAtDesc(pageable);
         //Todo isClosed=N, deletedAt is null, orderby updatedAt repository 구현
 //        Page<Project> projectList = projectRepository.findActiveNotDeletedProjectsOrderByUpdatedAt(pageable,"N");
         for(Project project : projectList){
+            // view redis 가져오기
+            String viewKey = VIEWS_KEY_PREFIX + project.getId();
+            String views = redisTemplate.opsForValue().get(viewKey);
+            Long viewCount = (views != null) ? Long.parseLong(views) : 0L;
 
-
+            // scrap redis 가져오기
             String projectKey = "project_scrap_count:" + project.getId();
             ValueOperations<String, Object> valueOperations = scrapRedisTemplate.opsForValue();
             Object count = valueOperations.get(projectKey);
             Long scrapCount = count != null ? Long.valueOf(count.toString()) : 0L;
+
             ListProjectResponse listProjectResponse = ListProjectResponse.builder()
                     .projectName(project.getProjectName())
-                    .views(0L)
+                    .views(viewCount)
                     .scrapCount(scrapCount)
                     .isClosed(project.getIsClosed())
                     .description(project.getDescription())
@@ -269,7 +275,7 @@ public class ProjectService {
     // 조회수 증가
     public void incrementViews(Long id){
         String key = VIEWS_KEY_PREFIX + id;
-        Long views = redisTemplate.opsForValue().increment(key);
+        Long views = redisTemplate.opsForValue().increment(key,1);
 
     }
 }
