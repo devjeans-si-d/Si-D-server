@@ -127,7 +127,9 @@ public class ProjectAcceptService {
         Project project = projectRepository.findByIdAndDeletedAtIsNull(projectId)
                 .orElseThrow(() -> new BaseException(PROJECT_NOT_FOUND));
 
-        ApplyProjectRequest.toEntity(memberIdapplyProjectRequest);
+        ProjectApplication projectApplication = ApplyProjectRequest.toEntity(projectId, currentMemberId, applyProjectRequest);
+        ProjectApplication savedApplication = projectApplicationRepository.save(projectApplication);
 
+        return ApplyProjectResponse.fromEntity(savedApplication);
     }
 }
