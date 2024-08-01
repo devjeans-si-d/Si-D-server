@@ -98,10 +98,14 @@ public class ScrapService {
         // Set<Object>을 List<Long>으로 변환
         List<Project> projectList = projectIdList.stream().map((id)->projectRepository.findById(id).orElseThrow(()->new BaseException(PROJECT_NOT_FOUND))).collect(Collectors.toList());
         for(Project project : projectList){
+            String projectKey = "project_scrap_count:" + project.getId();
+            ValueOperations<String, Object> valueOperations = redisTemplate.opsForValue();
+            Object count = valueOperations.get(projectKey);
+            Long scrapCount = count != null ? Long.valueOf(count.toString()) : 0L;
             ListProjectResponse listProjectResponse = ListProjectResponse.builder()
                     .projectName(project.getProjectName())
                     .views(project.getViews())
-                    .scrapCount(project.getProjectScraps().size())
+                    .scrapCount(scrapCount)
                     .isClosed(project.getIsClosed())
                     .description(project.getDescription())
                     .deadline(project.getDeadline())

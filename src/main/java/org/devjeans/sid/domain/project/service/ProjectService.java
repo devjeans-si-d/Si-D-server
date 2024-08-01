@@ -25,6 +25,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.SetOperations;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,6 +46,7 @@ public class ProjectService {
     private final ProjectMemberRepository projectMemberRepository;
     private final RecruitInfoRepository recruitInfoRepository;
     private final RedisTemplate<String,String> redisTemplate;
+    private final RedisTemplate<String, Object> scrapRedisTemplate;
 
     private final SecurityUtil securityUtil;
     private final ProjectScrapRepository projectScrapRepository;
@@ -52,12 +54,14 @@ public class ProjectService {
     private static final String SCRAP_KEY_PREFIX="project_scraps:";
 
     @Autowired
-    public ProjectService(ProjectRepository projectRepository, MemberRepository memberRepository, ProjectMemberRepository projectMemberRepository, RecruitInfoRepository recruitInfoRepository,RedisTemplate<String, String> redisTemplate, SecurityUtil securityUtil, ProjectScrapRepository projectScrapRepository) {
+    public ProjectService(@Qualifier("scrapRedisTemplate") RedisTemplate<String, Object> scrapRedisTemplate,ProjectRepository projectRepository, MemberRepository memberRepository, ProjectMemberRepository projectMemberRepository, RecruitInfoRepository recruitInfoRepository,RedisTemplate<String, String> redisTemplate, SecurityUtil securityUtil, ProjectScrapRepository projectScrapRepository) {
         this.projectRepository = projectRepository;
         this.memberRepository = memberRepository;
         this.projectMemberRepository = projectMemberRepository;
         this.recruitInfoRepository = recruitInfoRepository;
+        this.scrapRedisTemplate = scrapRedisTemplate;
         this.redisTemplate = redisTemplate;
+
         this.securityUtil = securityUtil;
         this.projectScrapRepository = projectScrapRepository;
     }
@@ -105,7 +109,21 @@ public class ProjectService {
         Project project = projectRepository.findById(id).orElseThrow(()->new BaseException(MEMBER_NOT_FOUND));
         incrementViews(id);
 
-        return DetailProjectResponse.fromEntity(project);
+        // scrap redis 가져오기
+        String projectKey = "project_scrap_count:" + project.getId();
+        ValueOperations<String, Object> valueOperations = scrapRedisTemplate.opsForValue();
+        Object count = valueOperations.get(projectKey);
+        Long scrapCount = count != null ? Long.valueOf(count.toString()) : 0L;
+
+
+        //view redis에서 가져오기
+//        String viewKey = "project_views:"+project.getId();
+//        String viewValue = redisTemplate.opsForValue().get(viewKey);
+//        Long view = 0L;
+//        if(viewValue!=null) view = Long.valueOf(viewValue);
+//
+//        return DetailProjectResponse.fromEntity(project,scrapCount,view);
+        return DetailProjectResponse.fromEntity(project,scrapCount);
     }
 
     // read-list
@@ -113,18 +131,29 @@ public class ProjectService {
     public Page<ListProjectResponse> projectReadAll(Pageable pageable){
         List<ListProjectResponse> listProjectResponses = new ArrayList<>();
 //        Page<Project> projectList = projectRepository.findAll(pageable);
-//        Page<Project> projectList = projectRepository.findByDeletedAtIsNullOrderByUpdatedAtDesc(pageable);
-        Page<Project> projectList = projectRepository.findByIsClosedAndDeletedAtIsNullOrderByUpdatedAtDesc(pageable,"N");
+
+        Page<Project> projectList = projectRepository.findByDeletedAtIsNullOrderByUpdatedAtDesc(pageable);
+        //Todo isClosed=N, deletedAt is null, orderby updatedAt repository 구현
+//        Page<Project> projectList = projectRepository.findActiveNotDeletedProjectsOrderByUpdatedAt(pageable,"N");
         for(Project project : projectList){
+
+
+            String projectKey = "project_scrap_count:" + project.getId();
+            ValueOperations<String, Object> valueOperations = scrapRedisTemplate.opsForValue();
+            Object count = valueOperations.get(projectKey);
+            Long scrapCount = count != null ? Long.valueOf(count.toString()) : 0L;
             ListProjectResponse listProjectResponse = ListProjectResponse.builder()
                     .projectName(project.getProjectName())
-                    .views(project.getViews())
-                    .scrapCount(project.getProjectScraps().size())
+                    .views(0L)
+                    .scrapCount(scrapCount)
                     .isClosed(project.getIsClosed())
                     .description(project.getDescription())
                     .deadline(project.getDeadline())
                     .build();
             listProjectResponses.add(listProjectResponse);
+
+
+
         }
 //        return listProjectResponses;
         return new PageImpl<>(listProjectResponses,pageable,projectList.getTotalElements());
