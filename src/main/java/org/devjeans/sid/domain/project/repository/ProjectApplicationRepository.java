@@ -4,6 +4,8 @@ import org.devjeans.sid.domain.project.entity.ProjectApplication;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.List;
 import java.util.Optional;
 
 
@@ -11,4 +13,6 @@ public interface ProjectApplicationRepository extends JpaRepository<ProjectAppli
     Optional<ProjectApplication> findProjectApplicationByMemberIdAndProjectId(Long memberId, Long projectId);
 
     Page<ProjectApplication> findAllByProjectIdOrderByCreatedAtDesc(Pageable pageable, Long projectId);
+
+    List<ProjectApplication> findAllByProjectIdAndMemberId(Long projectId, Long memberId);
 }

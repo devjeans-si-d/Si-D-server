@@ -40,7 +40,7 @@ public class ProjectAcceptController {
 
     // 지원하기
     @PostMapping("/{projectId}/apply")
-    public ResponseEntity<ApplyProjectResponse> applyProject(@PathVariable Long projectId,@RequestBody ApplyProjectRequest applyProjectRequest) {
+    public ResponseEntity<ApplyProjectResponse> applyProject(@PathVariable Long projectId, @RequestBody ApplyProjectRequest applyProjectRequest) {
         ApplyProjectResponse applyProjectResponse = projectAcceptService.applyProject(projectId, applyProjectRequest);
 
         return new ResponseEntity<>(applyProjectResponse, HttpStatus.OK);

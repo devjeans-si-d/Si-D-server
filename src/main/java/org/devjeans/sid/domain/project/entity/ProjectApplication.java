@@ -25,6 +25,8 @@ public class ProjectApplication extends BaseEntity {
 
     private Boolean isAccepted;
 
+    private String content; // 지원 내용
+
     public void updateIsAccepted(boolean isAccepted) {
         this.isAccepted = isAccepted;
     }

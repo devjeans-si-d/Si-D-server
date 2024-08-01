@@ -14,6 +14,7 @@ import org.devjeans.sid.domain.project.repository.ProjectApplicationRepository;
 import org.devjeans.sid.domain.project.repository.ProjectMemberRepository;
 import org.devjeans.sid.domain.project.repository.ProjectRepository;
 import org.devjeans.sid.global.exception.BaseException;
+import org.devjeans.sid.global.exception.exceptionType.ProjectAcceptException;
 import org.devjeans.sid.global.exception.exceptionType.ProjectExceptionType;
 import org.devjeans.sid.global.external.mail.service.EmailService;
 import org.devjeans.sid.global.util.SecurityUtil;
@@ -123,9 +124,25 @@ public class ProjectAcceptService {
     public ApplyProjectResponse applyProject(Long projectId, ApplyProjectRequest applyProjectRequest) {
         Long currentMemberId = securityUtil.getCurrentMemberId();
 
-        // 검증 1
+        // 검증 1: 프로젝트가 존재하는지
         Project project = projectRepository.findByIdAndDeletedAtIsNull(projectId)
                 .orElseThrow(() -> new BaseException(PROJECT_NOT_FOUND));
+
+        // 검증 2: 이미 끝난 프로젝트에는 지원할 수 없다.
+        if(project.getIsClosed().equals("Y")) {
+            throw new BaseException(CLOSED_PROJECT);
+        }
+
+        // 검증 3: 중복 지원이 아닌지
+        List<ProjectApplication> applyList = projectApplicationRepository.findAllByProjectIdAndMemberId(project.getId(), currentMemberId);
+        if(!applyList.isEmpty()) {
+            throw new BaseException(DOUBLE_APPLY);
+        }
+
+        // 검증 4: pm은 자신의 프로젝트에 지원할 수 없음
+        if(project.getPm().getId().equals(currentMemberId)) {
+            throw new BaseException(PROJECT_PM_APPLICATION);
+        }
 
         ProjectApplication projectApplication = ApplyProjectRequest.toEntity(projectId, currentMemberId, applyProjectRequest);
         ProjectApplication savedApplication = projectApplicationRepository.save(projectApplication);
