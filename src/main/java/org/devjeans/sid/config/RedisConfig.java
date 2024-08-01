@@ -64,7 +64,7 @@ public class RedisConfig {
         redisStandaloneConfiguration.setHostName(host);
         redisStandaloneConfiguration.setPort(port);
         redisStandaloneConfiguration.setPassword(password);
-        redisStandaloneConfiguration.setDatabase(3);
+        redisStandaloneConfiguration.setDatabase(3); // view 데이터베이스
         return new LettuceConnectionFactory(redisStandaloneConfiguration);
 
     }

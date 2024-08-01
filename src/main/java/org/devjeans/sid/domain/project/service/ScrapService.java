@@ -17,6 +17,8 @@ import org.springframework.data.redis.core.SetOperations;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 import static org.devjeans.sid.global.exception.exceptionType.ProjectExceptionType.*;
+import static org.devjeans.sid.global.exception.exceptionType.ScrapProjectException.ALREADY_SCRAP_PROJECT;
+import static org.devjeans.sid.global.exception.exceptionType.ScrapProjectException.SCRAP_PROJECT_NOT_FOUND;
 
 import java.util.ArrayList;
 import java.util.Set;
@@ -31,16 +33,22 @@ public class ScrapService {
     private final SecurityUtil securityUtil;
     private final RedisTemplate<String, Object> redisTemplate;
     private final ProjectRepository projectRepository;
+    private static final String VIEWS_KEY_PREFIX="project_views:";
+    private final RedisTemplate<String,String> viewRedisTemplate;
 
     @Autowired
-    public ScrapService(SecurityUtil securityUtil, @Qualifier("scrapRedisTemplate") RedisTemplate<String, Object> redisTemplate, ProjectRepository projectRepository) {
+    public ScrapService(SecurityUtil securityUtil, @Qualifier("scrapRedisTemplate") RedisTemplate<String, Object> redisTemplate, ProjectRepository projectRepository, @Qualifier("viewRedisTemplate")RedisTemplate<String, String> viewRedisTemplate) {
         this.securityUtil = securityUtil;
         this.redisTemplate = redisTemplate;
         this.projectRepository = projectRepository;
+        this.viewRedisTemplate = viewRedisTemplate;
     }
 
     public ScrapResponse scrapProject(Long projectId) {
         Long memberId = securityUtil.getCurrentMemberId();
+        // 이미 있으면 error 처리
+        if(isProjectScrappedByMember(projectId)) throw new BaseException(ALREADY_SCRAP_PROJECT);
+
         String projectKey = SCRAP_COUNT_KEY_PREFIX + projectId;
         String memberKey = MEMBER_SCRAP_LIST_KEY_PREFIX + memberId;
 
@@ -58,6 +66,9 @@ public class ScrapService {
 
     public ScrapResponse unscrapProject(Long projectId) {
         Long memberId = securityUtil.getCurrentMemberId();
+        // 스크랩되지 않았으면 에러 처리
+        if(!isProjectScrappedByMember(projectId)) throw new BaseException(SCRAP_PROJECT_NOT_FOUND);
+
         String projectKey = SCRAP_COUNT_KEY_PREFIX + projectId;
         String memberKey = MEMBER_SCRAP_LIST_KEY_PREFIX + memberId;
 
@@ -98,13 +109,18 @@ public class ScrapService {
         // Set<Object>을 List<Long>으로 변환
         List<Project> projectList = projectIdList.stream().map((id)->projectRepository.findById(id).orElseThrow(()->new BaseException(PROJECT_NOT_FOUND))).collect(Collectors.toList());
         for(Project project : projectList){
+            // 조회수
+            String viewKey = VIEWS_KEY_PREFIX + project.getId();
+            String views = viewRedisTemplate.opsForValue().get(viewKey);
+            Long viewCount = (views != null) ? Long.parseLong(views) : 0L;
+
             String projectKey = "project_scrap_count:" + project.getId();
             ValueOperations<String, Object> valueOperations = redisTemplate.opsForValue();
             Object count = valueOperations.get(projectKey);
             Long scrapCount = count != null ? Long.valueOf(count.toString()) : 0L;
             ListProjectResponse listProjectResponse = ListProjectResponse.builder()
                     .projectName(project.getProjectName())
-                    .views(project.getViews())
+                    .views(viewCount)
                     .scrapCount(scrapCount)
                     .isClosed(project.getIsClosed())
                     .description(project.getDescription())
@@ -119,6 +135,6 @@ public class ScrapService {
     public boolean isProjectScrappedByMember(Long projectId) {
         String memberKey = MEMBER_SCRAP_LIST_KEY_PREFIX + securityUtil.getCurrentMemberId();
         SetOperations<String, Object> setOperations = redisTemplate.opsForSet();
-        return setOperations.isMember(memberKey, projectId);
+        return Boolean.TRUE.equals(setOperations.isMember(memberKey, projectId));
     }
 }
