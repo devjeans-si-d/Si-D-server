@@ -1,9 +1,6 @@
 package org.devjeans.sid.domain.project.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.devjeans.sid.domain.common.BaseEntity;
 import org.devjeans.sid.domain.member.entity.Member;
 
@@ -14,6 +11,7 @@ import javax.persistence.*;
 @Builder
 @Entity
 @Getter
+@Setter
 public class ProjectScrap extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

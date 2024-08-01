@@ -28,8 +28,8 @@ import java.util.stream.Collectors;
 @Service
 public class ScrapService {
 
-    private static final String SCRAP_COUNT_KEY_PREFIX = "project_scrap_count:";
-    private static final String MEMBER_SCRAP_LIST_KEY_PREFIX = "member_scrap_list:";
+    private static final String PROJECT_SCRAP_COUNT = "project_scrap_count:";
+    private static final String MEMBER_SCRAP_LIST = "member_scrap_list:";
     private final SecurityUtil securityUtil;
     private final RedisTemplate<String, Object> scrapRedisTemplate;
     private final ProjectRepository projectRepository;
@@ -46,54 +46,60 @@ public class ScrapService {
 
     public ScrapResponse scrapProject(Long projectId) {
         Long memberId = securityUtil.getCurrentMemberId();
-        // 이미 있으면 error 처리
-//        if(isProjectScrappedByMember(projectId)) throw new BaseException(ALREADY_SCRAP_PROJECT);
-
-        String projectKey = SCRAP_COUNT_KEY_PREFIX + projectId;
-        String memberKey = MEMBER_SCRAP_LIST_KEY_PREFIX + memberId;
-
-        // 프로젝트별 스크랩 수 증가 (String)
-        ValueOperations<String, Object> valueOperations = scrapRedisTemplate.opsForValue();
-        valueOperations.increment(projectKey, 1);
-
+        ScrapResponse response = null;
+        // member id - 프로젝트 id (set임)
+        // member 먼저 해야 이미 스크랩한 사람이면 에러처리됨
         // 멤버별 스크랩 목록에 추가 (Set)
-        SetOperations<String, Object> setOperations = scrapRedisTemplate.opsForSet();
-        setOperations.add(memberKey, projectId);
+        Project projectCheck = projectRepository.findById(projectId).orElseThrow(() -> new BaseException(PROJECT_NOT_FOUND));
+        String memberKey = MEMBER_SCRAP_LIST + memberId;
+        SetOperations<String, Object> memberSrapSet = scrapRedisTemplate.opsForSet();
+        Long check = memberSrapSet.add(memberKey, projectId);
+        if (check != null && check < 1) throw new BaseException(ALREADY_SCRAP_PROJECT);
 
-        // ScrapResponse 객체 생성 및 반환
-        return new ScrapResponse(memberId, projectId);
+        // 프로젝트 id - 스크랩 카운트 (set 아님)
+        // 프로젝트별 스크랩 수 증가 (String)
+        String projectKey = PROJECT_SCRAP_COUNT + projectId;
+        ValueOperations<String, Object> projectScrapCount = scrapRedisTemplate.opsForValue();
+        projectScrapCount.increment(projectKey, 1);
+        if (memberSrapSet.isMember(memberKey, String.valueOf(projectId)) == true) {
+            response = new ScrapResponse(memberId, projectId);
+        }
+
+        return response;
     }
 
-    public ScrapResponse unscrapProject(Long projectId) {
+    public ScrapResponse unscrapProject(Long projectId){
+        ScrapResponse scrapResponse = null;
         Long memberId = securityUtil.getCurrentMemberId();
-//        isProjectScrappedByMember(projectId);
-        // 스크랩되지 않았으면 에러 처리
-        if(!isProjectScrappedByMember(projectId)) throw new BaseException(SCRAP_PROJECT_NOT_FOUND);
+        Project projectCheck = projectRepository.findById(projectId).orElseThrow(() -> new BaseException(PROJECT_NOT_FOUND));
+        String memberKey = MEMBER_SCRAP_LIST + memberId;
 
-        String projectKey = SCRAP_COUNT_KEY_PREFIX + projectId;
-        String memberKey = MEMBER_SCRAP_LIST_KEY_PREFIX + memberId;
+        //멤버별 스크랩 목록에 삭제
+        SetOperations<String, Object> memberSrapSet = scrapRedisTemplate.opsForSet();
+        if(memberSrapSet.isMember(memberKey,projectId)) throw new BaseException(SCRAP_PROJECT_NOT_FOUND);
+        memberSrapSet.remove(memberKey,projectId);
 
-        // 프로젝트별 스크랩 수 감소 (String)
-        ValueOperations<String, Object> valueOperations = scrapRedisTemplate.opsForValue();
-        valueOperations.decrement(projectKey, 1);
-
-        // 멤버별 스크랩 목록에서 제거 (Set)
-        SetOperations<String, Object> setOperations = scrapRedisTemplate.opsForSet();
-        setOperations.remove(memberKey, projectId);
-
-        // ScrapResponse 객체 생성 및 반환
-        return new ScrapResponse(memberId, projectId);
+        // 프로젝트 스크랩수 count 감소
+        String projectKey = PROJECT_SCRAP_COUNT + projectId;
+        ValueOperations<String, Object> projectScrapCount = scrapRedisTemplate.opsForValue();
+        projectScrapCount.decrement(projectKey, 1);
+        if (memberSrapSet.isMember(memberKey, String.valueOf(projectId)) == false) {
+            scrapResponse = new ScrapResponse(memberId, projectId);
+        }
+        return scrapResponse;
     }
 
     public Long getProjectScrapCount(Long projectId) {
-        String projectKey = SCRAP_COUNT_KEY_PREFIX + projectId;
+        Long response = 0L;
+        String projectKey = PROJECT_SCRAP_COUNT + projectId;
         ValueOperations<String, Object> valueOperations = scrapRedisTemplate.opsForValue();
         Object count = valueOperations.get(projectKey);
-        return count != null ? Long.valueOf(count.toString()) : 0L;
+        if(count!=null) Long.parseLong(count.toString());
+        return response;
     }
 
     public Set<Object> getMemberScrapList() {
-        String memberKey = MEMBER_SCRAP_LIST_KEY_PREFIX + securityUtil.getCurrentMemberId();
+        String memberKey = MEMBER_SCRAP_LIST + securityUtil.getCurrentMemberId();
         SetOperations<String, Object> setOperations = scrapRedisTemplate.opsForSet();
         return setOperations.members(memberKey);
     }
@@ -101,7 +107,7 @@ public class ScrapService {
     public Page<ListProjectResponse> getMemberScrapProjectList(Pageable pageable) {
         List<ListProjectResponse> listProjectResponses = new ArrayList<>();
 
-        String memberKey = MEMBER_SCRAP_LIST_KEY_PREFIX + securityUtil.getCurrentMemberId();
+        String memberKey = MEMBER_SCRAP_LIST + securityUtil.getCurrentMemberId();
         SetOperations<String, Object> setOperations = scrapRedisTemplate.opsForSet();
         Set<Object> scrapSet = setOperations.members(memberKey);
         List<Long> projectIdList = scrapSet.stream()
@@ -116,7 +122,7 @@ public class ScrapService {
             Long viewCount = (views != null) ? Long.parseLong(views) : 0L;
 
             // 스크랩
-            String projectKey = "project_scrap_count:" + project.getId();
+            String projectKey = PROJECT_SCRAP_COUNT + project.getId();
             ValueOperations<String, Object> valueOperations = scrapRedisTemplate.opsForValue();
             Object count = valueOperations.get(projectKey);
             Long scrapCount = count != null ? Long.valueOf(count.toString()) : 0L;
@@ -135,7 +141,7 @@ public class ScrapService {
     }
 
     public boolean isProjectScrappedByMember(Long projectId) {
-        String memberKey = MEMBER_SCRAP_LIST_KEY_PREFIX + securityUtil.getCurrentMemberId();
+        String memberKey = MEMBER_SCRAP_LIST + securityUtil.getCurrentMemberId();
         SetOperations<String, Object> setOperations = scrapRedisTemplate.opsForSet();
         return Boolean.TRUE.equals(setOperations.isMember(memberKey, projectId));
     }
