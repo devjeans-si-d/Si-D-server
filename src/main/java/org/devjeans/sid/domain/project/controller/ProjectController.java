@@ -86,7 +86,7 @@ public class ProjectController {
     }
 
     // project scrap 삭제 (redis)
-    @DeleteMapping("/project/{id}/scrap")
+    @PostMapping("api/project/{id}/scrap/delete")
     public ResponseEntity<ScrapResponse> projectDeleteScrap(@PathVariable Long id) {
         ScrapResponse response = scrapService.unscrapProject(id);
         return new ResponseEntity<>(response, HttpStatus.OK);

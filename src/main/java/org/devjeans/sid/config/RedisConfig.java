@@ -79,6 +79,8 @@ public class RedisConfig {
         redisTemplate.setKeySerializer(new StringRedisSerializer());
         redisTemplate.setValueSerializer(new StringRedisSerializer());
 
+        redisTemplate.setConnectionFactory(viewsRedisConnectionFactory());
+
 
         return redisTemplate;
 
@@ -91,6 +93,7 @@ public class RedisConfig {
         template.setConnectionFactory(connectionFactory);
         template.setKeySerializer(new StringRedisSerializer());
         template.setValueSerializer(new GenericToStringSerializer<>(Object.class)); // 변경된 부분
+        template.setConnectionFactory(scrapConnectionFactory());
         return template;
     }
 //    @Bean
