@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.devjeans.sid.domain.common.BaseEntity;
+import org.devjeans.sid.domain.launchedProject.dto.LaunchedProjectTechStackDTO.LaunchedProjectTechStackResponse;
 import org.devjeans.sid.domain.siderCard.entity.TechStack;
 
 import javax.persistence.*;
@@ -28,4 +29,12 @@ public class LaunchedProjectTechStack extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="tech_stack_id")
     private TechStack techStack; //Launched-Project에 사용된 기술스택
+
+
+    public static LaunchedProjectTechStackResponse stackResFromEntity(LaunchedProjectTechStack launchedProjectTechStack){
+        return LaunchedProjectTechStackResponse.builder()
+                .jobField(launchedProjectTechStack.getTechStack().getJobField())
+                .techStackName(launchedProjectTechStack.getTechStack().getTechStackName())
+                .build();
+    }
 }

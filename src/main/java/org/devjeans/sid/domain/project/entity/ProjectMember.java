@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.devjeans.sid.domain.common.BaseEntity;
+import org.devjeans.sid.domain.launchedProject.dto.LaunchedProjectMemberDTO.LaunchedProjectMemberResponse;
+import org.devjeans.sid.domain.mainPage.dto.TopListMemberResponse;
 import org.devjeans.sid.domain.member.entity.Member;
 
 import javax.persistence.*;
@@ -30,5 +32,16 @@ public class ProjectMember extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="project_id")
     private Project project;
+
+    // LaunchedProject - Service에서 사용
+    public static LaunchedProjectMemberResponse memberResfromEntity (ProjectMember member){
+        return LaunchedProjectMemberResponse.builder()
+                .memberId(member.getMember().getId()) // Member의 id
+                .nickname(member.getMember().getNickname()) // Member의 닉네임
+                .jobField(member.getJobField()) // 이 프로젝트에서 맡은 직무
+                .build();
+    }
+
+
 
 }

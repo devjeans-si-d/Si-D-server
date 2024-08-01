@@ -1,10 +1,18 @@
 package org.devjeans.sid.domain.project.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.devjeans.sid.domain.common.BaseEntity;
 
 
 import javax.persistence.*;
 
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
 @Entity
 public class RecruitInfo extends BaseEntity {
     @Id

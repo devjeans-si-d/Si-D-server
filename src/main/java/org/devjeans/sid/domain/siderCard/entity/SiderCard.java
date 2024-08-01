@@ -2,6 +2,7 @@ package org.devjeans.sid.domain.siderCard.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.devjeans.sid.domain.common.BaseEntity;
 import org.devjeans.sid.domain.member.entity.Member;
@@ -17,13 +18,13 @@ import java.util.List;
 //    @JoinColumn(name="member_id")
 //    private Member member;
 
+@Getter
 @Entity
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class SiderCard extends BaseEntity {
     @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="sider_card_id")
     private Long id;
 

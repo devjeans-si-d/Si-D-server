@@ -20,10 +20,10 @@ public class TechStack{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "tech_stack_id")
-    private Long id;
+    private Long id; // 기술스택 id
 
     @Column(nullable = false)
-    private String techStackName;
+    private String techStackName; // 기술스택 명
 
     @Enumerated(EnumType.STRING)
     private JobField jobField;
@@ -33,5 +33,6 @@ public class TechStack{
 //
 //    @OneToMany(mappedBy = "techStack", cascade = CascadeType.REFRESH)
 //    private List<LaunchedProjectTechStack> launchedProjectTechStacks = new ArrayList<>();
+
 
 }

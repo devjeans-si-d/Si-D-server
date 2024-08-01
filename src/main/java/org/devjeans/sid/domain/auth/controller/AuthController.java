@@ -54,13 +54,13 @@ public class AuthController {
         return new ResponseEntity<>(loginInfo,HttpStatus.OK);
     }
 
-    @PostMapping("register")
+    @PostMapping("/register")
     public ResponseEntity<String> registerMember(@RequestBody RegisterMemberRequest dto) {
         authService.registerMember(dto);
         return new ResponseEntity<>("register succes!!", HttpStatus.OK);
     }
 
-    @DeleteMapping("delete")
+    @DeleteMapping("/delete")
     public ResponseEntity<String> deleteMember() {
 //        String tmp = SecurityContextHolder.getContext().getAuthentication().getName();
         Member member = authService.delete();

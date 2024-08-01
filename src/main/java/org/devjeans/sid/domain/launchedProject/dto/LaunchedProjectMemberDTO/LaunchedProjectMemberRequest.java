@@ -5,9 +5,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.devjeans.sid.domain.member.entity.Member;
+import org.devjeans.sid.domain.project.entity.JobField;
 import org.devjeans.sid.domain.project.entity.Project;
 import org.devjeans.sid.domain.project.entity.ProjectMember;
-import org.devjeans.sid.domain.project.entity.JobField;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
