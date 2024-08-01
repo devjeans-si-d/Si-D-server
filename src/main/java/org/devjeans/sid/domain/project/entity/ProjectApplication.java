@@ -15,10 +15,14 @@ public class ProjectApplication extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="project_application_id")
     private Long id;
+
     private Long memberId;
+
     private Long projectId;
+
     @Enumerated(EnumType.STRING)
     private JobField jobField;
+
     private Boolean isAccepted;
 
     public void updateIsAccepted(boolean isAccepted) {

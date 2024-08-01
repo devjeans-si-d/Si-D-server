@@ -1,9 +1,7 @@
 package org.devjeans.sid.domain.project.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.devjeans.sid.domain.project.dto.AcceptApplicantRequest;
-import org.devjeans.sid.domain.project.dto.ApplicantResponse;
-import org.devjeans.sid.domain.project.dto.MyProjectResponse;
+import org.devjeans.sid.domain.project.dto.*;
 import org.devjeans.sid.domain.project.service.ProjectAcceptService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -31,9 +29,18 @@ public class ProjectAcceptController {
         return new ResponseEntity<>(applicants, HttpStatus.OK);
     }
 
+    // 내가 참여한 프로젝트 리스트 보기
     @GetMapping("/my-projects")
     public ResponseEntity<List<MyProjectResponse>> getMyProjects(Pageable pageable) {
         List<MyProjectResponse> projectList = projectAcceptService.getMyProjectList(pageable);
         return new ResponseEntity<>(projectList, HttpStatus.OK);
+    }
+
+    // 내 지원 목록 보기
+
+    // 지원하기
+    @PostMapping("/{projectId}/apply")
+    public ResponseEntity<ApplyProjectResponse> applyProject(@PathVariable Long projectId,@RequestBody ApplyProjectRequest applyProjectRequest) {
+        ApplyProjectResponse applyProjectResponse = projectAcceptService.applyProject(projectId, applyProjectRequest);
     }
 }

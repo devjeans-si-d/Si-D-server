@@ -6,9 +6,7 @@ import org.devjeans.sid.domain.launchedProject.entity.LaunchedProject;
 import org.devjeans.sid.domain.launchedProject.repository.LaunchedProjectRepository;
 import org.devjeans.sid.domain.member.entity.Member;
 import org.devjeans.sid.domain.member.repository.MemberRepository;
-import org.devjeans.sid.domain.project.dto.AcceptApplicantRequest;
-import org.devjeans.sid.domain.project.dto.ApplicantResponse;
-import org.devjeans.sid.domain.project.dto.MyProjectResponse;
+import org.devjeans.sid.domain.project.dto.*;
 import org.devjeans.sid.domain.project.entity.Project;
 import org.devjeans.sid.domain.project.entity.ProjectApplication;
 import org.devjeans.sid.domain.project.entity.ProjectMember;
@@ -119,6 +117,17 @@ public class ProjectAcceptService {
                     String isLaunched = opt.isPresent() ? "Y" : "N";
                     return MyProjectResponse.fromEntity(p, isLaunched);
                 }).collect(Collectors.toList());
+
+    }
+
+    public ApplyProjectResponse applyProject(Long projectId, ApplyProjectRequest applyProjectRequest) {
+        Long currentMemberId = securityUtil.getCurrentMemberId();
+
+        // 검증 1
+        Project project = projectRepository.findByIdAndDeletedAtIsNull(projectId)
+                .orElseThrow(() -> new BaseException(PROJECT_NOT_FOUND));
+
+        ApplyProjectRequest.toEntity(memberIdapplyProjectRequest);
 
     }
 }
