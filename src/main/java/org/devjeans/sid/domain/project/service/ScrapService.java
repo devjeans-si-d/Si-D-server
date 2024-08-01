@@ -114,6 +114,7 @@ public class ScrapService {
             String views = viewRedisTemplate.opsForValue().get(viewKey);
             Long viewCount = (views != null) ? Long.parseLong(views) : 0L;
 
+            // 스크랩
             String projectKey = "project_scrap_count:" + project.getId();
             ValueOperations<String, Object> valueOperations = redisTemplate.opsForValue();
             Object count = valueOperations.get(projectKey);

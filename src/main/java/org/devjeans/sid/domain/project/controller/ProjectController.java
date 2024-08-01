@@ -66,47 +66,26 @@ public class ProjectController {
         return new ResponseEntity<>("delete success",HttpStatus.OK);
     }
 
-//    @PostMapping("/api/project/{id}/scrap")
-////    public ResponseEntity<ScrapResponse> projectDoScrap(@PathVariable Long id){
-////        return new ResponseEntity<>(projectService.createScrap(id),HttpStatus.OK);
-////    }
-//    public void scrapProject(@PathVariable Long id){
-//        scrapService.scrapProject(id);
-//    }
-
+    // project scrap 생성 (redis)
     @PostMapping("api/project/{id}/scrap")
     public ResponseEntity<ScrapResponse> projectDoScrap(@PathVariable Long id) {
         ScrapResponse response = scrapService.scrapProject(id) ;
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    //Todo : 아래 리스트들 실제로 projectID랑 memberId 별로 나뉘어서 조회되는 지 체크 필요
+    // project scrap 조회 (redis)
     @GetMapping("/api/project/{id}/scrap")
-//    public ResponseEntity<Page<ScrapResponse>> projectScrap(@PathVariable Long id, @PageableDefault(size=10, sort ="createdAt", direction = Sort.Direction.DESC) Pageable pageable){
-//        return new ResponseEntity<>(projectService.projectScrap(id,pageable), HttpStatus.OK) ;
-//    }
     public Long getProjectScrapCount(@PathVariable Long id){
         return scrapService.getProjectScrapCount(id);
     }
+
+    // 로그인하고 있는 회원의 scrap 목록 조회 (redis)
     @GetMapping("/api/project/scrap")
     public ResponseEntity<Page<ListProjectResponse>> myScrap(@PageableDefault(size=5, sort ="createdAt", direction = Sort.Direction.DESC) Pageable pageable){
         return new ResponseEntity<>(scrapService.getMemberScrapProjectList(pageable), HttpStatus.OK) ;
     }
-//    public List<Long> getMyProjectScrapList() {
-//        Set<Object> scrapSet = scrapService.getMemberScrapList();
-//        // Set<Object>을 List<Long>으로 변환
-//        return scrapSet.stream()
-//                .map(object -> Long.valueOf(object.toString())) // Set의 Object를 Long으로 변환
-//                .collect(Collectors.toList());
-//    }
 
-//    @DeleteMapping("/api/project/{id}/scrap")
-////    public ResponseEntity<String> projectDeleteScrap(@PathVariable Long id){
-////        return new ResponseEntity<>(projectService.projectDeleteScrap(id),HttpStatus.OK);
-////    }
-//    public void unscrapProject(@PathVariable Long id){
-//        scrapService.unscrapProject(id);
-//    }
+    // project scrap 삭제 (redis)
     @DeleteMapping("/project/{id}/scrap")
     public ResponseEntity<ScrapResponse> projectDeleteScrap(@PathVariable Long id) {
         ScrapResponse response = scrapService.unscrapProject(id);

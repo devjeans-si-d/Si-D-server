@@ -67,15 +67,10 @@ public class ProjectService {
         this.projectScrapRepository = projectScrapRepository;
     }
     //create
-    // Todo : imageurl multipart
     public Project projectCreate(CreateProjectRequest dto){
-//        Member pm = memberRepository.findById(dto.getPmId()).orElseThrow(()->new EntityNotFoundException("없는 회원입니다."));
-//        Member pm = memberRepository.findById(dto.getPmId()).orElseThrow(()->new BaseException(MEMBER_NOT_FOUND));
         Member pm = memberRepository.findById(securityUtil.getCurrentMemberId()).orElseThrow(()->new BaseException(MEMBER_NOT_FOUND));
 
-        // Todo : s3 프론트엔드 업로드하면 string, 현재는 테스트를 위해 파일 입력 코드 필요
             Project project = dto.toEntity(pm);
-            // Todo : path 추후 변경 필요
             //create시 projectMember에 pm 자동 add
             ProjectMember pmToAddProjectMember = ProjectMember.builder().member(pm).jobField(JobField.PM).project(project).build();
             project.getProjectMembers().add(pmToAddProjectMember);
@@ -103,26 +98,21 @@ public class ProjectService {
     }
 
     // read-detail
-    // Todo :  deletedAt==null 인 것만 조회
+    // Todo :  deletedAt==null 인 것만 조회 ,isclosed 체크
     public DetailProjectResponse projectReadDetail(Long id){
-        // Todo 에러처리
-        // Todo 추후 isclosed 체크
         Project project = projectRepository.findById(id).orElseThrow(()->new BaseException(PROJECT_NOT_FOUND));
         incrementViews(id);
-
 
         // view redis 가져오기
         String viewKey = VIEWS_KEY_PREFIX + project.getId();
         String views = redisTemplate.opsForValue().get(viewKey);
         Long viewCount = (views != null) ? Long.parseLong(views) : 0L;
 
-
         // scrap redis 가져오기
         String projectKey = "project_scrap_count:" + project.getId();
         ValueOperations<String, Object> valueOperations = scrapRedisTemplate.opsForValue();
         Object count = valueOperations.get(projectKey);
         Long scrapCount = count != null ? Long.valueOf(count.toString()) : 0L;
-
 
         return DetailProjectResponse.fromEntity(project,scrapCount,viewCount);
     }
@@ -161,12 +151,10 @@ public class ProjectService {
 
 
         }
-//        return listProjectResponses;
         return new PageImpl<>(listProjectResponses,pageable,projectList.getTotalElements());
     }
 
     // update project
-    // Todo : imageurl multipart
     public UpdateProjectResponse projectUpdate(UpdateProjectRequest dto,Long projectId) {
         // Todo : dto랑 실제 고치려는 프로젝트랑 체크해서 다르면 error 날려야하는데 아직 unique값이 없어서 나중에 처리
 
@@ -200,7 +188,6 @@ public class ProjectService {
     }
 
     // delete project by deletedAt
-    // Todo projectid 연동된 projectmember, recruitmember 같이 삭제
     public String deleteProject(Long id) {
         Project project = projectRepository.findById(id).orElseThrow(()->new BaseException(PROJECT_NOT_FOUND));
         if(!project.getPm().getId().equals(securityUtil.getCurrentMemberId())) throw new BaseException(UNAUTHORIZED_ACTION);
@@ -213,69 +200,9 @@ public class ProjectService {
         return "삭제 성공";
     }
 
-    // ProjectScrap 생성
-    public ScrapResponse createScrap(Long id){
-        Long memberId = securityUtil.getCurrentMemberId();
-        SetOperations<String,String> scrapRedis = redisTemplate.opsForSet();
-        Long check=scrapRedis.add("scrap key: "+id.toString(),"scrap value: "+memberId.toString());
-        System.out.println("check: "+check+ ", size: "+scrapRedis.size("scrap key: "+id.toString())+"key:"+scrapRedis.members(id.toString()));
-
-
-
-
-        Member member = memberRepository.findById(securityUtil.getCurrentMemberId()).orElseThrow(()->new BaseException(MEMBER_NOT_FOUND));
-        Project project = projectRepository.findById(id).orElseThrow(()->new BaseException(PROJECT_NOT_FOUND));
-
-
-        ScrapResponse scrapResponse = ScrapResponse.builder().memberId(member.getId()).projectId(id).build();
-
-        projectScrapRepository.save(ScrapResponse.toEntity(project, member));
-        // Todo : scrap create 원래 있는지 체크 있으면 에러
-        // Todo : scrap create 시 redis 보내기
-        return scrapResponse;
-    }
-
-    // 해당 프로젝트의 projectScrap 리스트
-    public Page<ScrapResponse> projectScrap(Long id, Pageable pageable){
-        Page<ProjectScrap> projectScraps = projectScrapRepository.findByProjectId(id,pageable);
-        List<ScrapResponse> scrapResponseList= new ArrayList<>();
-        for(ProjectScrap projectScrap: projectScraps){
-            scrapResponseList.add(ScrapResponse.builder()
-                    .memberId(projectScrap.getMember().getId())
-                    .projectId(projectScrap.getProject().getId())
-                    .build());
-        }
-        return new PageImpl<>(scrapResponseList,pageable,projectScraps.getTotalElements());
-    }
-
-    // 사용중인 유저의 project scrap list
-    public Page<ScrapResponse> myProjectScrap(Pageable pageable){
-        Page<ProjectScrap> projectScraps = projectScrapRepository.findByMemberId(securityUtil.getCurrentMemberId(),pageable);
-        List<ScrapResponse> scrapResponseList= new ArrayList<>();
-        for(ProjectScrap projectScrap: projectScraps){
-            scrapResponseList.add(ScrapResponse.builder()
-                    .memberId(projectScrap.getMember().getId())
-                    .projectId(projectScrap.getProject().getId())
-                    .build());
-        }
-        return new PageImpl<>(scrapResponseList,pageable,projectScraps.getTotalElements());
-    }
-
-    // project scrap delete
-    public String projectDeleteScrap(Long id) {
-        Member member = memberRepository.findById(securityUtil.getCurrentMemberId()).orElseThrow(() -> new BaseException(MEMBER_NOT_FOUND));
-        Project project = projectRepository.findById(id).orElseThrow(() -> new BaseException(PROJECT_NOT_FOUND));
-        ProjectScrap projectScrap = projectScrapRepository.findByProjectIdAndMemberId(project.getId(), member.getId());
-        // Todo : 없으면 에러 처리
-        // Todo : redis 감소 시키기
-        projectScrapRepository.delete(projectScrap);
-        return "삭제 완료";
-    }
-
     // 조회수 증가
     public void incrementViews(Long id){
         String key = VIEWS_KEY_PREFIX + id;
         Long views = redisTemplate.opsForValue().increment(key,1);
-
     }
 }
