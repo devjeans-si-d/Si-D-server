@@ -1,24 +1,22 @@
 package org.devjeans.sid.domain.project.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import org.devjeans.sid.domain.chatRoom.entity.ChatRoom;
 import org.devjeans.sid.domain.common.BaseEntity;
+import org.devjeans.sid.domain.mainPage.dto.TopListMemberResponse;
+import org.devjeans.sid.domain.mainPage.dto.TopListProjectResponse;
 import org.devjeans.sid.domain.member.entity.Member;
 import org.hibernate.annotations.ColumnDefault;
-import org.springframework.web.multipart.MultipartFile;
-
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @Setter
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Getter
 @Entity
 public class Project extends BaseEntity {
     @Id
@@ -45,7 +43,7 @@ public class Project extends BaseEntity {
     private Long views=0L;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
+    @JoinColumn(name = "pm_id")
     private Member pm;
 
     @Builder.Default
@@ -57,7 +55,7 @@ public class Project extends BaseEntity {
     private List<RecruitInfo> recruitInfos = new ArrayList<>();
 
     @Builder.Default
-    @OneToMany(mappedBy = "project", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
     private List<ProjectScrap> projectScraps = new ArrayList<>();
 
     @Builder.Default
@@ -74,5 +72,17 @@ public class Project extends BaseEntity {
     public void updateIsClosed(String yn){
         this.isClosed=yn;
     }
+
+    public static TopListProjectResponse topListResFromEntity (Project project){
+        // 완성된 프로젝트 글 내용 30자까지만 잘라서 출력
+        String description = project.getDescription();
+        String truncatedDescription = description != null && description.length() > 30 ? description.substring(0, 30) : description;
+        return TopListProjectResponse.builder()
+                .id(project.getId())
+                .projectName(project.getProjectName())
+                .description(truncatedDescription)
+                .build();
+    }
+
 
 }

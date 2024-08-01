@@ -8,6 +8,7 @@ import org.devjeans.sid.domain.common.BaseEntity;
 import org.devjeans.sid.domain.launchedProject.dto.LaunchProjectDTO.BasicInfoLaunchedProjectResponse;
 import org.devjeans.sid.domain.launchedProject.dto.LaunchProjectDTO.ListLaunchedProjectResponse;
 import org.devjeans.sid.domain.launchedProject.dto.LaunchedProjectScrapDTO.LaunchedProjectScrapResponse;
+import org.devjeans.sid.domain.mainPage.dto.TopListLaunchedProjectResponse;
 import org.devjeans.sid.domain.member.entity.Member;
 import org.devjeans.sid.domain.project.entity.Project;
 
@@ -49,6 +50,33 @@ public class LaunchedProject extends BaseEntity {
 
     @OneToMany(mappedBy = "launchedProject", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<LaunchedProjectScrap> launchedProjectScraps; // Launched-Project 스크랩(사이다) 리스트
+
+    public static TopListLaunchedProjectResponse topListResfromEntity(LaunchedProject launchedProject){
+        // 완성된 프로젝트 글 내용 30자까지만 잘라서 출력
+        String contents = launchedProject.getLaunchedProjectContents();
+        String truncatedContent = contents != null && contents.length() > 30 ? contents.substring(0, 30) : contents;
+
+        // 기술스택명 5개까지만 잘라서 출력
+        List<String> techStackNameList = new ArrayList<>();
+        String techStackName = "";
+        List<LaunchedProjectTechStack> techStackList = launchedProject.getLaunchedProjectTechStacks();
+
+        for(LaunchedProjectTechStack techStack : techStackList){
+            techStackName = techStack.getTechStack().getTechStackName();
+            techStackNameList.add(techStackName);
+        }
+
+        if(techStackNameList.size()>5) techStackNameList = techStackNameList.subList(0,5);
+
+        return TopListLaunchedProjectResponse.builder()
+                .id(launchedProject.getId())
+                .launchedProjectImage(launchedProject.getLaunchedProjectImage())
+                .projectName(launchedProject.getProject().getProjectName())
+                .launchedProjectContents(truncatedContent)
+                .techStacks(techStackNameList)
+                .build();
+
+    }
 
     // 완성된 프로젝트 이미지 업로드
     public void updateLaunchedProjectImage(String imagePath){
