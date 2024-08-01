@@ -122,8 +122,9 @@ public class ProjectService {
     public Page<ListProjectResponse> projectReadAll(Pageable pageable){
         List<ListProjectResponse> listProjectResponses = new ArrayList<>();
 //        Page<Project> projectList = projectRepository.findAll(pageable);
-//        Page<Project> projectList = projectRepository.findByIsClosedAndDeletedAtIsNullOrderByUpdatedAtDesc(pageable,"N");
-        Page<Project> projectList = projectRepository.findByDeletedAtIsNullOrderByUpdatedAtDesc(pageable);
+        Page<Project> projectList = projectRepository.findByIsClosedAndDeletedAtIsNullOrderByUpdatedAtDesc(pageable,"N");
+//        Page<Project> projectList = projectRepository.findByDeletedAtIsNullOrderByUpdatedAtDesc(pageable);
+//        List<Project> projectList = projectRepository.findByIsClosedAndDeletedAtIsNullOrderUpdatedAtDesc("N");
         //Todo isClosed=N, deletedAt is null, orderby updatedAt repository 구현
 //        Page<Project> projectList = projectRepository.findActiveNotDeletedProjectsOrderByUpdatedAt(pageable,"N");
         for(Project project : projectList){
