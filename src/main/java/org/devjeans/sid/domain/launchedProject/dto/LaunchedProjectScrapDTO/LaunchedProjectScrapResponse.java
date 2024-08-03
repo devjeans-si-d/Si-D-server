@@ -15,10 +15,4 @@ public class LaunchedProjectScrapResponse {
 
     private Long scrapCount; // 스크랩(사이다) 눌린 개수
 
-
-
-//    @Enumerated(EnumType.STRING)
-//    @Builder.Default
-//    private ToggleStatus toggleStatus = ToggleStatus.FALSE; // 버튼 눌린 상태
-
 }

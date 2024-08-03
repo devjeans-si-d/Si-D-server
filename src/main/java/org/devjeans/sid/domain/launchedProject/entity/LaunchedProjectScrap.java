@@ -2,8 +2,6 @@ package org.devjeans.sid.domain.launchedProject.entity;
 
 import lombok.*;
 import org.devjeans.sid.domain.common.BaseEntity;
-import org.devjeans.sid.domain.launchedProject.dto.LaunchedProjectScrapDTO.LaunchedProjectScrapRequest;
-import org.devjeans.sid.domain.launchedProject.dto.LaunchedProjectScrapDTO.LaunchedProjectScrapResponse;
 import org.devjeans.sid.domain.member.entity.Member;
 
 import javax.persistence.*;

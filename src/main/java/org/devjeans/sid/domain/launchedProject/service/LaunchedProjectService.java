@@ -7,11 +7,9 @@ import org.devjeans.sid.domain.launchedProject.dto.LaunchProjectDTO.SaveLaunched
 import org.devjeans.sid.domain.launchedProject.dto.LaunchProjectDTO.UpdateLaunchedProjectRequest;
 import org.devjeans.sid.domain.launchedProject.dto.LaunchedProjectMemberDTO.LaunchedProjectMemberRequest;
 import org.devjeans.sid.domain.launchedProject.dto.LaunchedProjectMemberDTO.LaunchedProjectMemberResponse;
-import org.devjeans.sid.domain.launchedProject.dto.LaunchedProjectScrapDTO.LaunchedProjectScrapRequest;
 import org.devjeans.sid.domain.launchedProject.dto.LaunchedProjectScrapDTO.LaunchedProjectScrapResponse;
 import org.devjeans.sid.domain.launchedProject.dto.LaunchedProjectTechStackDTO.LaunchedProjectTechStackResponse;
 import org.devjeans.sid.domain.launchedProject.entity.LaunchedProject;
-import org.devjeans.sid.domain.launchedProject.entity.LaunchedProjectScrap;
 import org.devjeans.sid.domain.launchedProject.entity.LaunchedProjectTechStack;
 import org.devjeans.sid.domain.launchedProject.repository.LaunchedProjectRepository;
 import org.devjeans.sid.domain.launchedProject.repository.LaunchedProjectScrapRepository;
@@ -30,7 +28,6 @@ import org.devjeans.sid.global.util.SecurityUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -209,42 +206,6 @@ public class LaunchedProjectService {
 
         return "수정완료";
     }
-
-    // Scrap create/delete : 유저는 한 LaunchedProject 글에 한번만 좋아요를 누를 수 있다 (이미 누른 사용자라면 또 좋아요 눌렀을 때에는 delete처리)
-//    public LaunchedProjectScrapResponse toggleScrap(LaunchedProjectScrapRequest dto){
-//        log.info("line151 memberId :{}",securityUtil.getCurrentMemberId());
-//
-//        Member member = memberRepository.findByIdOrThrow(dto.getMemberId());
-//        LaunchedProject launchedProject = launchedProjectRepository.findByIdOrThrow(dto.getLaunchedProjectId());
-//
-//        // member와 Project 기준으로 scrap 찾음
-//        Optional<LaunchedProjectScrap> existingScrap = launchedProjectScrapRepository.findByMemberAndLaunchedProject(member, launchedProject);
-//
-//        ToggleStatus toggleStatus = ToggleStatus.FALSE;
-//
-//        LaunchedProjectScrap scrap = null;
-//
-//        if(existingScrap.isPresent()){
-//            // 만약 해당 글에 이미 scrap을 누른 회원이라면 scrap 삭제 처리
-//            scrap = existingScrap.get();
-//            launchedProjectScrapRepository.delete(scrap);
-//            launchedProjectScrapRepository.flush(); // 즉시 반영
-//        }else{
-//            // 해당 프로젝트 글에 scrap을 누른 회원이 아니라면 scrap 추가 처리, toggle상태 = true
-//            scrap = dto.toEntity(dto, member, launchedProject);
-////            scrapResponse = LaunchedProjectScrap.scrapResfromEntity(launchedProject,scrap,ToggleStatus.TRUE);
-//            launchedProjectScrapRepository.save(scrap);
-//            toggleStatus = ToggleStatus.TRUE;
-//        }
-//        // 카운트 구하기
-//        int scrapCount = launchedProject.getLaunchedProjectScraps().size();
-//
-//        return LaunchedProjectScrapResponse.builder()
-//                .launchedProjectId(dto.getLaunchedProjectId())
-//                .scrapCount(scrapCount)
-//                .toggleStatus(toggleStatus)
-//                .build();
-//    }
 
     // READ
     // Launched-Project의 id를 기준으로 LaunchedProject의 BasicInfo 조회
