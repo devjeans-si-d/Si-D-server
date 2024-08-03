@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.devjeans.sid.domain.common.BaseEntity;
 import org.devjeans.sid.domain.launchedProject.entity.LaunchedProjectTechStack;
 import org.devjeans.sid.domain.project.entity.JobField;
 
@@ -17,7 +16,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @Entity
-public class TechStack extends BaseEntity {
+public class TechStack{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "tech_stack_id")
@@ -27,12 +26,13 @@ public class TechStack extends BaseEntity {
     private String techStackName; // 기술스택 명
 
     @Enumerated(EnumType.STRING)
-    private JobField jobField; // 직무명
+    private JobField jobField;
 
-    @OneToMany(mappedBy = "techStack", cascade = CascadeType.REFRESH)
-    private List<SiderCardTechStack> siderCardTechStacks = new ArrayList<>();
+//    @OneToMany(mappedBy = "techStack", cascade = CascadeType.REFRESH)
+//    private List<SiderCardTechStack> siderCardTechStacks = new ArrayList<>();
 
     @OneToMany(mappedBy = "techStack", cascade = CascadeType.REFRESH)
     private List<LaunchedProjectTechStack> launchedProjectTechStacks = new ArrayList<>();
+
 
 }

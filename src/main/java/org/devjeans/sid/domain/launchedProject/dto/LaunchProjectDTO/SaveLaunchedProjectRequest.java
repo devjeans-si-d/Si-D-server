@@ -24,32 +24,23 @@ public class SaveLaunchedProjectRequest {
 
     private List<LaunchedProjectMemberRequest> members; // 프로젝트에 참여한 멤버 (LaunchedProject에 등록할 때 새로 멤버를 추가할 수도 있음) -> ProjectMember 교차테이블에 추가해주기 위함
 
-    private List<LaunchedProjectTechStackRequest> launchedProjectTechStackRequestList;
+    private List<Long> techStackList;
 
-    @Data
-    @AllArgsConstructor
-    @NoArgsConstructor
-    @Builder
-    // 프로젝트 기술스택 Request DTO
-    public static class LaunchedProjectTechStackRequest{
-        private Long id;
-//        private JobField jobField; // 직무 유형
-//        private String techStackName; // 기술스택 명
-    }
+    private String imageUrl;
 
 
     // SaveLaunchedProjectRequest(DTO) -> LaunchedProject
     public static LaunchedProject toEntity(SaveLaunchedProjectRequest dto,
-                                           String imagePath,
                                            Project project,
                                            List<LaunchedProjectTechStack> launchedProjectTechStacks
                                            ){
 
         return LaunchedProject.builder()
-                .launchedProjectImage(imagePath)
+                .launchedProjectImage(dto.getImageUrl())
                 .launchedProjectContents(dto.getLaunchedProjectContents())
                 .siteUrl(dto.getSiteUrl())
                 .project(project)
+                .views(0L)
                 .launchedProjectTechStacks(launchedProjectTechStacks)
                 .build();
     }

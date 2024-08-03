@@ -35,17 +35,16 @@ public class LaunchedProjectController {
 
     // 완성된 프로젝트 글 등록
     @PostMapping("/register")
-    public ResponseEntity<Long> register(@RequestPart(value="saveRequest") SaveLaunchedProjectRequest saveRequest,
-                                         @RequestPart(value="launchedProjectImage") MultipartFile launchedProjectImage){
-        LaunchedProject launchedProject = launchedProjectService.register(saveRequest,launchedProjectImage);
+    public ResponseEntity<Long> register(@RequestBody SaveLaunchedProjectRequest saveRequest){
+        LaunchedProject launchedProject = launchedProjectService.register(saveRequest);
         return ResponseEntity.ok(launchedProject.getId()); // 등록된 글 id 반환
     }
 
     // 완성된 프로젝트 글 수정
-    @PutMapping("/update/{id}")
-    public ResponseEntity<Object> update(@RequestPart(value="updateRequest") UpdateLaunchedProjectRequest updateRequest,
-                                         @RequestPart(value="launchedProjectImage") MultipartFile launchedProjectImage){
-        String message = launchedProjectService.update(updateRequest,launchedProjectImage);
+    @PostMapping("/update/{launchedProjectId}")
+    public ResponseEntity<Object> update(@PathVariable Long launchedProjectId,
+                                         @RequestBody UpdateLaunchedProjectRequest updateRequest){
+        String message = launchedProjectService.update(launchedProjectId, updateRequest);
         return ResponseEntity.ok(message); // 수정된 글 id 반환
     }
 
