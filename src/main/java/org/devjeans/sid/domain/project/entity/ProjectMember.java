@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.devjeans.sid.domain.common.BaseEntity;
 import org.devjeans.sid.domain.launchedProject.dto.LaunchedProjectMemberDTO.LaunchedProjectMemberResponse;
+import org.devjeans.sid.domain.mainPage.dto.TopListMemberResponse;
 import org.devjeans.sid.domain.member.entity.Member;
 
 import javax.persistence.*;
@@ -40,5 +41,7 @@ public class ProjectMember extends BaseEntity {
                 .jobField(member.getJobField()) // 이 프로젝트에서 맡은 직무
                 .build();
     }
+
+
 
 }

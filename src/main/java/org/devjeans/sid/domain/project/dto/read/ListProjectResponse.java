@@ -21,6 +21,6 @@ public class ListProjectResponse {
 
     // 추후 인기순 정렬이 필요할 때를 위해..?
     private Long views;
-    private int scrapCount;
+    private Long scrapCount;
 
 }
