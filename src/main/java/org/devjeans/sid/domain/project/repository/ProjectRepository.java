@@ -39,5 +39,4 @@ public interface ProjectRepository extends JpaRepository<Project,Long> {
             "GROUP BY p.id " +
             "ORDER BY COUNT(ps) DESC")
     Page<Project> findTopProjects(Pageable pageable);
-
 }
