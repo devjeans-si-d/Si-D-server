@@ -7,6 +7,7 @@ import org.devjeans.sid.domain.launchedProject.repository.LaunchedProjectScrapRe
 import org.devjeans.sid.domain.member.entity.Member;
 import org.devjeans.sid.domain.member.repository.MemberRepository;
 import org.devjeans.sid.domain.project.entity.Project;
+import org.devjeans.sid.global.exception.BaseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -18,6 +19,8 @@ import org.springframework.stereotype.Component;
 
 import javax.transaction.Transactional;
 import java.util.Set;
+
+import static org.devjeans.sid.global.exception.exceptionType.LaunchedProjectExceptionType.LAUNCHED_PROJECT_NOT_FOUND;
 
 @Component
 public class LaunchedProjectScheduler {
@@ -66,20 +69,26 @@ public class LaunchedProjectScheduler {
     public void syncScraps(){
         for(LaunchedProject lp : launchedProjectRepository.findAll()){
             // scrap 저장
+            // key : launched_project1_scrap (이런식으로 저장됨)
             String key = LP_SCRAP_KEY_PREFIX + lp.getId() + "_scrap";
 
             SetOperations<String, Object> setOperations = scrapRedisTemplate.opsForSet();
-            Set<Object> members = setOperations.members(key); // scrap한 회원 Set
+            Set<Object> members = setOperations.members(key); // scrap한 회원id Set
 
             if(members != null){
                 for(Object memberId : members){
-                    Long id = Long.parseLong(memberId.toString());
-                    // RDB에 저장
-                    Member member = memberRepository.findByIdOrThrow(id);
-                    LaunchedProjectScrap launchedProjectScrap = new LaunchedProjectScrap();
-                    launchedProjectScrap.setLaunchedProject(lp);
-                    launchedProjectScrap.setMember(member);
-                    launchedProjectScrapRepository.save(launchedProjectScrap);
+                    Long id = Long.parseLong(memberId.toString()); // 회원id
+
+                    // RDB에 해당 스크랩 데이터가 이미 존재하는지 확인
+                    boolean exists = launchedProjectScrapRepository.existsByLaunchedProjectIdAndMemberId(lp.getId(), id);
+                    if(!exists){
+                        // RDB에 저장
+                        Member member = memberRepository.findByIdOrThrow(id);
+                        LaunchedProjectScrap launchedProjectScrap = new LaunchedProjectScrap();
+                        launchedProjectScrap.setLaunchedProject(lp);
+                        launchedProjectScrap.setMember(member);
+                        launchedProjectScrapRepository.save(launchedProjectScrap);
+                    }
                 }
             }
         }
