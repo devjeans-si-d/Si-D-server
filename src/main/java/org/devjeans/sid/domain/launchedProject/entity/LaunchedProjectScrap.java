@@ -1,18 +1,14 @@
 package org.devjeans.sid.domain.launchedProject.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.devjeans.sid.domain.common.BaseEntity;
-import org.devjeans.sid.domain.launchedProject.dto.LaunchedProjectScrapDTO.LaunchedProjectScrapRequest;
-import org.devjeans.sid.domain.launchedProject.dto.LaunchedProjectScrapDTO.LaunchedProjectScrapResponse;
 import org.devjeans.sid.domain.member.entity.Member;
 
 import javax.persistence.*;
 
 @Entity
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -30,14 +26,13 @@ public class LaunchedProjectScrap extends BaseEntity {
     @JoinColumn(name="launched_project_id")
     private LaunchedProject launchedProject; // 스크랩(사이다) 누른 해당 프로젝트
 
-    public static LaunchedProjectScrapResponse scrapResfromEntity(LaunchedProject launchedProject,
-                                                                  LaunchedProjectScrap launchedProjectScrap,
-                                                                  ToggleStatus toggleStatus){
-        return LaunchedProjectScrapResponse.builder()
-                .launchedProjectId(launchedProjectScrap.getLaunchedProject().getId()) // 글 id
-                .scrapCount(launchedProject.getLaunchedProjectScraps().size()) // 스크랩 수
-                .toggleStatus(toggleStatus)
-                .build();
-    }
+//    public static LaunchedProjectScrapResponse scrapResfromEntity(LaunchedProject launchedProject,
+//                                                                  LaunchedProjectScrap launchedProjectScrap){
+//        return LaunchedProjectScrapResponse.builder()
+//                .launchedProjectId(launchedProjectScrap.getLaunchedProject().getId()) // 글 id
+//                .scrapCount(launchedProject.getLaunchedProjectScraps().size()) // 스크랩 수
+////                .toggleStatus(toggleStatus)
+//                .build();
+//    }
 
 }
