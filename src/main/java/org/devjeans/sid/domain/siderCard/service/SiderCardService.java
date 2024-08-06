@@ -15,6 +15,8 @@ import org.devjeans.sid.domain.siderCard.repository.SiderCardRepository;
 import org.devjeans.sid.domain.siderCard.repository.SiderCardTechStackRepository;
 import org.devjeans.sid.domain.siderCard.repository.TechStackRepository;
 import org.devjeans.sid.global.util.SecurityUtil;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -55,13 +57,16 @@ public class SiderCardService {
         return getSiderCard(id);
     }
 
-    public List<SiDCardListDto> getSiderCardList() {
-        List<SiderCard> siderCards = siderCardRepository.findAll();
-        List<SiDCardListDto> siderCardListDtos = new ArrayList<>();
-        for(SiderCard siderCard: siderCards){
+    public Page<SiDCardListDto> getSiderCardList(Pageable pageable) {
+        Page<SiderCard> siderCards = siderCardRepository.findAll(pageable);
+        Page<SiDCardListDto> siderCardListDtos = siderCards.map(siderCard->{
             Member member = memberRepository.findById(siderCard.getId()).orElseThrow(()->new EntityNotFoundException("member not found"));
-            siderCardListDtos.add(siderCard.listFromEntity(member));
-        }
+            return siderCard.listFromEntity(member);
+        });
+//        for(SiderCard siderCard: siderCards){
+//            Member member = memberRepository.findById(siderCard.getId()).orElseThrow(()->new EntityNotFoundException("member not found"));
+//            siderCardListDtos.add(siderCard.listFromEntity(member));
+//        }
         return siderCardListDtos;
     }
 }
