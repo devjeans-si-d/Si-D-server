@@ -7,6 +7,8 @@ import org.devjeans.sid.domain.member.dto.*;
 import org.devjeans.sid.domain.member.entity.Member;
 import org.devjeans.sid.domain.member.service.MemberService;
 import org.devjeans.sid.global.external.mail.service.EmailService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -56,5 +58,6 @@ public class MemberController {
         UpdateEmailResponse updateEmailResponse = memberService.updateMemberEmail(code);
         return new ResponseEntity<>(updateEmailResponse, HttpStatus.OK);
     }
+
 
 }
