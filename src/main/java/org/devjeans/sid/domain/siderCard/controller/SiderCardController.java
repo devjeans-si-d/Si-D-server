@@ -7,6 +7,8 @@ import org.devjeans.sid.domain.siderCard.dto.SiderCardResDto;
 import org.devjeans.sid.domain.siderCard.dto.SiderCardUpdateReqDto;
 import org.devjeans.sid.domain.siderCard.service.SiderCardService;
 import org.devjeans.sid.global.util.SecurityUtil;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -37,8 +39,8 @@ public class SiderCardController {
     }
 
     @GetMapping("list")
-    public ResponseEntity<?> siderCardList(){
-        List<SiDCardListDto> siderCardResDtos =  siderCardService.getSiderCardList();
+    public ResponseEntity<?> siderCardList(Pageable pageable){
+        Page<SiDCardListDto> siderCardResDtos =  siderCardService.getSiderCardList(pageable);
         CommonResDto commonResDto = new CommonResDto(HttpStatus.OK,"siderCard List is successfully retrieved",siderCardResDtos);
         return new ResponseEntity<>(commonResDto,HttpStatus.OK);
     }
