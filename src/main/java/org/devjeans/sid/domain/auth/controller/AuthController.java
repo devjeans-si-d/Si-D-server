@@ -6,7 +6,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.devjeans.sid.domain.auth.JwtTokenProvider;
 import org.devjeans.sid.domain.auth.dto.KakaoProfileResDto;
 import org.devjeans.sid.domain.auth.dto.CommonResDto;
+import org.devjeans.sid.domain.auth.dto.LoginReqDto;
 import org.devjeans.sid.domain.auth.entity.KakaoProfile;
+import org.devjeans.sid.domain.auth.entity.OAuthToken;
 import org.devjeans.sid.domain.auth.service.AuthService;
 import org.devjeans.sid.domain.member.dto.RegisterMemberRequest;
 import org.devjeans.sid.domain.auth.entity.KakaoRedirect;
@@ -39,7 +41,7 @@ public class AuthController {
 //            가입자 or 비가입자 체크해서 처리
         Member originMember = authService.getMemberByKakaoId(kakaoProfile.getId());
 //        TODO: 탈퇴한 회원일 경우 처리해야함
-        System.out.println(originMember);
+//        System.out.println(originMember);
         if(originMember == null) {
 //           신규 회원일경우 errorResponse에 소셜id를 담아 예외를 프론트로 던지기
 //            프론트는 예외일경우 회원가입 화면으로 이동하여 회원가입 정보와 소셜id를 담아 다시 회원가입 요청
@@ -69,8 +71,9 @@ public class AuthController {
 
     // 클라이언트에서 토큰을 받아 로그인 처리
     @PostMapping("login")
-    public ResponseEntity<?> login(@RequestHeader String token) throws JsonProcessingException {
-        KakaoProfile kakaoProfile = authService.getKakaoProfile(token);
+    public ResponseEntity<?> login(@RequestBody LoginReqDto dto) throws JsonProcessingException {
+        OAuthToken oAuthToken = authService.getAccessToken(dto.getCode());
+        KakaoProfile kakaoProfile = authService.getKakaoProfile(oAuthToken.getAccess_token());
 
         Member originMember = authService.getMemberByKakaoId(kakaoProfile.getId());
 //        TODO: 탈퇴한 회원일 경우 처리해야함

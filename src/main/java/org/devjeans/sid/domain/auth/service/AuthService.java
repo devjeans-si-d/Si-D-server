@@ -45,12 +45,12 @@ public class AuthService {
     private String authOauthKakaoApi;
 
     public KakaoProfile login(KakaoRedirect kakaoRedirect) throws JsonProcessingException {
-        OAuthToken oAuthToken = getAccessToken(kakaoRedirect);
+        OAuthToken oAuthToken = getAccessToken(kakaoRedirect.getCode());
         KakaoProfile kakaoProfile = getKakaoProfile(oAuthToken.getAccess_token());
         return kakaoProfile;
     }
 
-    public OAuthToken getAccessToken(KakaoRedirect kakaoRedirect) throws JsonProcessingException {
+    public OAuthToken getAccessToken(String code) throws JsonProcessingException {
 
         RestTemplate rt = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
@@ -59,8 +59,8 @@ public class AuthService {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("grant_type", "authorization_code");
         params.add("client_id",authOauthKakaoApi);
-        params.add("redirect_uri","http://localhost:8080/api/auth/kakao/callback");
-        params.add("code",kakaoRedirect.getCode());
+        params.add("redirect_uri","http://localhost:8082/oauth");
+        params.add("code",code);
 
         HttpEntity<MultiValueMap<String, String>> kakaoTokenRequest = new HttpEntity<>(params, headers);
 
