@@ -8,10 +8,10 @@
 	    <td><img width="300" alt="세정" src="https://avatars.githubusercontent.com/u/64718002?v=4"></td>
 	</tr>
 		<tr>
-   <th><a href="https://github.com/sseho"> 최세호 </th>
-	<th><a href="https://github.com/wisdom0405"> 정슬기 </th>
-  <th><a href="https://github.com/getsetgo1"> 박우진 </th>
-  <th><a href="https://github.com/clean2001"> 김세정 </th>
+   <th><a href="https://github.com/sseho"> 최세호</a> </th>
+	<th><a href="https://github.com/wisdom0405"> 정슬기 </a></th>
+  <th><a href="https://github.com/getsetgo1"> 박우진</a> </th>
+  <th><a href="https://github.com/clean2001"> 김세정</a> </th>
 	  </tr>
 <th> BE </th>
 <th> BE </th>

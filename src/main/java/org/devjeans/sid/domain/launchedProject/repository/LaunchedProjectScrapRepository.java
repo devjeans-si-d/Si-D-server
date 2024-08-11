@@ -19,4 +19,7 @@ public interface LaunchedProjectScrapRepository extends JpaRepository<LaunchedPr
 
     Optional<LaunchedProjectScrap> findByMemberAndLaunchedProject(Member member, LaunchedProject launchedProject);
 
+    // LaunchedProject-Scrap 교차테이블에서 LaunchedProject id, Member id에 해당하는 데이터가 있는지 확인
+    boolean existsByLaunchedProjectIdAndMemberId(Long launchedProjectId, Long memberId);
+
 }

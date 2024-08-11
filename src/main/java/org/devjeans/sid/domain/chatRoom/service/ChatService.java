@@ -42,7 +42,8 @@ public class ChatService {
     private final SecurityUtil securityUtil;
 
     // 해당 회원이 속한 채팅방을 updatedAt DESC로 정렬해서 보여주기
-    public Page<ChatRoomSimpleResponse> getChatRoomList(Pageable pageable, Long memberId) {
+    public Page<ChatRoomSimpleResponse> getChatRoomList(Pageable pageable) {
+        Long memberId = securityUtil.getCurrentMemberId();
 
         // 검증
         if(!memberId.equals(securityUtil.getCurrentMemberId())) { // 현재 로그인한 유저의 아이디와 memberId가 같지 않다면

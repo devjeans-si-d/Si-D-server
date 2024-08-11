@@ -5,7 +5,6 @@ import org.devjeans.sid.domain.launchedProject.dto.LaunchProjectDTO.ListLaunched
 import org.devjeans.sid.domain.launchedProject.dto.LaunchProjectDTO.SaveLaunchedProjectRequest;
 import org.devjeans.sid.domain.launchedProject.dto.LaunchProjectDTO.UpdateLaunchedProjectRequest;
 import org.devjeans.sid.domain.launchedProject.dto.LaunchedProjectMemberDTO.LaunchedProjectMemberResponse;
-import org.devjeans.sid.domain.launchedProject.dto.LaunchedProjectScrapDTO.LaunchedProjectScrapRequest;
 import org.devjeans.sid.domain.launchedProject.dto.LaunchedProjectScrapDTO.LaunchedProjectScrapResponse;
 import org.devjeans.sid.domain.launchedProject.dto.LaunchedProjectTechStackDTO.LaunchedProjectTechStackResponse;
 import org.devjeans.sid.domain.launchedProject.entity.LaunchedProject;
@@ -48,14 +47,26 @@ public class LaunchedProjectController {
         return ResponseEntity.ok(message); // 수정된 글 id 반환
     }
 
-    // 유저는 프로젝트 완성글에 사이다를 누를 수 있다.
-    @PostMapping("/scrap")
-    public ResponseEntity<LaunchedProjectScrapResponse> toggleScrap(@RequestBody LaunchedProjectScrapRequest scrapRequest){
-        LaunchedProjectScrapResponse scrapResponse = launchedProjectService.toggleScrap(scrapRequest);
+//    // 유저는 프로젝트 완성글에 사이다를 누를 수 있다.
+//    @PostMapping("/scrap")
+//    public ResponseEntity<LaunchedProjectScrapResponse> toggleScrap(@RequestBody LaunchedProjectScrapRequest scrapRequest){
+//        LaunchedProjectScrapResponse scrapResponse = launchedProjectService.toggleScrap(scrapRequest);
+//        return ResponseEntity.ok(scrapResponse);
+//    }
+
+    @PostMapping("/scrap/{id}")
+    public ResponseEntity<LaunchedProjectScrapResponse> addScrap(@PathVariable Long id){
+        LaunchedProjectScrapResponse scrapResponse = launchedProjectService.addScrap(id);
         return ResponseEntity.ok(scrapResponse);
     }
 
-    // Launched-Project id로 Launched-Project 기본정보 조회
+    @DeleteMapping("/scrap/{id}")
+    public ResponseEntity<LaunchedProjectScrapResponse> removeScrap(@PathVariable Long id){
+        LaunchedProjectScrapResponse scrapResponse = launchedProjectService.removeScrap(id);
+        return ResponseEntity.ok(scrapResponse);
+    }
+
+    // Launched-Project id로 Launched-Project 기본정보 조회 (+ 조회수, 스크랩 수)
     @GetMapping("/detail/{id}/basic-info")
     public ResponseEntity<BasicInfoLaunchedProjectResponse> getDetailBasicInfo(@PathVariable Long id) {
         BasicInfoLaunchedProjectResponse basicInfo = launchedProjectService.getBasicInfo(id);
@@ -91,11 +102,9 @@ public class LaunchedProjectController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<String> delete(@PathVariable Long id){
+    public ResponseEntity<String> delete(@PathVariable Long id) {
         String message = launchedProjectService.delete(id);
         return ResponseEntity.ok(message);
     }
-
-
 
 }

@@ -1,12 +1,9 @@
 package org.devjeans.sid.domain.launchedProject.dto.LaunchProjectDTO;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.devjeans.sid.domain.launchedProject.entity.LaunchedProject;
 import org.devjeans.sid.domain.project.entity.Project;
-
+@Setter
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
@@ -24,6 +21,8 @@ public class BasicInfoLaunchedProjectResponse {
     private Long projectId ; // 프로젝트 id(project테이블 FK)
 
     private Long views; // Launched-Project 조회수
+
+    private Long scrapCount; // Launched-Project 스크랩 수
 
 }
 
