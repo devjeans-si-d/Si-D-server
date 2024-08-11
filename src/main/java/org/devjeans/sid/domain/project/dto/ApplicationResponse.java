@@ -18,6 +18,7 @@ import java.util.Optional;
 public class ApplicationResponse {
     private Long projectId;
     private String projectName;
+    private String imageUrl;
     private String description;
     private JobField jobField;
     private String status;
@@ -42,6 +43,7 @@ public class ApplicationResponse {
         return ApplicationResponse.builder()
                 .projectId(project.getId())
                 .projectName(project.getProjectName())
+                .imageUrl(project.getImageUrl())
                 .jobField(projectApplication.getJobField())
                 .status(status)
                 .description(project.getDescription())
