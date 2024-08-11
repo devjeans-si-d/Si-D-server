@@ -10,8 +10,8 @@ import org.devjeans.sid.domain.member.entity.Member;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 public class ChatMessageRequest {
-    private Long chatRoomId;
-    private Long senderId;
+    private Long chatroomId;
+    private String token;
     private String content;
 
     public static ChatMessage toEntity(ChatRoom chatRoom, Member sender, boolean isRead, String content) {

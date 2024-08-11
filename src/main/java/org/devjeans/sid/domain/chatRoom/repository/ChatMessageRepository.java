@@ -21,7 +21,10 @@ public interface ChatMessageRepository extends JpaRepository<ChatMessage, Long> 
     @Query("select m from ChatMessage m where m.chatRoom = :chatRoom order by m.createdAt desc")
     List<ChatMessage> findRecentMessageByChatRoom(@Param("chatRoom") ChatRoom chatRoom);
 
-    @Query("select m from ChatMessage m where m.chatRoom.id = :chatRoomId order by m.createdAt desc")
+//    @Query("select m from ChatMessage m where m.chatRoom.id = :chatRoomId order by m.createdAt desc")
+//    Slice<ChatMessage> findAllByChatRoomId(Pageable pageable, @Param("chatRoomId") Long chatRoomId);
+
+    @Query("select m from ChatMessage m where m.chatRoom.id = :chatRoomId order by m.createdAt asc")
     Slice<ChatMessage> findAllByChatRoomId(Pageable pageable, @Param("chatRoomId") Long chatRoomId);
 
     List<ChatMessage> findChatMessageByChatRoomAndIsReadAndMember(ChatRoom chatRoom, boolean b, Member participant);

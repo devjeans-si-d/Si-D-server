@@ -2,9 +2,11 @@ package org.devjeans.sid.domain.chatRoom.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.devjeans.sid.domain.auth.JwtTokenProvider;
 import org.devjeans.sid.domain.chatRoom.dto.ChatMessageRequest;
 import org.devjeans.sid.domain.chatRoom.repository.ChatMessageRepository;
 import org.devjeans.sid.domain.chatRoom.service.WebSocketService;
+import org.devjeans.sid.global.util.SecurityUtil;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
@@ -25,14 +27,16 @@ import java.util.Set;
 public class WebSocketController {
 
     private final WebSocketService webSocketService;
+    private final JwtTokenProvider jwtTokenProvider;
 
     // 웹소켓 메시지를 특정 경로로 매핑한다.
-    @MessageMapping("/{chatRoomId}/receiver/{receiverId}") // /pub/1/receiver/1
+    @MessageMapping("/{chatRoomId}") // /pub/1
     public void sendMessage(ChatMessageRequest chatMessageRequest,
                             SimpMessageHeaderAccessor headerAccessor,
-                            @DestinationVariable(value = "chatRoomId") Long chatRoomId,
-                            @DestinationVariable(value = "receiverId") Long receiverId) {
-        webSocketService.sendMessage(chatRoomId, receiverId, chatMessageRequest);
+                            @DestinationVariable(value = "chatRoomId") Long chatRoomId) {
+        Long memberId = jwtTokenProvider.getMemberIdFromToken(chatMessageRequest.getToken());
+
+        webSocketService.sendMessage(chatRoomId, memberId, chatMessageRequest);
     }
 
 

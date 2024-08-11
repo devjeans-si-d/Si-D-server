@@ -34,12 +34,13 @@ public class ConnectedMap {
     }
 
     public void enterChatRoom(Long chatRoomId, Long memberId) {
-        log.info("[connected map line 39 enter]: member id, chatrooid: " + memberId + " " + chatRoomId);
         memberIdToChatroomId.put(memberId, chatRoomId);
+
     }
 
     public void addSession(String sessionId, Long memberId) {
-        log.info("line 43: add session {}", sessionId + " memberId: " + memberId);
         sessionToMemberId.put(sessionId, memberId);
+        log.info("sessionTo {}", sessionToMemberId);
+        log.info("memberIdTo {}", memberIdToChatroomId);
     }
 }
