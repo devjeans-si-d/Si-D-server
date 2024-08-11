@@ -8,6 +8,7 @@ import org.devjeans.sid.domain.member.entity.Member;
 import org.devjeans.sid.domain.member.repository.MemberRepository;
 import org.devjeans.sid.domain.project.entity.Project;
 import org.devjeans.sid.domain.project.repository.ProjectRepository;
+import org.devjeans.sid.global.util.SecurityUtil;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -37,9 +38,11 @@ public class EmailService {
     private final MemberRepository memberRepository;
     private final ProjectRepository projectRepository;
     private final RedisTemplate<String, MemberIdEmailCode> redisTemplate;
+    private final SecurityUtil securityUtil;
 
     @Async
-    public void sendEmailNotice(String email, Long memberId){
+    public void sendEmailNotice(String email){
+        Long memberId = securityUtil.getCurrentMemberId();
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         try {
             String randomCode = generateRandomCode();

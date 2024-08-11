@@ -36,8 +36,9 @@ public class MemberService {
     }
 
     @Transactional
-    public UpdateMemberResponse updateMemberInfo(Long memberId,
-                                                 UpdateMemberRequest updateMemberRequest) {
+    public UpdateMemberResponse updateMemberInfo(UpdateMemberRequest updateMemberRequest) {
+        Long memberId = securityUtil.getCurrentMemberId();
+
         Member member = memberRepository.findByIdOrThrow(memberId);
 
         // 회원 정보 수정
