@@ -43,7 +43,7 @@ public class ApplicationResponse {
         return ApplicationResponse.builder()
                 .projectId(project.getId())
                 .projectName(project.getProjectName())
-                .imageUrl(project.getImageUrl())
+                .imageUrl(project.getImageUrl()) 
                 .jobField(projectApplication.getJobField())
                 .status(status)
                 .description(project.getDescription())
