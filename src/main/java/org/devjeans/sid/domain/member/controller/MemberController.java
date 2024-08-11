@@ -28,26 +28,24 @@ public class MemberController {
     private final MemberService memberService;
     private final EmailService emailService;
 
-    @GetMapping("/{memberId}")
-    public ResponseEntity<MemberInfoResponse> getMemberInfo(@PathVariable("memberId") Long memberId) {
-        MemberInfoResponse memberInfo = memberService.getMemberInfo(memberId);
+    @GetMapping
+    public ResponseEntity<MemberInfoResponse> getMemberInfo() {
+        MemberInfoResponse memberInfo = memberService.getMemberInfo();
 
         return new ResponseEntity<>(memberInfo, HttpStatus.OK);
     }
 
-    @PostMapping("/{memberId}/update")
-    public ResponseEntity<UpdateMemberResponse> updateMemberInfo(
-            @PathVariable Long memberId,
-            @RequestBody UpdateMemberRequest updateMemberRequest) {
+    @PostMapping("/update")
+    public ResponseEntity<UpdateMemberResponse> updateMemberInfo(@RequestBody UpdateMemberRequest updateMemberRequest) {
 
-        UpdateMemberResponse updateMemberResponse = memberService.updateMemberInfo(memberId, updateMemberRequest);
+        UpdateMemberResponse updateMemberResponse = memberService.updateMemberInfo(updateMemberRequest);
 
         return new ResponseEntity<>(updateMemberResponse, HttpStatus.OK);
     }
 
-    @PostMapping("/{memberId}/update/email")
-    public ResponseEntity<?> sendEmail(@Valid @RequestBody UpdateEmailRequest updateEmailRequest, @PathVariable Long memberId) {
-        emailService.sendEmailNotice(updateEmailRequest.getEmail(), memberId);
+    @PostMapping("/update/email")
+    public ResponseEntity<?> sendEmail(@Valid @RequestBody UpdateEmailRequest updateEmailRequest) {
+        emailService.sendEmailNotice(updateEmailRequest.getEmail());
         return new ResponseEntity<>(null, HttpStatus.OK);
     }
 

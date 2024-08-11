@@ -28,16 +28,17 @@ public class MemberService {
     private final RedisTemplate<String, MemberIdEmailCode> redisTemplate;
     private final SecurityUtil securityUtil;
 
-    public MemberInfoResponse getMemberInfo(Long memberId) {
-        // TODO: 인증, 인가 구현 후 멤버 아이디와 시큐리티 컨텍스트의 멤버가 동일한지 확인하는 로직 필요
+    public MemberInfoResponse getMemberInfo() {
+        Long memberId = securityUtil.getCurrentMemberId();
 
         Member member = memberRepository.findByIdOrThrow(memberId);
         return MemberInfoResponse.fromEntity(member);
     }
 
     @Transactional
-    public UpdateMemberResponse updateMemberInfo(Long memberId,
-                                                 UpdateMemberRequest updateMemberRequest) {
+    public UpdateMemberResponse updateMemberInfo(UpdateMemberRequest updateMemberRequest) {
+        Long memberId = securityUtil.getCurrentMemberId();
+
         Member member = memberRepository.findByIdOrThrow(memberId);
 
         // 회원 정보 수정
