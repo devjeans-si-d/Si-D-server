@@ -34,9 +34,7 @@ public class WebSocketController {
     public void sendMessage(ChatMessageRequest chatMessageRequest,
                             SimpMessageHeaderAccessor headerAccessor,
                             @DestinationVariable(value = "chatRoomId") Long chatRoomId) {
-//        log.info("line 36: {}", securityUtil.getCurrentMemberId());
         Long memberId = jwtTokenProvider.getMemberIdFromToken(chatMessageRequest.getToken());
-        log.info("line 34! {}, {}, {}", chatMessageRequest.getContent(), chatMessageRequest.getChatroomId(), memberId);
 
         webSocketService.sendMessage(chatRoomId, memberId, chatMessageRequest);
     }
