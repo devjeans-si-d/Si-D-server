@@ -13,6 +13,8 @@ import org.devjeans.sid.domain.project.entity.RecruitInfo;
 //import org.devjeans.sid.domain.projectMember.entity.ProjectMember;
 import org.devjeans.sid.domain.project.entity.ProjectMember;
 import org.devjeans.sid.domain.project.entity.JobField;
+import org.devjeans.sid.domain.project.service.ScrapService;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -26,7 +28,6 @@ import java.util.List;
 @Data
 public class DetailProjectResponse {
     // project(view) 포함, projectMembers, recruitInfos, projectScrap
-
     private Long id;
 
     private String projectName;
@@ -41,15 +42,17 @@ public class DetailProjectResponse {
     private LocalDateTime deadline;
 
     private Long views;
+    private Long scrapCount;
 
-    @JsonIgnore
-    // Todo Ignore 안 쓰면 detail 17번 불렀을 때 에러남!! 강사님께 여쭤보기
-    private Member pm;
-    private Integer scrapCount;
+    private String pmName;
+    private String pmEmail;
+    private String pmNickname;
+    private String pmImage;
     @Builder.Default
     private List<ProjectMemberDto> projectMembers=new ArrayList<>();
     @Builder.Default
     private List<RecruitInfoDto> recruitInfos=new ArrayList<>();
+
 
     @Data
     @Builder
@@ -78,7 +81,7 @@ public class DetailProjectResponse {
 
 //    private List<ChatRoomDto> chatRooms;
 
-    public static DetailProjectResponse fromEntity(Project project){
+    public static DetailProjectResponse fromEntity(Project project, Long scrapCount, Long views){
         List<RecruitInfo> recruitInfoList = project.getRecruitInfos();
         List<ProjectScrap> projectScrapList = project.getProjectScraps();
         List<ChatRoom> chatRoomList=project.getChatRooms();
@@ -108,13 +111,16 @@ public class DetailProjectResponse {
 
         return DetailProjectResponse.builder()
                 .id(project.getId())
-                .pm(project.getPm())
-                .scrapCount(projectScrapList.size())
+                .pmName(project.getPm().getName())
+                .pmEmail(project.getPm().getEmail())
+                .pmNickname(project.getPm().getNickname())
+                .pmImage(project.getPm().getProfileImageUrl())
+                .scrapCount(scrapCount)
                 .deadline(project.getDeadline())
                 .description(project.getDescription())
                 .isClosed(project.getIsClosed())
                 .projectName(project.getProjectName())
-                .views(project.getViews())
+                .views(views)
                 .recruitInfos(recruitInfoDtos)
                 .recruitmemtContents(project.getRecruitmemtContents())
                 .projectMembers(projectMemberDtos)

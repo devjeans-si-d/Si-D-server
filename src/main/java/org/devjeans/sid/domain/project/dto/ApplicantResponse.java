@@ -17,11 +17,11 @@ public class ApplicantResponse {
     private String profileImageUrl;
     private String status;
 
-    public static ApplicantResponse fromEntity(ProjectApplication projectApplication, Member member) {
+    public static ApplicantResponse fromEntity(ProjectApplication projectApplication) {
 
         return ApplicantResponse.builder()
-                .name(member.getName())
-                .profileImageUrl(member.getProfileImageUrl())
+                .name(projectApplication.getMember().getName())
+                .profileImageUrl(projectApplication.getMember().getProfileImageUrl())
                 .jobField(projectApplication.getJobField().toString()) // FIXME: 한글로 수정 필요
                 .status(projectApplication.getIsAccepted() ? "승인 완료" : "승인 대기")
                 .build();

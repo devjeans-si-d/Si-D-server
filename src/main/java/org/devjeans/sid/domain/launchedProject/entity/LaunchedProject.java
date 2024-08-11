@@ -1,9 +1,6 @@
 package org.devjeans.sid.domain.launchedProject.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.devjeans.sid.domain.common.BaseEntity;
 import org.devjeans.sid.domain.launchedProject.dto.LaunchProjectDTO.BasicInfoLaunchedProjectResponse;
 import org.devjeans.sid.domain.launchedProject.dto.LaunchProjectDTO.ListLaunchedProjectResponse;
@@ -17,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -99,7 +97,7 @@ public class LaunchedProject extends BaseEntity {
                 .launchedProjectContents(launchedProject.getLaunchedProjectContents()) // 프로젝트 글 내용
                 .siteUrl(launchedProject.getSiteUrl()) // 프로젝트 출시 사이트 링크
                 .projectId(launchedProject.getProject().getId()) // FK걸린 프로젝트
-                .views(launchedProject.getViews()) // 조회수
+//                .views(launchedProject.getViews()) // 조회수
                 .build();
     }
 

@@ -3,6 +3,7 @@ package org.devjeans.sid.domain.siderCard.service;
 import lombok.RequiredArgsConstructor;
 import org.devjeans.sid.domain.member.entity.Member;
 import org.devjeans.sid.domain.member.repository.MemberRepository;
+import org.devjeans.sid.domain.siderCard.dto.SiDCardListDto;
 import org.devjeans.sid.domain.siderCard.dto.SiderCardResDto;
 import org.devjeans.sid.domain.siderCard.dto.SiderCardUpdateReqDto;
 import org.devjeans.sid.domain.siderCard.dto.TeckStackReqDto;
@@ -34,8 +35,7 @@ public class SiderCardService {
     private final SiderCardTechStackRepository siderCardTechStackRepository;
     private final TechStackRepository techStackRepository;
 
-    public SiderCardResDto getSiderCard() {
-        Long id = securityUtil.getCurrentMemberId();
+    public SiderCardResDto getSiderCard(Long id) {
         Member member = memberRepository.findById(id).orElseThrow(()->new EntityNotFoundException("member not found"));
         SiderCard siderCard = siderCardRepository.findById(id).orElseThrow(()->new EntityNotFoundException("SiderCard not found"));
         return siderCard.fromEntity(member);
@@ -52,6 +52,16 @@ public class SiderCardService {
             techStacks.add(SiderCardTechStack.builder().techStack(ts).siderCard(siderCard).build());
         }
         siderCard.update(dto,siderCard,techStacks);
-        return getSiderCard();
+        return getSiderCard(id);
+    }
+
+    public List<SiDCardListDto> getSiderCardList() {
+        List<SiderCard> siderCards = siderCardRepository.findAll();
+        List<SiDCardListDto> siderCardListDtos = new ArrayList<>();
+        for(SiderCard siderCard: siderCards){
+            Member member = memberRepository.findById(siderCard.getId()).orElseThrow(()->new EntityNotFoundException("member not found"));
+            siderCardListDtos.add(siderCard.listFromEntity(member));
+        }
+        return siderCardListDtos;
     }
 }

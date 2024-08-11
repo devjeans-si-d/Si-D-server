@@ -42,6 +42,9 @@ public class Project extends BaseEntity {
     @ColumnDefault("0")
     private Long views=0L;
 
+    @ColumnDefault("0")
+    private Long scrapCount=0L;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "pm_id")
     private Member pm;
