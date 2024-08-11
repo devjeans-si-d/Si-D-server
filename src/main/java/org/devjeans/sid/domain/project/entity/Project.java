@@ -45,6 +45,8 @@ public class Project extends BaseEntity {
     @ColumnDefault("0")
     private Long scrapCount=0L;
 
+    private String imageUrl;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member pm;
