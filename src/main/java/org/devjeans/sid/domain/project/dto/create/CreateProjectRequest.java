@@ -28,7 +28,7 @@ public class CreateProjectRequest {
     private Long pmId;
     private String projectName;
     private String description;
-    private String recruitmemtContents;
+    private String recruitmentContents;
     private LocalDateTime deadline;
     @Builder.Default
     private List<ProjectMemberCreateRequest> projectMembers=new ArrayList<>();
@@ -63,7 +63,7 @@ public class CreateProjectRequest {
                 .pm(member)
                 .projectName(this.projectName)
                 .description(this.description)
-                .recruitmemtContents(this.recruitmemtContents)
+                .recruitmentContents(this.recruitmentContents)
                 .isClosed("N")
                 .deadline(this.deadline)
                 .views(0L)

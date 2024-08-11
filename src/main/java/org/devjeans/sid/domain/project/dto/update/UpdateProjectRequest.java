@@ -25,7 +25,7 @@ public class UpdateProjectRequest {
 //    private Long pmId; // pathvariable id !=pmId => error 처리
     private String projectName;
     private String description;
-    private String recruitmemtContents;
+    private String recruitmentContents;
     private String isClosed;
     private LocalDateTime deadline;
     @Builder.Default
@@ -113,7 +113,7 @@ public class UpdateProjectRequest {
         project.setDeadline(dto.getDeadline());
         project.setIsClosed(dto.getIsClosed());
         project.setDescription(dto.getDescription());
-        project.setRecruitmemtContents(dto.getRecruitmemtContents());
+        project.setRecruitmentContents(dto.getRecruitmentContents());
         return project;
 
     }

@@ -25,7 +25,6 @@ public class MyProjectResponse {
     private String isLaunched;
 
     public static MyProjectResponse fromEntity(ProjectMember projectMember, String isLaunched) {
-        log.info("line 28 {}, {}", projectMember.getProject().getPm().getId(), projectMember.getMember().getId());
 
         String isPm = projectMember.getProject().getPm().getId().equals(projectMember.getMember().getId()) ? "Y" : "N";
         String isClosed = projectMember.getProject().getIsClosed();

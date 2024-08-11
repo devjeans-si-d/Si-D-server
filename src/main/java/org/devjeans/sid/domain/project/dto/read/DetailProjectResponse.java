@@ -35,7 +35,7 @@ public class DetailProjectResponse {
     private String description;
 
 
-    private String recruitmemtContents;
+    private String recruitmentContents;
 
     private String isClosed;
 
@@ -122,7 +122,7 @@ public class DetailProjectResponse {
                 .projectName(project.getProjectName())
                 .views(views)
                 .recruitInfos(recruitInfoDtos)
-                .recruitmemtContents(project.getRecruitmemtContents())
+                .recruitmentContents(project.getRecruitmentContents())
                 .projectMembers(projectMemberDtos)
                 .build();
     }

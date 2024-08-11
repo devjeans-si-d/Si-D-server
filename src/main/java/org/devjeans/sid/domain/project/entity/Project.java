@@ -31,7 +31,7 @@ public class Project extends BaseEntity {
 
 
     @Column(nullable = false, length = 5000)
-    private String recruitmemtContents;
+    private String recruitmentContents;
 
     @Column(columnDefinition = "varchar(1) default 'N'")
     private String isClosed;
@@ -46,7 +46,7 @@ public class Project extends BaseEntity {
     private Long scrapCount=0L;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "pm_id")
+    @JoinColumn(name = "member_id")
     private Member pm;
 
     @Builder.Default

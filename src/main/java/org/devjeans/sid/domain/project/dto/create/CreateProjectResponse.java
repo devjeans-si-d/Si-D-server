@@ -26,7 +26,7 @@ public class CreateProjectResponse {
     private Long id;
     private String projectName;
     private String description;
-    private String recruitmemtContents;
+    private String recruitmentContents;
     private String isClosed;
     private LocalDateTime deadline;
     @Builder.Default
@@ -84,7 +84,7 @@ public class CreateProjectResponse {
                 .id(project.getId())
                 .projectName(project.getProjectName())
                 .description(project.getDescription())
-                .recruitmemtContents(project.getRecruitmemtContents())
+                .recruitmentContents(project.getRecruitmentContents())
                 .deadline(project.getDeadline())
                 .isClosed(project.getIsClosed())
                 .projectMembers(projectMemberDtos)

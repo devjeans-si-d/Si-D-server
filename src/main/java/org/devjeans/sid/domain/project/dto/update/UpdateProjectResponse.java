@@ -30,7 +30,7 @@ public class UpdateProjectResponse {
     private String description;
     private String isClosed;
     private LocalDateTime deadline;
-    private String recruitmemtContents;
+    private String recruitmentContents;
     @Builder.Default
     private List<UpdateProjectResponse.ProjectMemberDto> projectMembers=new ArrayList<>();
     @Builder.Default
@@ -88,7 +88,7 @@ public class UpdateProjectResponse {
                 .isClosed(project.getIsClosed())
                 .deadline(project.getDeadline())
                 .description(project.getDescription())
-                .recruitmemtContents(project.getRecruitmemtContents())
+                .recruitmentContents(project.getRecruitmentContents())
                 .projectMembers(projectMemberDtos)
                 .recruitInfos(recruitInfoDtos)
                 .build();
