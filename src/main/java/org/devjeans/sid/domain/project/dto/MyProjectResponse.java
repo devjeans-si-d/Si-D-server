@@ -24,6 +24,9 @@ public class MyProjectResponse {
     private String isClosed;
     private String isLaunched;
 
+    private String myJob;
+    private String imageUrl;
+
     public static MyProjectResponse fromEntity(ProjectMember projectMember, String isLaunched) {
 
         String isPm = projectMember.getProject().getPm().getId().equals(projectMember.getMember().getId()) ? "Y" : "N";
@@ -36,6 +39,8 @@ public class MyProjectResponse {
                 .isPm(isPm)
                 .isClosed(isClosed)
                 .isLaunched(isLaunched)
+                .myJob(projectMember.getJobField().getJobName())
+                .imageUrl(projectMember.getProject().getImageUrl())
                 .build();
     }
 
