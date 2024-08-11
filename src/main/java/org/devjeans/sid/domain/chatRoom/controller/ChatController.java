@@ -44,9 +44,9 @@ public class ChatController {
 
     // 채팅방 입장하기 (= 메모리 map에 값 넣기)
     // 웹 소켓 연결은 클라이언트에서 함
-    @PostMapping("/chatroom/{chatroomId}/entrance/member/{memberId}")
-    public void enterChatRoom(@PathVariable Long chatroomId, @PathVariable Long memberId) {
-        chatService.enterChatRoom(chatroomId, memberId);
+    @PostMapping("/chatroom/{chatroomId}/enter")
+    public void enterChatRoom(@PathVariable Long chatroomId) {
+        chatService.enterChatRoom(chatroomId);
     }
 
 }

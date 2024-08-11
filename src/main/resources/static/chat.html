@@ -76,7 +76,7 @@
                     chatRoomId: 1,
                     content: messageInput
                 };
-                stompClient.send("/pub/" + chatRoomId + "/receiver/" + receiverId, {}, JSON.stringify(chatMessage));
+                stompClient.send("/pub/" + chatRoomId, {}, JSON.stringify(chatMessage));
                 document.getElementById("messageInput" + userId).value = '';
             }
         }

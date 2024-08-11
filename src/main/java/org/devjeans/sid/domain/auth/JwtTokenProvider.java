@@ -5,9 +5,18 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.extern.slf4j.Slf4j;
 import org.devjeans.sid.global.exception.BaseException;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import static org.devjeans.sid.global.exception.exceptionType.TokenException.INVALID_TOKEN;
 
@@ -43,8 +52,6 @@ public class JwtTokenProvider {
                     .setSigningKey(secretKey)
                     .parseClaimsJws(token)
                     .getBody();
-
-            // log.info("[line 48] 멤버 아이디: {}", claims.getSubject());
         } catch (Exception e) {
             throw new BaseException(INVALID_TOKEN);
         }

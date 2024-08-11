@@ -50,6 +50,8 @@ public class StompHandler implements ChannelInterceptor {
             // 토큰 검증
             jwtTokenProvider.validateWebSocketToken(bearerToken);
 
+
+
             // 토큰 검증 통과
             log.info("토큰 검증 통과 WebSocket CONNECT");
 

@@ -136,7 +136,9 @@ public class ChatService {
     }
 
     // TODO: FRONT - 만약 방을 만들려고 했는데 createChatRoom에서 CHATROOM_ALREADY_EXIST가 떨어지면 enterChatRoom 호출
-    public void enterChatRoom(Long chatRoomId, Long memberId) {
+    public void enterChatRoom(Long chatRoomId) {
+        Long memberId = securityUtil.getCurrentMemberId();
+        
         // 검증: 해당 방에 member가 속해있는지
         ChatRoom chatRoom = chatRoomRepository.findByIdOrThrow(chatRoomId);
         List<Long> memberIds = chatRoom.getChatParticipants().stream()
