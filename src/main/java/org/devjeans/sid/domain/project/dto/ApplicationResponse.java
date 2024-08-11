@@ -45,6 +45,7 @@ public class ApplicationResponse {
                 .jobField(projectApplication.getJobField())
                 .status(status)
                 .description(project.getDescription())
+                .description(project.getDescription())
                 .build();
     }
 }
