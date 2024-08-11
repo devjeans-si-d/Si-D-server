@@ -18,9 +18,9 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class ChatController {
     private final ChatService chatService;
-    @GetMapping("/member/{memberId}/list")
-    public ResponseEntity<Page<ChatRoomSimpleResponse>> getChatRoomList(@PageableDefault(size = 5) Pageable pageable, @PathVariable("memberId") Long memberId) {
-        Page<ChatRoomSimpleResponse> chatRoomList = chatService.getChatRoomList(pageable, memberId);
+    @GetMapping("/list")
+    public ResponseEntity<Page<ChatRoomSimpleResponse>> getChatRoomList(@PageableDefault(size = 5) Pageable pageable) {
+        Page<ChatRoomSimpleResponse> chatRoomList = chatService.getChatRoomList(pageable);
 
         return new ResponseEntity<>(chatRoomList, HttpStatus.OK);
     }
