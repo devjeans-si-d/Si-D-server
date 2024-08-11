@@ -89,7 +89,8 @@ public class ChatService {
     }
 
     @Transactional
-    public Slice<ChatRoomMessageResponse> getChatRoomMessages(Pageable pageable, Long chatRoomId, Long memberId) {
+    public Slice<ChatRoomMessageResponse> getChatRoomMessages(Pageable pageable, Long chatRoomId) {
+        Long memberId = securityUtil.getCurrentMemberId();
         resolveUnread(chatRoomId, memberId);
         Slice<ChatMessage> messages = chatMessageRepository.findAllByChatRoomId(pageable, chatRoomId);
         return messages.map(ChatRoomMessageResponse::fromEntity);
