@@ -24,7 +24,7 @@
             <td>
                 <h3>Si-D</h3>
                 <p>수신 이메일 인증을 위한 메일입니다.</p> <br>
-                <p> 인증 링크: <a th:href="@{localhost:8080/api/member/email-code/{code}(code=${randomCode})}"> http://localhost:8080/api/member/email-code/<span th:text="|${randomCode}|"></span></a></p><br>
+                <p> 인증 링크: <a th:href="@{localhost:8082/member/email-code/{code}(code=${randomCode})}"> http://localhost:8082/api/member/email-code/<span th:text="|${randomCode}|"></span></a></p><br>
                 <p>메일 발송 후 10분 내에 링크에 접속하세요</p>
             </td>
         </tr>
