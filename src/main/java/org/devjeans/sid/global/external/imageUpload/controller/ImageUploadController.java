@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class ImageUploadController {
     private final FileService fileService;
-    @GetMapping("/api/upload/prisigned-url")
+    @PostMapping("/api/upload/prisigned-url")
     public String getPresignedUrl(@RequestBody PresignedRequest presignedRequest) {
         return fileService.getPreSignedUrl(presignedRequest.getPrefix(), presignedRequest.getUrl());
     }
