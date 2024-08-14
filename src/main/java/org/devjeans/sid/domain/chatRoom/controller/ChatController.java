@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.devjeans.sid.domain.chatRoom.service.ChatService;
 import org.devjeans.sid.domain.chatRoom.dto.*;
+import org.devjeans.sid.domain.member.dto.MemberInfoResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -11,6 +12,8 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -47,6 +50,13 @@ public class ChatController {
     @PostMapping("/chatroom/{chatroomId}/enter")
     public void enterChatRoom(@PathVariable Long chatroomId) {
         chatService.enterChatRoom(chatroomId);
+    }
+
+    @GetMapping("/chatroom/{chatRoomId}/get-member-info")
+    public ResponseEntity<List<MemberInfoResponse>> getChatRoomMessages(@PathVariable("chatRoomId") Long chatRoomId) {
+        List<MemberInfoResponse> memberInfos = chatService.getMemberInfo(chatRoomId);
+
+        return new ResponseEntity<>(memberInfos, HttpStatus.OK);
     }
 
 }

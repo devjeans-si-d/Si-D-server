@@ -10,6 +10,7 @@ import org.devjeans.sid.domain.chatRoom.entity.ChatRoom;
 import org.devjeans.sid.domain.chatRoom.repository.ChatMessageRepository;
 import org.devjeans.sid.domain.chatRoom.repository.ChatParticipantRepository;
 import org.devjeans.sid.domain.chatRoom.repository.ChatRoomRepository;
+import org.devjeans.sid.domain.member.dto.MemberInfoResponse;
 import org.devjeans.sid.domain.member.entity.Member;
 import org.devjeans.sid.domain.member.repository.MemberRepository;
 import org.devjeans.sid.domain.project.entity.Project;
@@ -153,6 +154,26 @@ public class ChatService {
 
         // 메모리에 저장
         connectedMap.enterChatRoom(chatRoomId, memberId);
+    }
+
+    public List<MemberInfoResponse> getMemberInfo(Long chatroomId) {
+        Long memberId = securityUtil.getCurrentMemberId();
+
+        ChatRoom chatRoom = chatRoomRepository.findByIdOrThrow(chatroomId);
+        // 상대방 찾기
+        Member participant = chatRoom.getChatParticipants().stream()
+                .filter(p -> !p.getMember().getId().equals(memberId))
+                .findFirst()
+                .map(ChatParticipant::getMember)
+                .orElseThrow(() -> new BaseException(INVALID_CHATROOM));
+
+        // 나 찾기
+        Member me = memberRepository.findByIdOrThrow(memberId);
+
+        MemberInfoResponse participantInfo = MemberInfoResponse.fromEntity(participant);
+        MemberInfoResponse meInfo = MemberInfoResponse.fromEntity(me);
+
+        return new ArrayList<>(List.of(participantInfo, meInfo));
     }
 
     // unread message 읽음 처리

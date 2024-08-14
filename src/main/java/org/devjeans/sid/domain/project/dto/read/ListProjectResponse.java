@@ -11,6 +11,10 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 public class ListProjectResponse {
+    private Long id;
+
+    private String imageUrl;
+
     private String projectName;
 
     private String description;

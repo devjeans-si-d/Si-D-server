@@ -127,6 +127,8 @@ public class ScrapService {
             Object count = valueOperations.get(projectKey);
             Long scrapCount = count != null ? Long.valueOf(count.toString()) : 0L;
             ListProjectResponse listProjectResponse = ListProjectResponse.builder()
+                    .id(project.getId())
+                    .imageUrl(project.getImageUrl())
                     .projectName(project.getProjectName())
                     .views(viewCount)
                     .scrapCount(scrapCount)
@@ -136,7 +138,7 @@ public class ScrapService {
                     .build();
             listProjectResponses.add(listProjectResponse);
         }
-        return new PageImpl<>(listProjectResponses,pageable,projectList.size());
+        return new PageImpl<>(listProjectResponses, pageable,projectList.size());
 
     }
 

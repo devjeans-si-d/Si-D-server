@@ -49,8 +49,7 @@ public class MemberService {
     }
     @Transactional
     public UpdateEmailResponse updateMemberEmail(String code) {
-//        Long memberId = securityUtil.getCurrentMemberId();
-        Long memberId = 1L;
+        Long memberId = securityUtil.getCurrentMemberId();
         Member member = memberRepository.findByIdOrThrow(memberId);
 
         if(getMemberIdFromRedis(code).equals(memberId)) { // 요청 멤버와 현재 멤버가 같다면
