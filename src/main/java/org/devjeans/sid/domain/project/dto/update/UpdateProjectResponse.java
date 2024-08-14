@@ -30,6 +30,7 @@ public class UpdateProjectResponse {
     private String description;
     private String isClosed;
     private LocalDateTime deadline;
+    private String imageUrl;
     private String recruitmentContents;
     @Builder.Default
     private List<UpdateProjectResponse.ProjectMemberDto> projectMembers=new ArrayList<>();
@@ -84,6 +85,7 @@ public class UpdateProjectResponse {
         }
         return UpdateProjectResponse.builder()
                 .id(project.getId())
+                .imageUrl(project.getImageUrl())
                 .projectName(project.getProjectName())
                 .isClosed(project.getIsClosed())
                 .deadline(project.getDeadline())

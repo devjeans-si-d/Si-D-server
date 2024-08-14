@@ -53,8 +53,12 @@ public class ScrapService {
         Project projectCheck = projectRepository.findById(projectId).orElseThrow(() -> new BaseException(PROJECT_NOT_FOUND));
         String memberKey = MEMBER_SCRAP_LIST + memberId;
         SetOperations<String, Object> memberSrapSet = scrapRedisTemplate.opsForSet();
-        Long check = memberSrapSet.add(memberKey, projectId);
-        if (check != null && check < 1) throw new BaseException(ALREADY_SCRAP_PROJECT);
+        if (memberSrapSet.isMember(memberKey, String.valueOf(projectId)) == true) {
+            throw new BaseException(ALREADY_SCRAP_PROJECT);
+        }
+        memberSrapSet.add(memberKey, projectId);
+//        System.out.println("여러번 스크랩해도 괜찮은지"+check);
+//        if (check != null && check < 1) throw new BaseException(ALREADY_SCRAP_PROJECT);
 
         // 프로젝트 id - 스크랩 카운트 (set 아님)
         // 프로젝트별 스크랩 수 증가 (String)
@@ -76,7 +80,7 @@ public class ScrapService {
 
         //멤버별 스크랩 목록에 삭제
         SetOperations<String, Object> memberSrapSet = scrapRedisTemplate.opsForSet();
-        if(memberSrapSet.isMember(memberKey,projectId)) throw new BaseException(SCRAP_PROJECT_NOT_FOUND);
+        if(memberSrapSet.isMember(memberKey,projectId)!=true) throw new BaseException(SCRAP_PROJECT_NOT_FOUND);
         memberSrapSet.remove(memberKey,projectId);
 
         // 프로젝트 스크랩수 count 감소
@@ -94,7 +98,7 @@ public class ScrapService {
         String projectKey = PROJECT_SCRAP_COUNT + projectId;
         ValueOperations<String, Object> valueOperations = scrapRedisTemplate.opsForValue();
         Object count = valueOperations.get(projectKey);
-        if(count!=null) Long.parseLong(count.toString());
+        if(count!=null) response=Long.parseLong(count.toString());
         return response;
     }
 
