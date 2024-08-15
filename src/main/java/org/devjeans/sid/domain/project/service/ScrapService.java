@@ -80,7 +80,7 @@ public class ScrapService {
 
         //멤버별 스크랩 목록에 삭제
         SetOperations<String, Object> memberSrapSet = scrapRedisTemplate.opsForSet();
-        if(memberSrapSet.isMember(memberKey,projectId)!=true) throw new BaseException(SCRAP_PROJECT_NOT_FOUND);
+        if(memberSrapSet.isMember(memberKey,projectId)==false) throw new BaseException(SCRAP_PROJECT_NOT_FOUND);
         memberSrapSet.remove(memberKey,projectId);
 
         // 프로젝트 스크랩수 count 감소

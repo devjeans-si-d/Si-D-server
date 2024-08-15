@@ -31,6 +31,8 @@ public class LaunchedProject extends BaseEntity {
     @Column(nullable = false, length = 5000)
     private String launchedProjectContents; // Launched-Project 글 내용
 
+    private String imageUrl;
+
     @Column(length = 2083)
     private String siteUrl; // 프로젝트 사이트 링크
 
