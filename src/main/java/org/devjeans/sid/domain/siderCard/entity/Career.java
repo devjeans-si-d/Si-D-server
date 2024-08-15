@@ -7,6 +7,7 @@ import org.devjeans.sid.domain.siderCard.dto.CareerResDto;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.YearMonth;
 
 @Entity
 @Getter
@@ -26,13 +27,13 @@ public class Career{
     private String position;
 
     @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
-    private EmployedYn employedYn;
+//    @Enumerated(EnumType.STRING)
+    private Boolean employedYn;
 
     @Column(nullable = false)
-    private LocalDate employedStart;
+    private YearMonth employedStart;
 
-    private LocalDate employedEnd;
+    private YearMonth employedEnd;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sider_card_id")

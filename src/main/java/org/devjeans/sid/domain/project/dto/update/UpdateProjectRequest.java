@@ -26,6 +26,7 @@ public class UpdateProjectRequest {
     private String projectName;
     private String description;
     private String recruitmentContents;
+    private String imageUrl;
     private String isClosed;
     private LocalDateTime deadline;
     @Builder.Default
@@ -110,6 +111,7 @@ public class UpdateProjectRequest {
     public static Project updateProject(Project project, UpdateProjectRequest dto){
          // Todo : pm은 수정 불가능한건지 팀원과 체크 필요
         project.setProjectName(dto.getProjectName());
+        project.setImageUrl(dto.getImageUrl());
         project.setDeadline(dto.getDeadline());
         project.setIsClosed(dto.getIsClosed());
         project.setDescription(dto.getDescription());

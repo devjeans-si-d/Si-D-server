@@ -1,9 +1,6 @@
 package org.devjeans.sid.domain.project.dto.create;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.devjeans.sid.domain.chatRoom.entity.ChatRoom;
 import org.devjeans.sid.domain.member.entity.Member;
 import org.devjeans.sid.domain.project.dto.read.DetailProjectResponse;
@@ -27,6 +24,7 @@ public class CreateProjectResponse {
     private String projectName;
     private String description;
     private String recruitmentContents;
+    private String imageUrl;
     private String isClosed;
     private LocalDateTime deadline;
     @Builder.Default
@@ -36,6 +34,7 @@ public class CreateProjectResponse {
     @Data
     @Builder
     @NoArgsConstructor
+    @Getter
     @AllArgsConstructor
     public static class RecruitInfoDto{
         private Long id;
@@ -46,6 +45,7 @@ public class CreateProjectResponse {
 
     @Data
     @Builder
+    @Getter
     @NoArgsConstructor
     @AllArgsConstructor
     public static class ProjectMemberDto{
@@ -73,15 +73,16 @@ public class CreateProjectResponse {
         List<CreateProjectResponse.ProjectMemberDto> projectMemberDtos = new ArrayList<>();
         for(ProjectMember  projectMember :projectMemberList){
             CreateProjectResponse.ProjectMemberDto projectMemberDto = CreateProjectResponse.ProjectMemberDto.builder()
-                    .id(project.getId())
+                    .id(projectMember.getMember().getId())
                     .memberName(projectMember.getMember().getName())
                     .jobField(projectMember.getJobField())
                     .build();
             projectMemberDtos.add(projectMemberDto);
         }
-
+        System.out.println("왜 recruitmentcontents 안 나와"+project.getRecruitmentContents());
         return CreateProjectResponse.builder()
                 .id(project.getId())
+                .imageUrl(project.getImageUrl())
                 .projectName(project.getProjectName())
                 .description(project.getDescription())
                 .recruitmentContents(project.getRecruitmentContents())

@@ -1,9 +1,6 @@
 package org.devjeans.sid.domain.project.dto.create;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.devjeans.sid.domain.chatRoom.entity.ChatRoom;
 import org.devjeans.sid.domain.member.entity.Member;
 import org.devjeans.sid.domain.project.entity.Project;
@@ -29,6 +26,7 @@ public class CreateProjectRequest {
     private String projectName;
     private String description;
     private String recruitmentContents;
+    private String imageUrl;
     private LocalDateTime deadline;
     @Builder.Default
     private List<ProjectMemberCreateRequest> projectMembers=new ArrayList<>();
@@ -58,9 +56,9 @@ public class CreateProjectRequest {
 
 
     public Project toEntity(Member member){
-
         return Project.builder()
                 .pm(member)
+                .imageUrl(this.imageUrl)
                 .projectName(this.projectName)
                 .description(this.description)
                 .recruitmentContents(this.recruitmentContents)

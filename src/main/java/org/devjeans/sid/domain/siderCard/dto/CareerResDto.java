@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import org.devjeans.sid.domain.siderCard.entity.EmployedYn;
 
 import java.time.LocalDate;
+import java.time.YearMonth;
 
 @Data
 @Builder
@@ -15,7 +16,7 @@ import java.time.LocalDate;
 public class CareerResDto {
     private String company;
     private String position;
-    private LocalDate employedStart;
-    private LocalDate employedEnd;
-    private EmployedYn employedYn;
+    private YearMonth employedStart;
+    private YearMonth employedEnd;
+    private Boolean employedYn;
 }
