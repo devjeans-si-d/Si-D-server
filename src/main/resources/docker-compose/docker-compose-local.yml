@@ -11,7 +11,7 @@ services:
     #      MYSQL_USER: root
     #      MYSQL_PASSWORD: 1234
     ports:
-      - "3310:3306"
+      - 3310:3306
     volumes:
       - mariadb_data:/var/lib/mysql
 
@@ -19,7 +19,7 @@ services:
     image: redis:latest
     container_name: redis
     ports:
-      - "6379:6379"
+      - 6380:6379
     volumes:
       - redis_data:/data
 
