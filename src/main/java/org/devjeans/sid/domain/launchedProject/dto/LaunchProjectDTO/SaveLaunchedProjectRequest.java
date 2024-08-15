@@ -21,7 +21,6 @@ public class SaveLaunchedProjectRequest {
     private String launchedProjectContents; // Launched-Project 글 내용
 
     private String siteUrl; // 프로젝트 사이트 링크
-
     private List<LaunchedProjectMemberRequest> members; // 프로젝트에 참여한 멤버 (LaunchedProject에 등록할 때 새로 멤버를 추가할 수도 있음) -> ProjectMember 교차테이블에 추가해주기 위함
 
     private List<Long> techStackList;

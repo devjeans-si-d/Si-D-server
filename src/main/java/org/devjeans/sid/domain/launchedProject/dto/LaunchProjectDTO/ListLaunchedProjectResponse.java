@@ -16,7 +16,7 @@ public class ListLaunchedProjectResponse {
     private String launchedProjectImage; // 프로젝트 사진(기본사진 url)
 
     private String projectName; // 프로젝트 이름 (LaunchedProject -> Project -> projectName)
-
+    private String imageUrl;
     private String launchedProjectContents; // Launched-Project 글 내용 (30자 까지만 잘라서 출력)
 
     private Long views; // Launched-Project 조회수
