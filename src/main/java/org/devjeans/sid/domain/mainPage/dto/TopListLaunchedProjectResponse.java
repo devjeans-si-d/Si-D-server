@@ -21,6 +21,10 @@ public class TopListLaunchedProjectResponse {
 
     private String launchedProjectContents; // Launched-Project 글 내용 (30자 까지만 잘라서 출력)
 
+    private Long views; // 조회수
+
+    private Long scraps; // 스크랩 수
+
     private List<String> techStacks; // 기술스택 명 (5개 한정 출력)
 
 }
