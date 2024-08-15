@@ -1,7 +1,5 @@
 package org.devjeans.sid.domain.project.repository;
 
-import org.devjeans.sid.domain.launchedProject.entity.LaunchedProject;
-import org.devjeans.sid.domain.project.dto.read.ListProjectResponse;
 import org.devjeans.sid.domain.project.entity.Project;
 import org.devjeans.sid.global.exception.BaseException;
 import org.springframework.data.domain.Page;
@@ -9,7 +7,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
-import java.util.List;
 
 import java.util.Optional;
 
@@ -32,11 +29,9 @@ public interface ProjectRepository extends JpaRepository<Project,Long> {
     //deletedat!=null, orderby updatedAt
     Page<Project> findByDeletedAtIsNullOrderByUpdatedAtDesc(Pageable pageable);
 
-    // 삭제되지 않고 마감되지 않은 Project 중 스크랩 수 내림차순 정렬
+    // 삭제되지 않고 마감되지 않은 Project 중 조회수 수 내림차순 정렬
     @Query("SELECT p FROM Project p " +
-            "LEFT JOIN p.projectScraps ps " +
             "WHERE p.deletedAt IS NULL AND p.isClosed = 'N' " +
-            "GROUP BY p.id " +
-            "ORDER BY COUNT(ps) DESC")
+            "ORDER BY p.views DESC")
     Page<Project> findTopProjects(Pageable pageable);
 }

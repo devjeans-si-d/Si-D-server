@@ -29,7 +29,7 @@ import java.util.List;
 public class DetailProjectResponse {
     // project(view) 포함, projectMembers, recruitInfos, projectScrap
     private Long id;
-
+    private String imageUrl;
     private String projectName;
 
     private String description;
@@ -111,6 +111,7 @@ public class DetailProjectResponse {
 
         return DetailProjectResponse.builder()
                 .id(project.getId())
+                .imageUrl(project.getImageUrl())
                 .pmName(project.getPm().getName())
                 .pmEmail(project.getPm().getEmail())
                 .pmNickname(project.getPm().getNickname())

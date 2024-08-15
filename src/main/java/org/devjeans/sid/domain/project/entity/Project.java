@@ -29,8 +29,7 @@ public class Project extends BaseEntity {
     @Column(nullable = false)
     private String description;
 
-
-    @Column(nullable = false, length = 5000)
+    @Column
     private String recruitmentContents;
 
     @Column(columnDefinition = "varchar(1) default 'N'")
@@ -78,16 +77,6 @@ public class Project extends BaseEntity {
         this.isClosed=yn;
     }
 
-    public static TopListProjectResponse topListResFromEntity (Project project){
-        // 완성된 프로젝트 글 내용 30자까지만 잘라서 출력
-        String description = project.getDescription();
-        String truncatedDescription = description != null && description.length() > 30 ? description.substring(0, 30) : description;
-        return TopListProjectResponse.builder()
-                .id(project.getId())
-                .projectName(project.getProjectName())
-                .description(truncatedDescription)
-                .build();
-    }
 
 
 }
