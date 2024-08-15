@@ -32,7 +32,10 @@ public interface LaunchedProjectRepository extends JpaRepository<LaunchedProject
         }
 
         // 삭제되지 않은 Launched-Project 중 scrap 리스트 사이즈 내림차 순
-        @Query("SELECT lp FROM LaunchedProject lp WHERE lp.deletedAt IS NULL ORDER BY SIZE(lp.launchedProjectScraps) DESC")
+        @Query("SELECT lp FROM LaunchedProject lp WHERE lp.deletedAt IS NULL ORDER BY lp.views DESC")
         Page<LaunchedProject> findTopLaunchedProjects(Pageable pageable);
+
+        // 삭제되지 않은 Launched-Project 불러오기
+        Page<LaunchedProject> findByDeletedAtIsNull(Pageable pageable);
 
 }

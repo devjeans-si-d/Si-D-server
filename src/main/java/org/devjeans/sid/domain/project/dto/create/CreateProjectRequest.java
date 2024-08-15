@@ -25,7 +25,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CreateProjectRequest {
-    private Long pmId;
+//    private Long pmId;
     private String projectName;
     private String description;
     private String recruitmentContents;

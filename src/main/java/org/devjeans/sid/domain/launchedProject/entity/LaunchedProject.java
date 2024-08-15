@@ -49,7 +49,9 @@ public class LaunchedProject extends BaseEntity {
     @OneToMany(mappedBy = "launchedProject", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<LaunchedProjectScrap> launchedProjectScraps; // Launched-Project 스크랩(사이다) 리스트
 
-    public static TopListLaunchedProjectResponse topListResfromEntity(LaunchedProject launchedProject){
+    public static TopListLaunchedProjectResponse topListResfromEntity(LaunchedProject launchedProject,
+                                                                      Long views,
+                                                                      Long scraps){
         // 완성된 프로젝트 글 내용 30자까지만 잘라서 출력
         String contents = launchedProject.getLaunchedProjectContents();
         String truncatedContent = contents != null && contents.length() > 30 ? contents.substring(0, 30) : contents;
@@ -71,6 +73,8 @@ public class LaunchedProject extends BaseEntity {
                 .launchedProjectImage(launchedProject.getLaunchedProjectImage())
                 .projectName(launchedProject.getProject().getProjectName())
                 .launchedProjectContents(truncatedContent)
+                .views(views)
+                .scraps(scraps)
                 .techStacks(techStackNameList)
                 .build();
 
