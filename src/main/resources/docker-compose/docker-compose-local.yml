@@ -7,11 +7,11 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: 1234
       # 컨테이너가 시작될 때 지정된 데이터베이스가 자동으로 생성. 이미 있을 때는 아무것도 하지 않는다.
-      MYSQL_DATABASE: chatting
+      MYSQL_DATABASE: sid
     #      MYSQL_USER: root
     #      MYSQL_PASSWORD: 1234
     ports:
-      - "3310:3306"
+      - 3310:3306
     volumes:
       - mariadb_data:/var/lib/mysql
 
@@ -19,7 +19,7 @@ services:
     image: redis:latest
     container_name: redis
     ports:
-      - "6380:6379"
+      - 6380:6379
     volumes:
       - redis_data:/data
 

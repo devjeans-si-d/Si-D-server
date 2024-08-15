@@ -16,7 +16,7 @@ public interface ProjectMemberRepository extends JpaRepository<ProjectMember,Lon
 
     //
     @Query("select pm from ProjectMember pm join fetch pm.member join fetch pm.project p where pm.member.id = :memberId order by pm.createdAt desc")
-    List<ProjectMember> findAllMyProjects(@Param("memberId") Long memberId);
+    List<ProjectMember> findAllMyProjects(Pageable pageable, @Param("memberId") Long memberId);
 
 //    @Query("select pm from ProjectMember pm join fetch pm.member, pm.project where pm.member.id = :memberId order by pm.project.createdAt desc")
     Page<ProjectMember> findAllByMemberIdOrderByCreatedAtDesc(Pageable pageable, @Param("memberId") Long memberId);

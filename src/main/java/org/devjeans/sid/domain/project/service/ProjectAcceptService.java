@@ -19,6 +19,7 @@ import org.devjeans.sid.global.exception.exceptionType.ProjectExceptionType;
 import org.devjeans.sid.global.external.mail.service.EmailService;
 import org.devjeans.sid.global.util.SecurityUtil;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -48,12 +49,6 @@ public class ProjectAcceptService {
         // 검증 1. 현재 로그인한 유저가 해당 프로젝트의 PM이 맞는지?
         Long currentMemberId = securityUtil.getCurrentMemberId();
         Project project = projectRepository.findByIdOrThrow(acceptApplicantRequest.getProjectId());
-
-        log.info("line 38 {}, {}", acceptApplicantRequest.getApplicantId(), acceptApplicantRequest.getProjectId());
-        log.info("line 39 {}, {}", project.getId(), project.getProjectMembers());
-        for(ProjectMember m : project.getProjectMembers()) {
-            log.info("line 43: {}", m.getId());
-        }
 
         if(!project.getPm().getId().equals(currentMemberId)) {
             throw new BaseException(NOT_A_PM_MEMBER);
@@ -103,17 +98,19 @@ public class ProjectAcceptService {
         return applicationList.map(ApplicantResponse::fromEntity);
     }
 
-    public List<MyProjectResponse> getMyProjectList(Pageable pageable) {
+    public Page<MyProjectResponse> getMyProjectList(Pageable pageable) {
         Long currentMemberId = securityUtil.getCurrentMemberId();
 
-        List<ProjectMember> projectMember = projectMemberRepository.findAllMyProjects(currentMemberId);
+        List<ProjectMember> projectMember = projectMemberRepository.findAllMyProjects(pageable, currentMemberId);
 
-        return projectMember.stream().map(p -> {
-                    // 프로젝트 아이디로 찾기
-                    Optional<LaunchedProject> opt = launchedProjectRepository.findByProjectIdAndDeletedAtIsNull(p.getProject().getId());
-                    String isLaunched = opt.isPresent() ? "Y" : "N";
-                    return MyProjectResponse.fromEntity(p, isLaunched);
-                }).collect(Collectors.toList());
+        List<MyProjectResponse> dtoList = projectMember.stream().map(p -> {
+            // 프로젝트 아이디로 찾기
+            Optional<LaunchedProject> opt = launchedProjectRepository.findByProjectIdAndDeletedAtIsNull(p.getProject().getId());
+            String isLaunched = opt.isPresent() ? "Y" : "N";
+            return MyProjectResponse.fromEntity(p, isLaunched);
+        }).collect(Collectors.toList());
+
+        return new PageImpl<>(dtoList, pageable, projectMember.size());
 
     }
 
