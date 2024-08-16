@@ -15,7 +15,9 @@ public class BasicInfoLaunchedProjectResponse {
     private String launchedProjectImage; // 프로젝트 사진(기본사진 url)
 
     private String launchedProjectContents; // Launched-Project 글 내용
+
     private String imageUrl; // 프로젝트 대표 이미지
+
     private String siteUrl; // 프로젝트 사이트 링크
 
     private Long projectId ; // 프로젝트 id(project테이블 FK)
@@ -23,6 +25,8 @@ public class BasicInfoLaunchedProjectResponse {
     private Long views; // Launched-Project 조회수
 
     private Long scrapCount; // Launched-Project 스크랩 수
+
+
 
 }
 

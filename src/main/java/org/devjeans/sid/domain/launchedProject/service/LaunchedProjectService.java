@@ -27,6 +27,7 @@ import org.devjeans.sid.global.exception.exceptionType.LaunchedProjectScrapExcep
 import org.devjeans.sid.global.util.SecurityUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -252,10 +253,16 @@ public class LaunchedProjectService {
 
     // LaunchedProject 리스트 조회
     public Page<ListLaunchedProjectResponse> getList(Pageable pageable){
-        Page<LaunchedProject> launchedProjects = launchedProjectRepository.findAll(pageable);
-        Page<ListLaunchedProjectResponse> listDtoPage = launchedProjects.map(LaunchedProject::listResFromEntity);
+        Page<LaunchedProject> launchedProjects = launchedProjectRepository.findByDeletedAtIsNull(pageable);
 
-        return listDtoPage;
+        List<ListLaunchedProjectResponse> listLaunchedProjectResponses = launchedProjects.stream()
+                .map(l -> l.listResFromEntity(l,
+                        launchedProjectViewService.getViews(l.getId()),
+                        launchedProjectScrapService.getScrapCount(l.getId())))
+                .collect(Collectors.toList());
+
+        // List -> Page로 변환
+        return new PageImpl<>(listLaunchedProjectResponses, pageable ,launchedProjects.getTotalElements());
     }
 
     // 글을 올린사람은 Launched-Project 글을 삭제할 수 있다.
