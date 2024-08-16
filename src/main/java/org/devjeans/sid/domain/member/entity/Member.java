@@ -10,6 +10,7 @@ import org.devjeans.sid.domain.member.dto.UpdateMemberRequest;
 
 import org.devjeans.sid.domain.project.entity.JobField;
 import org.devjeans.sid.domain.project.entity.ProjectMember;
+import org.devjeans.sid.domain.siderCard.entity.SiderCard;
 
 
 import javax.persistence.*;
@@ -92,13 +93,13 @@ public class Member extends BaseEntity {
     }
 
     public static TopListMemberResponse topListResFromMember(Member member,
-                                                             JobField jobField){
+                                                             SiderCard siderCard){
 
         return TopListMemberResponse.builder()
                 .id(member.getId())
                 .nickname(member.getNickname())
-                .profileImageUrl(member.getProfileImageUrl())
-                .jobField(jobField)
+                .profileImageUrl(siderCard.getImage())
+                .jobField(siderCard.getJobField())
                 .build();
     }
 
