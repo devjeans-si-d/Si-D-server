@@ -7,6 +7,7 @@ import org.devjeans.sid.domain.launchedProject.repository.LaunchedProjectReposit
 import org.devjeans.sid.domain.member.entity.Member;
 import org.devjeans.sid.domain.member.repository.MemberRepository;
 import org.devjeans.sid.domain.project.dto.*;
+import org.devjeans.sid.domain.project.entity.JobField;
 import org.devjeans.sid.domain.project.entity.Project;
 import org.devjeans.sid.domain.project.entity.ProjectApplication;
 import org.devjeans.sid.domain.project.entity.ProjectMember;
@@ -18,6 +19,7 @@ import org.devjeans.sid.global.exception.exceptionType.ProjectAcceptException;
 import org.devjeans.sid.global.exception.exceptionType.ProjectExceptionType;
 import org.devjeans.sid.global.external.mail.service.EmailService;
 import org.devjeans.sid.global.util.SecurityUtil;
+import org.springframework.boot.autoconfigure.batch.BatchProperties;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -101,6 +103,7 @@ public class ProjectAcceptService {
     public Page<MyProjectResponse> getMyProjectList(Pageable pageable) {
         Long currentMemberId = securityUtil.getCurrentMemberId();
 
+        Long count = projectMemberRepository.countByMemberId(currentMemberId);
         List<ProjectMember> projectMember = projectMemberRepository.findAllMyProjects(pageable, currentMemberId);
 
         List<MyProjectResponse> dtoList = projectMember.stream().map(p -> {
@@ -110,8 +113,40 @@ public class ProjectAcceptService {
             return MyProjectResponse.fromEntity(p, isLaunched);
         }).collect(Collectors.toList());
 
-        return new PageImpl<>(dtoList, pageable, projectMember.size());
+        return new PageImpl<>(dtoList, pageable, count);
+    }
 
+    // PM (Leader) 프로젝트 찾기
+    public Page<MyProjectResponse> getMyLeaderProjectList(Pageable pageable) {
+        Long currentMemberId = securityUtil.getCurrentMemberId();
+
+        Long count = projectMemberRepository.countByMemberIdAndJobField(currentMemberId, JobField.PM);
+        List<ProjectMember> projectMember = projectMemberRepository.findAllMyProjectsByJobField(pageable, currentMemberId, JobField.PM);
+
+        List<MyProjectResponse> dtoList = projectMember.stream().map(p -> {
+            // 프로젝트 아이디로 찾기
+            Optional<LaunchedProject> opt = launchedProjectRepository.findByProjectIdAndDeletedAtIsNull(p.getProject().getId());
+            String isLaunched = opt.isPresent() ? "Y" : "N";
+            return MyProjectResponse.fromEntity(p, isLaunched);
+        }).collect(Collectors.toList());
+
+        return new PageImpl<>(dtoList, pageable, count);
+    }
+
+    // 팀원 프로젝트 찾기
+    public Page<MyProjectResponse> getMyTeamProjectList(Pageable pageable) {
+        Long currentMemberId = securityUtil.getCurrentMemberId();
+        Long count = projectMemberRepository.countByTeamMemberId(currentMemberId);
+        List<ProjectMember> projectMember = projectMemberRepository.findAllMyTeamProjects(pageable, currentMemberId);
+
+        List<MyProjectResponse> dtoList = projectMember.stream().map(p -> {
+            // 프로젝트 아이디로 찾기
+            Optional<LaunchedProject> opt = launchedProjectRepository.findByProjectIdAndDeletedAtIsNull(p.getProject().getId());
+            String isLaunched = opt.isPresent() ? "Y" : "N";
+            return MyProjectResponse.fromEntity(p, isLaunched);
+        }).collect(Collectors.toList());
+
+        return new PageImpl<>(dtoList, pageable, count);
     }
 
     // 지원하기
