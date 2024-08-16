@@ -20,9 +20,7 @@ import static org.devjeans.sid.global.exception.exceptionType.ProjectExceptionTy
 import static org.devjeans.sid.global.exception.exceptionType.ScrapProjectException.ALREADY_SCRAP_PROJECT;
 import static org.devjeans.sid.global.exception.exceptionType.ScrapProjectException.SCRAP_PROJECT_NOT_FOUND;
 
-import java.util.ArrayList;
-import java.util.Set;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -80,7 +78,7 @@ public class ScrapService {
 
         //멤버별 스크랩 목록에 삭제
         SetOperations<String, Object> memberSrapSet = scrapRedisTemplate.opsForSet();
-        if(memberSrapSet.isMember(memberKey,projectId)==false) throw new BaseException(SCRAP_PROJECT_NOT_FOUND);
+        if(memberSrapSet.isMember(memberKey,projectId.toString())==false) throw new BaseException(SCRAP_PROJECT_NOT_FOUND);
         memberSrapSet.remove(memberKey,projectId);
 
         // 프로젝트 스크랩수 count 감소
@@ -117,8 +115,19 @@ public class ScrapService {
         List<Long> projectIdList = scrapSet.stream()
                 .map(object -> Long.valueOf(object.toString())) // Set의 Object를 Long으로 변환
                 .collect(Collectors.toList());
+
+        // projectIdList를 역순으로 정렬
+        Collections.sort(projectIdList, Comparator.reverseOrder());
+
+
+        // 페이징을 위한 인덱스 계산
+        int start = (int) pageable.getOffset();
+        int end = Math.min((start + pageable.getPageSize()), projectIdList.size());
+        // 페이지 범위 내에서만 가져오기
+        List<Long> pagedProjectIdList = projectIdList.subList(start, end);
+
         // Set<Object>을 List<Long>으로 변환
-        List<Project> projectList = projectIdList.stream().map((id)->projectRepository.findById(id).orElseThrow(()->new BaseException(PROJECT_NOT_FOUND))).collect(Collectors.toList());
+        List<Project> projectList = pagedProjectIdList.stream().map((id)->projectRepository.findById(id).orElseThrow(()->new BaseException(PROJECT_NOT_FOUND))).collect(Collectors.toList());
         for(Project project : projectList){
             // 조회수
             String viewKey = VIEWS_KEY_PREFIX + project.getId();
