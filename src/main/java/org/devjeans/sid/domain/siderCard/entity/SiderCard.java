@@ -60,7 +60,7 @@ public class SiderCard extends BaseEntity {
                 .jobField(this.jobField)
                 .introduction(this.introduction)
                 .image(this.image)
-                .socialLinkRes(new SocialLinkDto(this.email,this.github,this.behance,this.linkedin,this.etc))
+                .socialLinkRes(new SocialLinkDto(member.getEmail(),this.github,this.behance,this.linkedin,this.etc))
                 .careerRes(careerResDtos)
                 .teckStackRes(teckStackResDtos)
                 .build();
