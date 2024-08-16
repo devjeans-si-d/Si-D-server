@@ -20,5 +20,4 @@ public class TopListMemberResponse {
 
     private JobField jobField; // 직무
 
-
 }

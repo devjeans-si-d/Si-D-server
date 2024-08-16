@@ -54,11 +54,7 @@ public class LaunchedProject extends BaseEntity {
     public static TopListLaunchedProjectResponse topListResfromEntity(LaunchedProject launchedProject,
                                                                       Long views,
                                                                       Long scraps){
-        // 완성된 프로젝트 글 내용 30자까지만 잘라서 출력
-        String contents = launchedProject.getLaunchedProjectContents();
-        String truncatedContent = contents != null && contents.length() > 30 ? contents.substring(0, 30) : contents;
 
-        // 기술스택명 5개까지만 잘라서 출력
         List<String> techStackNameList = new ArrayList<>();
         String techStackName = "";
         List<LaunchedProjectTechStack> techStackList = launchedProject.getLaunchedProjectTechStacks();
@@ -68,13 +64,11 @@ public class LaunchedProject extends BaseEntity {
             techStackNameList.add(techStackName);
         }
 
-        if(techStackNameList.size()>5) techStackNameList = techStackNameList.subList(0,5);
-
         return TopListLaunchedProjectResponse.builder()
                 .id(launchedProject.getId())
                 .launchedProjectImage(launchedProject.getLaunchedProjectImage())
                 .projectName(launchedProject.getProject().getProjectName())
-                .launchedProjectContents(truncatedContent)
+                .launchedProjectContents(launchedProject.getLaunchedProjectContents())
                 .views(views)
                 .scraps(scraps)
                 .techStacks(techStackNameList)
@@ -103,24 +97,33 @@ public class LaunchedProject extends BaseEntity {
                 .launchedProjectContents(launchedProject.getLaunchedProjectContents()) // 프로젝트 글 내용
                 .siteUrl(launchedProject.getSiteUrl()) // 프로젝트 출시 사이트 링크
                 .projectId(launchedProject.getProject().getId()) // FK걸린 프로젝트
-//                .views(launchedProject.getViews()) // 조회수
                 .build();
     }
 
     // LaunchProject -> ListLaunchedProjectResponse(DTO)로 build (완성된 프로젝트 리스트 response)
-    public static ListLaunchedProjectResponse listResFromEntity(LaunchedProject launchedProject){
-        // LaunchedProject 글내용 30자까지만 잘라서 list에 출력
-        String contents = launchedProject.getLaunchedProjectContents();
-        String truncatedContent = contents != null && contents.length() > 30 ? contents.substring(0, 30) : contents;
+    public static ListLaunchedProjectResponse listResFromEntity(LaunchedProject launchedProject,
+                                                                Long views,
+                                                                Long scraps){
+        // 기술스택명만 담은 리스트
+        List<String> techStackNameList = new ArrayList<>();
+        String techStackName = "";
+        List<LaunchedProjectTechStack> techStackList = launchedProject.getLaunchedProjectTechStacks();
+
+        for(LaunchedProjectTechStack techStack : techStackList){
+            techStackName = techStack.getTechStack().getTechStackName();
+            techStackNameList.add(techStackName);
+        }
 
         return ListLaunchedProjectResponse.builder()
-                .id(launchedProject.getId()) // 프로젝트 전시글(Launched-Project) id
-                .launchedProjectImage(launchedProject.getLaunchedProjectImage()) // 프로젝트 사진(기본사진 url)
-                .projectName(launchedProject.getProject().getProjectName()) // 프로젝트 이름 (LaunchedProject -> Project -> projectName)
-                .launchedProjectContents(truncatedContent) // Launched-Project 글 내용 (30자 까지만 잘라서 출력)
-                .views(launchedProject.getViews())
-                .scrapCount(launchedProject.getLaunchedProjectScraps().size()) // Launched-Project 스크랩 수
+                .id(launchedProject.getId())
+                .launchedProjectImage(launchedProject.getLaunchedProjectImage())
+                .projectName(launchedProject.getProject().getProjectName())
+                .launchedProjectContents(launchedProject.getLaunchedProjectContents())
+                .views(views)
+                .scraps(scraps)
+                .techStacks(techStackNameList)
                 .build();
+
     }
 
     // LaunchedProject의 기존TechStack 리스트를 새로운 TechStack 리스트로 업데이트하는 메서드

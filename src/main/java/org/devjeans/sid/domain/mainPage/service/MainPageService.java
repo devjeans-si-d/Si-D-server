@@ -12,6 +12,7 @@ import org.devjeans.sid.domain.member.repository.MemberRepository;
 import org.devjeans.sid.domain.project.dto.read.ListProjectResponse;
 import org.devjeans.sid.domain.project.entity.JobField;
 import org.devjeans.sid.domain.project.entity.Project;
+import org.devjeans.sid.domain.project.repository.ProjectMemberRepository;
 import org.devjeans.sid.domain.project.repository.ProjectRepository;
 import org.devjeans.sid.domain.project.service.ProjectService;
 import org.devjeans.sid.domain.siderCard.repository.SiderCardRepository;
@@ -37,6 +38,7 @@ public class MainPageService {
     private final LaunchedProjectScrapService launchedProjectScrapService;
     private final ProjectService projectService;
     private final SiderCardRepository siderCardRepository;
+    private final ProjectMemberRepository projectMemberRepository;
 
     @Autowired
     public MainPageService(LaunchedProjectRepository launchedProjectRepository,
@@ -44,13 +46,14 @@ public class MainPageService {
                            LaunchedProjectViewService launchedProjectViewService,
                            LaunchedProjectScrapService launchedProjectScrapService,
                            ProjectService projectService,
-                           SiderCardRepository siderCardRepository){
+                           SiderCardRepository siderCardRepository, ProjectMemberRepository projectMemberRepository){
         this.launchedProjectRepository = launchedProjectRepository;
         this.memberRepository = memberRepository;
         this.launchedProjectViewService = launchedProjectViewService;
         this.launchedProjectScrapService = launchedProjectScrapService;
         this.projectService = projectService;
         this.siderCardRepository = siderCardRepository;
+        this.projectMemberRepository = projectMemberRepository;
     }
 
     // 조회수 순으로 8개 Page (+아직 마감/삭제되지 않은 모집공고)
@@ -84,10 +87,9 @@ public class MainPageService {
         return new PageImpl<>(topListLaunchedProjectResponses, pageable, topLaunchedProjects.getTotalElements());
     }
 
-
-    // 최신회원 6명
+    // 진행완료한 프로젝트 개수 많은 회원 순 정렬
     public Page<TopListMemberResponse> getTopMembers(Pageable pageable){
-        Page<Member> members = memberRepository.findAllByOrderByUpdatedAtDesc(pageable);
+        Page<Member> members = projectMemberRepository.findMembersOrderByProjectCountDesc(pageable);
         Page<TopListMemberResponse> topListMemberResponsePage = members.map(member -> {
             JobField jobField = siderCardRepository.findByIdOrThrow(member.getId()).getJobField();
             return member.topListResFromMember(member, jobField);
