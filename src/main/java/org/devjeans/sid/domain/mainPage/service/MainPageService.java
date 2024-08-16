@@ -15,6 +15,7 @@ import org.devjeans.sid.domain.project.entity.Project;
 import org.devjeans.sid.domain.project.repository.ProjectMemberRepository;
 import org.devjeans.sid.domain.project.repository.ProjectRepository;
 import org.devjeans.sid.domain.project.service.ProjectService;
+import org.devjeans.sid.domain.siderCard.entity.SiderCard;
 import org.devjeans.sid.domain.siderCard.repository.SiderCardRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -91,8 +92,8 @@ public class MainPageService {
     public Page<TopListMemberResponse> getTopMembers(Pageable pageable){
         Page<Member> members = projectMemberRepository.findMembersOrderByProjectCountDesc(pageable);
         Page<TopListMemberResponse> topListMemberResponsePage = members.map(member -> {
-            JobField jobField = siderCardRepository.findByIdOrThrow(member.getId()).getJobField();
-            return member.topListResFromMember(member, jobField);
+            SiderCard siderCard = siderCardRepository.findByIdOrThrow(member.getId());
+            return member.topListResFromMember(member, siderCard);
         });
         return topListMemberResponsePage;
     }
