@@ -40,6 +40,19 @@ public class ProjectAcceptController {
         return new ResponseEntity<>(projectList, HttpStatus.OK);
     }
 
+    @GetMapping("/my-projects/pm")
+    public ResponseEntity<Page<MyProjectResponse>> getMyPMProjects(@PageableDefault(size = 5) Pageable pageable) {
+        Page<MyProjectResponse> projectList = projectAcceptService.getMyLeaderProjectList(pageable);
+
+        return new ResponseEntity<>(projectList, HttpStatus.OK);
+    }
+
+    @GetMapping("/my-projects/team")
+    public ResponseEntity<Page<MyProjectResponse>> getMyTeamProjects(@PageableDefault(size = 5) Pageable pageable) {
+        Page<MyProjectResponse> projectList = projectAcceptService.getMyTeamProjectList(pageable);
+        return new ResponseEntity<>(projectList, HttpStatus.OK);
+    }
+
     // 내 지원 목록 보기
     @GetMapping("/my-applications")
     public ResponseEntity<Page<ApplicationResponse>> getMyApplicationList(@PageableDefault(size = 5) Pageable pageable) {
@@ -51,7 +64,6 @@ public class ProjectAcceptController {
     @PostMapping("/{projectId}/apply")
     public ResponseEntity<ApplyProjectResponse> applyProject(@PathVariable Long projectId, @RequestBody ApplyProjectRequest applyProjectRequest) {
         ApplyProjectResponse applyProjectResponse = projectAcceptService.applyProject(projectId, applyProjectRequest);
-
         return new ResponseEntity<>(applyProjectResponse, HttpStatus.OK);
     }
 
