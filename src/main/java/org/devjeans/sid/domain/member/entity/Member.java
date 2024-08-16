@@ -8,6 +8,7 @@ import org.devjeans.sid.domain.common.BaseEntity;
 import org.devjeans.sid.domain.mainPage.dto.TopListMemberResponse;
 import org.devjeans.sid.domain.member.dto.UpdateMemberRequest;
 
+import org.devjeans.sid.domain.project.entity.JobField;
 import org.devjeans.sid.domain.project.entity.ProjectMember;
 
 
@@ -90,13 +91,15 @@ public class Member extends BaseEntity {
         this.email = email;
     }
 
-    public static TopListMemberResponse topListResFromMember(Member member){
+    public static TopListMemberResponse topListResFromMember(Member member,
+                                                             JobField jobField){
+
         return TopListMemberResponse.builder()
                 .id(member.getId())
                 .nickname(member.getNickname())
                 .profileImageUrl(member.getProfileImageUrl())
+                .jobField(jobField)
                 .build();
     }
-
 
 }

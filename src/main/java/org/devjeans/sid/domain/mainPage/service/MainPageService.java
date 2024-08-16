@@ -10,9 +10,11 @@ import org.devjeans.sid.domain.mainPage.dto.TopListMemberResponse;
 import org.devjeans.sid.domain.member.entity.Member;
 import org.devjeans.sid.domain.member.repository.MemberRepository;
 import org.devjeans.sid.domain.project.dto.read.ListProjectResponse;
+import org.devjeans.sid.domain.project.entity.JobField;
 import org.devjeans.sid.domain.project.entity.Project;
 import org.devjeans.sid.domain.project.repository.ProjectRepository;
 import org.devjeans.sid.domain.project.service.ProjectService;
+import org.devjeans.sid.domain.siderCard.repository.SiderCardRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -34,18 +36,21 @@ public class MainPageService {
     private final LaunchedProjectViewService launchedProjectViewService;
     private final LaunchedProjectScrapService launchedProjectScrapService;
     private final ProjectService projectService;
+    private final SiderCardRepository siderCardRepository;
 
     @Autowired
     public MainPageService(LaunchedProjectRepository launchedProjectRepository,
                            MemberRepository memberRepository,
                            LaunchedProjectViewService launchedProjectViewService,
                            LaunchedProjectScrapService launchedProjectScrapService,
-                           ProjectService projectService){
+                           ProjectService projectService,
+                           SiderCardRepository siderCardRepository){
         this.launchedProjectRepository = launchedProjectRepository;
         this.memberRepository = memberRepository;
         this.launchedProjectViewService = launchedProjectViewService;
         this.launchedProjectScrapService = launchedProjectScrapService;
         this.projectService = projectService;
+        this.siderCardRepository = siderCardRepository;
     }
 
     // 조회수 순으로 8개 Page (+아직 마감/삭제되지 않은 모집공고)
@@ -83,7 +88,10 @@ public class MainPageService {
     // 최신회원 6명
     public Page<TopListMemberResponse> getTopMembers(Pageable pageable){
         Page<Member> members = memberRepository.findAllByOrderByUpdatedAtDesc(pageable);
-        Page<TopListMemberResponse> topListMemberResponsePage = members.map(member -> member.topListResFromMember(member));
+        Page<TopListMemberResponse> topListMemberResponsePage = members.map(member -> {
+            JobField jobField = siderCardRepository.findByIdOrThrow(member.getId()).getJobField();
+            return member.topListResFromMember(member, jobField);
+        });
         return topListMemberResponsePage;
     }
 
