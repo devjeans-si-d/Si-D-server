@@ -33,7 +33,7 @@ public class SiderCardTechStack {
     public TeckStackResDto fromEntity() {
         return TeckStackResDto.builder()
                 .id(techStack.getId())
-                .jobField(techStack.getJobField())
+                .jobField(techStack.getJobField().getJobName())
                 .techStackName(techStack.getTechStackName())
                 .build();
     }

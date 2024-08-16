@@ -13,6 +13,6 @@ import org.devjeans.sid.domain.project.entity.JobField;
 @NoArgsConstructor
 public class TeckStackResDto {
     private Long id;
-    private JobField jobField;
+    private String jobField;
     private String techStackName;
 }
