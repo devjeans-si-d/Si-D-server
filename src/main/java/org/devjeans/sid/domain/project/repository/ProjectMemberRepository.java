@@ -1,5 +1,6 @@
 package org.devjeans.sid.domain.project.repository;
 
+import org.devjeans.sid.domain.member.entity.Member;
 import org.devjeans.sid.domain.project.entity.Project;
 import org.devjeans.sid.global.exception.BaseException;
 import org.devjeans.sid.domain.project.entity.ProjectMember;
@@ -20,4 +21,10 @@ public interface ProjectMemberRepository extends JpaRepository<ProjectMember,Lon
 
 //    @Query("select pm from ProjectMember pm join fetch pm.member, pm.project where pm.member.id = :memberId order by pm.project.createdAt desc")
     Page<ProjectMember> findAllByMemberIdOrderByCreatedAtDesc(Pageable pageable, @Param("memberId") Long memberId);
+
+    @Query("SELECT pm.member " +
+            "FROM ProjectMember pm " +
+            "GROUP BY pm.member " +
+            "ORDER BY COUNT(pm.member.id) DESC")
+    Page<Member> findMembersOrderByProjectCountDesc(Pageable pageable);
 }
