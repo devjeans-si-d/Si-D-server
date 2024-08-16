@@ -50,6 +50,8 @@ public class Member extends BaseEntity {
     @Column(nullable = false)
     private String phoneNumber;
 
+    private String profileImageUrl;
+
 //    트랜잭션으로 회원가입할때 사이더카드도 같이 생성하여 id 공유
 //    @OneToOne(mappedBy = "member",cascade = CascadeType.ALL)
 //    private SiderCard siderCard;
@@ -73,6 +75,10 @@ public class Member extends BaseEntity {
 //    private List<ChatMessage> chatMessages = new ArrayList<>();
 
     //== Custom methos ==//
+
+    public void updateProfileImageUrl(String imageUrl) {
+        this.profileImageUrl = imageUrl;
+    }
 
     public void updateMemberInfo(UpdateMemberRequest updateMemberRequest) {
         this.name = updateMemberRequest.getName();
