@@ -45,6 +45,7 @@ public class SiderCardService {
 
     public SiderCardResDto updateSiderCard(SiderCardUpdateReqDto dto) {
         Long id = securityUtil.getCurrentMemberId();
+        Member member = memberRepository.findByIdOrThrow(id);
         SiderCard siderCard = siderCardRepository.findById(id).orElseThrow(()->new EntityNotFoundException("SiderCard not found"));
         careerRepository.deleteCareerBySiderCard(siderCard);
         siderCardTechStackRepository.deleteSiderCardTechStackBySiderCard(siderCard);
@@ -54,6 +55,7 @@ public class SiderCardService {
             techStacks.add(SiderCardTechStack.builder().techStack(ts).siderCard(siderCard).build());
         }
         siderCard.update(dto,siderCard,techStacks);
+        member.updateProfileImageUrl(dto.getImage()); // 멤버 이미지도 변경
         return getSiderCard(id);
     }
 

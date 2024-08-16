@@ -105,8 +105,15 @@ public class AuthService {
     public void registerMember(RegisterMemberRequest dto) {
 //        TODO: 탈퇴한 회원일 경우 처리해야함
         Member member = dto.toEntity();
+        // TODO: @Value로 가져오도록 수정 필요
+        member.updateProfileImageUrl("https://sejeong-file.s3.ap-northeast-2.amazonaws.com/devjeans-sid/devjeans-spring.png");
         Member savedMember = memberRepository.save(member);
-        siderCardRepository.save(SiderCard.builder().id(savedMember.getId()).build());
+        SiderCard siderCard = SiderCard.builder()
+                .id(savedMember.getId())
+                .image("https://sejeong-file.s3.ap-northeast-2.amazonaws.com/devjeans-sid/devjeans-spring.png")
+                .build();
+
+        siderCardRepository.save(siderCard);
     }
 
     public Member getMemberByKakaoId(Long kakaoId) {
