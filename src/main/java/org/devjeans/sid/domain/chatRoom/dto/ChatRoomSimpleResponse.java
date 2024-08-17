@@ -26,6 +26,7 @@ public class ChatRoomSimpleResponse { // 밖에서 미리보기처럼 보이는 
     private String projectDescription;
     private LocalDateTime deadline;
     private String isClosed;
+    private Long pmId;
 
     public static ChatRoomSimpleResponse fromEntity(ChatRoom chatRoom, Long unreadCount, Member participant, String unreadContent) {
         return ChatRoomSimpleResponse.builder()
@@ -41,6 +42,7 @@ public class ChatRoomSimpleResponse { // 밖에서 미리보기처럼 보이는 
                 .projectDescription(chatRoom.getProject().getDescription())
                 .deadline(chatRoom.getProject().getDeadline())
                 .isClosed(chatRoom.getProject().getIsClosed())
+                .pmId(chatRoom.getProject().getPm().getId())
                 .build();
     }
 

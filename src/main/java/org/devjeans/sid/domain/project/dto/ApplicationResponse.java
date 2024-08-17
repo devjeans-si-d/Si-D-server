@@ -9,6 +9,7 @@ import org.devjeans.sid.domain.project.entity.Project;
 import org.devjeans.sid.domain.project.entity.ProjectApplication;
 import org.devjeans.sid.domain.project.entity.ProjectMember;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Data
@@ -22,6 +23,7 @@ public class ApplicationResponse {
     private String description;
     private JobField jobField;
     private String status;
+    private LocalDateTime deadline;
 
     public static ApplicationResponse fromEntity(ProjectApplication projectApplication) {
         Project project = projectApplication.getProject();
@@ -47,7 +49,7 @@ public class ApplicationResponse {
                 .jobField(projectApplication.getJobField())
                 .status(status)
                 .description(project.getDescription())
-                .description(project.getDescription())
+                .deadline(project.getDeadline())
                 .build();
     }
 }

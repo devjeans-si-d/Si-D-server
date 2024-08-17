@@ -57,7 +57,6 @@ public class ChatService {
         // 최신 순 정렬
         Page<ChatRoom> chatRooms = chatRoomRepository.findAllByIds(pageable, chatRoomIds);
 
-
         return chatRooms.map(chatRoom -> {
 
             // 최근 메시지 뽑기
