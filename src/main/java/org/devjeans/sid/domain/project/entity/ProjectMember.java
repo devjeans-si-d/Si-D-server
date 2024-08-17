@@ -39,6 +39,7 @@ public class ProjectMember extends BaseEntity {
                 .memberId(member.getMember().getId()) // Member의 id
                 .nickname(member.getMember().getNickname()) // Member의 닉네임
                 .jobField(member.getJobField()) // 이 프로젝트에서 맡은 직무
+                .profileImageUrl(member.getMember().getProfileImageUrl())
                 .build();
     }
 
