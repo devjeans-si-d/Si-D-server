@@ -17,6 +17,7 @@ public class ApplicantResponse {
     private String jobField;
     private String profileImageUrl;
     private String status;
+    private String content;
 
     public static ApplicantResponse fromEntity(ProjectApplication projectApplication) {
 
@@ -26,6 +27,7 @@ public class ApplicantResponse {
                 .profileImageUrl(projectApplication.getMember().getProfileImageUrl())
                 .jobField(projectApplication.getJobField().getJobName())
                 .status(projectApplication.getIsAccepted() ? "승인 완료" : "승인 대기")
+                .content(projectApplication.getContent())
                 .build();
     }
 }
