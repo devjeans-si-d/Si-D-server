@@ -12,6 +12,7 @@ import org.devjeans.sid.domain.project.entity.ProjectApplication;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ApplicantResponse {
+    private Long id;
     private String name;
     private String jobField;
     private String profileImageUrl;
@@ -20,9 +21,10 @@ public class ApplicantResponse {
     public static ApplicantResponse fromEntity(ProjectApplication projectApplication) {
 
         return ApplicantResponse.builder()
+                .id(projectApplication.getMember().getId())
                 .name(projectApplication.getMember().getName())
                 .profileImageUrl(projectApplication.getMember().getProfileImageUrl())
-                .jobField(projectApplication.getJobField().toString()) // FIXME: 한글로 수정 필요
+                .jobField(projectApplication.getJobField().getJobName())
                 .status(projectApplication.getIsAccepted() ? "승인 완료" : "승인 대기")
                 .build();
     }
