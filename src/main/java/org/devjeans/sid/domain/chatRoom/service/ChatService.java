@@ -46,12 +46,6 @@ public class ChatService {
     public Page<ChatRoomSimpleResponse> getChatRoomList(Pageable pageable) {
         Long memberId = securityUtil.getCurrentMemberId();
 
-        // 검증
-        if(!memberId.equals(securityUtil.getCurrentMemberId())) { // 현재 로그인한 유저의 아이디와 memberId가 같지 않다면
-            throw new BaseException(FORBIDDEN);
-
-        }
-
         // 해당 멤버가 속한 채팅방 아이디 다 뽑아오기
         List<ChatParticipant> participants = chatParticipantRepository.findAllByMemberId(memberId);
         List<Long> chatRoomIds = participants.stream()
