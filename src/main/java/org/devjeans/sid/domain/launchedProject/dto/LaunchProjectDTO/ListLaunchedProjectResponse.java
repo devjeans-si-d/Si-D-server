@@ -23,7 +23,7 @@ public class ListLaunchedProjectResponse {
 
     private String projectName; // 프로젝트 이름 (LaunchedProject -> Project -> projectName)
 
-    private String imageUrl;
+    private String siteUrl; // 프로젝트 사이트 링크
 
     private String launchedProjectContents; // Launched-Project 글 내용
 
