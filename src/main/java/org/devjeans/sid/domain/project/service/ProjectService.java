@@ -12,10 +12,7 @@ import org.devjeans.sid.domain.project.entity.*;
 
 import org.devjeans.sid.domain.project.dto.update.UpdateProjectResponse;
 import org.devjeans.sid.domain.project.entity.ProjectMember;
-import org.devjeans.sid.domain.project.repository.ProjectMemberRepository;
-import org.devjeans.sid.domain.project.repository.ProjectRepository;
-import org.devjeans.sid.domain.project.repository.ProjectScrapRepository;
-import org.devjeans.sid.domain.project.repository.RecruitInfoRepository;
+import org.devjeans.sid.domain.project.repository.*;
 import org.devjeans.sid.global.exception.BaseException;
 import org.devjeans.sid.global.util.SecurityUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +39,7 @@ import static org.devjeans.sid.global.exception.exceptionType.ProjectExceptionTy
 public class ProjectService {
     // 나머지 repository는 필요할 때 가져오기!!!!!
     private final ProjectRepository projectRepository;
+    private final ProjectApplicationRepository projectApplicationRepository;
     private final MemberRepository memberRepository;
     private final ProjectMemberRepository projectMemberRepository;
     private final RecruitInfoRepository recruitInfoRepository;
@@ -52,11 +50,13 @@ public class ProjectService {
     private final ProjectScrapRepository projectScrapRepository;
     private static final String VIEWS_KEY_PREFIX = "project_views:";
     private static final String SCRAP_KEY_PREFIX = "project_scraps:";
+    private static final String MEMBER_SCRAP_LIST = "member_scrap_list:";
 
 
     @Autowired
-    public ProjectService(@Qualifier("scrapRedisTemplate") RedisTemplate<String, Object> scrapRedisTemplate, ProjectRepository projectRepository, MemberRepository memberRepository, ProjectMemberRepository projectMemberRepository, RecruitInfoRepository recruitInfoRepository, @Qualifier("viewRedisTemplate") RedisTemplate<String, String> redisTemplate, SecurityUtil securityUtil, ProjectScrapRepository projectScrapRepository) {
+    public ProjectService(@Qualifier("scrapRedisTemplate") RedisTemplate<String, Object> scrapRedisTemplate, ProjectRepository projectRepository, ProjectApplicationRepository projectApplicationRepository, MemberRepository memberRepository, ProjectMemberRepository projectMemberRepository, RecruitInfoRepository recruitInfoRepository, @Qualifier("viewRedisTemplate") RedisTemplate<String, String> redisTemplate, SecurityUtil securityUtil, ProjectScrapRepository projectScrapRepository) {
         this.projectRepository = projectRepository;
+        this.projectApplicationRepository = projectApplicationRepository;
         this.memberRepository = memberRepository;
         this.projectMemberRepository = projectMemberRepository;
         this.recruitInfoRepository = recruitInfoRepository;
@@ -115,7 +115,20 @@ public class ProjectService {
         Object count = valueOperations.get(projectKey);
         Long scrapCount = count != null ? Long.valueOf(count.toString()) : 0L;
 
-        return DetailProjectResponse.fromEntity(project, scrapCount, viewCount);
+        // member scrap 체크
+        String memberKey = MEMBER_SCRAP_LIST + securityUtil.getCurrentMemberId();
+        SetOperations<String, Object> setOperations = scrapRedisTemplate.opsForSet();
+        Boolean isScrap = setOperations.isMember(memberKey,project.getId());
+
+        // jobfield별 모집자 수
+        List<Object[]> results = projectApplicationRepository.countApplicationsByJobFieldAndProjectId(project.getId());
+        for (Object[] result : results) {
+            JobField jobField = (JobField) result[0];
+            Long countApply = (Long) result[1];
+
+            System.out.println("Job Field: " + jobField + ", Count: " + countApply);
+        }
+        return DetailProjectResponse.fromEntity(project, scrapCount, viewCount,isScrap);
     }
 
     // read-list
@@ -140,9 +153,16 @@ public class ProjectService {
             Object count = valueOperations.get(projectKey);
             Long scrapCount = count != null ? Long.valueOf(count.toString()) : 0L;
 
+            // member scrap 체크
+            String memberKey = MEMBER_SCRAP_LIST + securityUtil.getCurrentMemberId();
+            SetOperations<String, Object> setOperations = scrapRedisTemplate.opsForSet();
+            Boolean isScrap = setOperations.isMember(memberKey,project.getId());
+            System.out.println("checkcheckScrap"+isScrap);
+
             ListProjectResponse listProjectResponse = ListProjectResponse.builder()
                     .id(project.getId())
                     .projectName(project.getProjectName())
+//                    .isScrap(isScrap)
                     .views(viewCount)
                     .imageUrl(project.getImageUrl())
                     .scrapCount(scrapCount)

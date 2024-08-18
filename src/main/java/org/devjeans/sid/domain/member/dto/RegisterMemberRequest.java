@@ -23,7 +23,9 @@ public class RegisterMemberRequest {
                 .nickname(this.nickname)
                 .socialType(SocialType.KAKAO)
                 .socialId(this.socialId)
-                .phoneNumber(this.phoneNumber).build();
+                .phoneNumber(this.phoneNumber)
+                .profileImageUrl("https://sejeong-file.s3.ap-northeast-2.amazonaws.com/devjeans-sid/devjeans-spring.png")
+                .build();
         System.out.println(member);
         return member;
     }

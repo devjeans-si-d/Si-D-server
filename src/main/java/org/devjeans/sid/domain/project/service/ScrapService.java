@@ -151,7 +151,7 @@ public class ScrapService {
                     .build();
             listProjectResponses.add(listProjectResponse);
         }
-        return new PageImpl<>(listProjectResponses, pageable,projectList.size());
+        return new PageImpl<>(listProjectResponses, pageable, projectIdList.size());
 
     }
 

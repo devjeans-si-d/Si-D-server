@@ -17,7 +17,6 @@ public class ProjectApplication extends BaseEntity {
     @Column(name="project_application_id")
     private Long id;
 
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "project_id")
     private Project project;
@@ -25,7 +24,6 @@ public class ProjectApplication extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
-
 
     @Enumerated(EnumType.STRING)
     private JobField jobField;

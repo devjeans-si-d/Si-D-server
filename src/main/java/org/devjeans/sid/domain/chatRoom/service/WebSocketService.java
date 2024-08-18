@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.devjeans.sid.domain.chatRoom.component.ConnectedMap;
 import org.devjeans.sid.domain.chatRoom.dto.ChatMessageRequest;
 import org.devjeans.sid.domain.chatRoom.dto.ChatRoomMessageResponse;
+import org.devjeans.sid.domain.chatRoom.dto.sse.SseChatResponse;
 import org.devjeans.sid.domain.chatRoom.entity.ChatMessage;
 import org.devjeans.sid.domain.chatRoom.entity.ChatRoom;
 import org.devjeans.sid.domain.chatRoom.repository.ChatMessageRepository;
@@ -12,8 +13,6 @@ import org.devjeans.sid.domain.chatRoom.repository.ChatRoomRepository;
 import org.devjeans.sid.domain.member.entity.Member;
 import org.devjeans.sid.domain.member.repository.MemberRepository;
 import org.devjeans.sid.global.exception.BaseException;
-import org.devjeans.sid.global.exception.exceptionType.ChatExceptionType;
-import org.devjeans.sid.global.util.SecurityUtil;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,6 +27,7 @@ public class WebSocketService {
     private final ChatRoomRepository chatRoomRepository;
     private final MemberRepository memberRepository;
     private final SimpMessageSendingOperations messagingTemplate;
+    private final SseService sseService;
 
     // 웹소켓 커넥션 상태 관리
     private final ConnectedMap connectedMap;
@@ -55,6 +55,12 @@ public class WebSocketService {
         ChatMessage savedMessage = chatMessageRepository.save(chatMessage);// 메시지를 저장한다.
 
         ChatRoomMessageResponse chatRoomMessageResponse = ChatRoomMessageResponse.fromEntity(savedMessage);
+
+
+        //== SSE 로직 => member 닉네임 ==//
+        SseChatResponse sseChatResponse = new SseChatResponse(chatRoom.getId(), sender.getNickname(), chatMessage.getContent());
+        sseService.sendChatNotification(receiverId, sseChatResponse);
+
         messagingTemplate.convertAndSend("/sub/chatroom/" + chatRoomId, chatRoomMessageResponse);
     }
 

@@ -20,4 +20,7 @@ public interface ProjectApplicationRepository extends JpaRepository<ProjectAppli
 
 //    @Query("select pa from ProjectApplication pa join fetch Member m join fetch Project p where pa.member.id = :memberId")
     Page<ProjectApplication> findAllByMemberIdOrderByCreatedAtDesc(Pageable pageable, @Param("memberId") Long memberId);
+
+    @Query("SELECT pa.jobField, COUNT(pa) FROM ProjectApplication pa WHERE pa.project.id = :projectId GROUP BY pa.jobField")
+    List<Object[]> countApplicationsByJobFieldAndProjectId(@Param("projectId") Long projectId);
 }

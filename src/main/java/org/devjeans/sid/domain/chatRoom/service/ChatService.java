@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.devjeans.sid.domain.chatRoom.component.ConnectedMap;
 import org.devjeans.sid.domain.chatRoom.dto.*;
+import org.devjeans.sid.domain.chatRoom.dto.sse.SseEnterResponse;
 import org.devjeans.sid.domain.chatRoom.entity.ChatMessage;
 import org.devjeans.sid.domain.chatRoom.entity.ChatParticipant;
 import org.devjeans.sid.domain.chatRoom.entity.ChatRoom;
@@ -41,16 +42,11 @@ public class ChatService {
     private final ProjectRepository projectRepository;
     private final ConnectedMap connectedMap;
     private final SecurityUtil securityUtil;
+    private final SseService sseService;
 
     // 해당 회원이 속한 채팅방을 updatedAt DESC로 정렬해서 보여주기
     public Page<ChatRoomSimpleResponse> getChatRoomList(Pageable pageable) {
         Long memberId = securityUtil.getCurrentMemberId();
-
-        // 검증
-        if(!memberId.equals(securityUtil.getCurrentMemberId())) { // 현재 로그인한 유저의 아이디와 memberId가 같지 않다면
-            throw new BaseException(FORBIDDEN);
-
-        }
 
         // 해당 멤버가 속한 채팅방 아이디 다 뽑아오기
         List<ChatParticipant> participants = chatParticipantRepository.findAllByMemberId(memberId);
@@ -62,7 +58,6 @@ public class ChatService {
 
         // 최신 순 정렬
         Page<ChatRoom> chatRooms = chatRoomRepository.findAllByIds(pageable, chatRoomIds);
-
 
         return chatRooms.map(chatRoom -> {
 
@@ -154,6 +149,10 @@ public class ChatService {
 
         // 메모리에 저장
         connectedMap.enterChatRoom(chatRoomId, memberId);
+
+        //== SSE 입장 노티 전송 ==//
+        SseEnterResponse sseEnterResponse = new SseEnterResponse(chatRoomId);
+        sseService.sendEnterChatroom(memberId, sseEnterResponse);
     }
 
     public List<MemberInfoResponse> getMemberInfo(Long chatroomId) {
