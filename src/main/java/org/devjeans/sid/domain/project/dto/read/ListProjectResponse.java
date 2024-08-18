@@ -18,6 +18,7 @@ public class ListProjectResponse {
     private String projectName;
 
     private String description;
+//    private Boolean isScrap;
 
     private String isClosed;
 
