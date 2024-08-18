@@ -10,4 +10,5 @@ import lombok.NoArgsConstructor;
 public class SseTeamBuildResponse {
     private Long projectId;
     private String projectName;
+    private Long pmId;
 }

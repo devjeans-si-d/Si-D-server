@@ -151,8 +151,8 @@ public class ChatService {
         connectedMap.enterChatRoom(chatRoomId, memberId);
 
         //== SSE 입장 노티 전송 ==//
-        SseEnterResponse sseEnterResponse = new SseEnterResponse(chatRoomId);
-        sseService.sendEnterChatroom(memberId, sseEnterResponse);
+//        SseEnterResponse sseEnterResponse = new SseEnterResponse(chatRoomId);
+//        sseService.sendEnterChatroom(memberId, sseEnterResponse);
     }
 
     public List<MemberInfoResponse> getMemberInfo(Long chatroomId) {
