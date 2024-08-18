@@ -10,6 +10,7 @@ import org.devjeans.sid.domain.siderCard.entity.SiderCard;
 
 import java.time.LocalDate;
 import java.time.YearMonth;
+import java.time.format.DateTimeParseException;
 
 @Data
 @Builder
@@ -23,12 +24,20 @@ public class CareerReqDto {
     private Boolean employedYn;
 
     public Career toEntity(SiderCard siderCard) {
+        YearMonth ym;
+        try{
+            ym = YearMonth.parse(this.employedEnd);
+        }catch (DateTimeParseException e){
+            ym = null;
+        }catch (NullPointerException e){
+            ym = null;
+        }
         return Career.builder()
                 .company(this.company)
                 .position(this.position)
                 .employedYn(this.employedYn)
                 .employedStart(YearMonth.parse(this.employedStart))
-                .employedEnd(YearMonth.parse(this.employedEnd))
+                .employedEnd(ym)
                 .siderCard(siderCard)
                 .build();
     }

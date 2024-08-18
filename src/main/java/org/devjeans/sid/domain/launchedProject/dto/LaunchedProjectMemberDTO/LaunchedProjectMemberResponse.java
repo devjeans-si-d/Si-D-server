@@ -19,8 +19,6 @@ public class LaunchedProjectMemberResponse {
 
     private JobField jobField; // 이 프로젝트에서 맡은 직무 (ProjectMember -> jobField)
 
-    private String profileImageUrl; // 프로필 이미지
-
     // LaunchedProjectMember 엔티티 -> LaunchedProjectMemberResponse (DTO)로 build
     public static LaunchedProjectMemberResponse fromEntity(ProjectMember launchedProjectMember) {
         return LaunchedProjectMemberResponse.builder()

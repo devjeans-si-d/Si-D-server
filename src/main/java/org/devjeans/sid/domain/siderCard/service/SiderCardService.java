@@ -1,12 +1,13 @@
 package org.devjeans.sid.domain.siderCard.service;
 
 import lombok.RequiredArgsConstructor;
+import org.devjeans.sid.domain.launchedProject.entity.LaunchedProject;
+import org.devjeans.sid.domain.launchedProject.repository.LaunchedProjectRepository;
 import org.devjeans.sid.domain.member.entity.Member;
 import org.devjeans.sid.domain.member.repository.MemberRepository;
-import org.devjeans.sid.domain.siderCard.dto.SiDCardListDto;
-import org.devjeans.sid.domain.siderCard.dto.SiderCardResDto;
-import org.devjeans.sid.domain.siderCard.dto.SiderCardUpdateReqDto;
-import org.devjeans.sid.domain.siderCard.dto.TeckStackReqDto;
+import org.devjeans.sid.domain.project.entity.ProjectMember;
+import org.devjeans.sid.domain.project.repository.ProjectMemberRepository;
+import org.devjeans.sid.domain.siderCard.dto.*;
 import org.devjeans.sid.domain.siderCard.entity.SiderCard;
 import org.devjeans.sid.domain.siderCard.entity.SiderCardTechStack;
 import org.devjeans.sid.domain.siderCard.entity.TechStack;
@@ -36,11 +37,21 @@ public class SiderCardService {
     private final CareerRepository careerRepository;
     private final SiderCardTechStackRepository siderCardTechStackRepository;
     private final TechStackRepository techStackRepository;
+    private final ProjectMemberRepository projectMemberRepository;
+    private final LaunchedProjectRepository launchedProjectRepository;
 
     public SiderCardResDto getSiderCard(Long id) {
         Member member = memberRepository.findById(id).orElseThrow(()->new EntityNotFoundException("member not found"));
         SiderCard siderCard = siderCardRepository.findById(id).orElseThrow(()->new EntityNotFoundException("SiderCard not found"));
-        return siderCard.fromEntity(member);
+        List<ProjectMember> projectMemberList = projectMemberRepository.findAllByMemberId(id);
+        List<LaunchedProjectResDto> launchedProjectResDtoList = new ArrayList<>();
+        for(ProjectMember projectMember : projectMemberList) {
+            LaunchedProject launchedProject = launchedProjectRepository.findByProjectIdAndDeletedAtIsNull(projectMember.getProject().getId()).orElse(null);
+            if(launchedProject != null) {
+                launchedProjectResDtoList.add(new LaunchedProjectResDto(launchedProject.getId(),launchedProject.getLaunchedProjectImage()));
+            }
+        }
+        return siderCard.fromEntity(member,launchedProjectResDtoList);
     }
 
     public SiderCardResDto updateSiderCard(SiderCardUpdateReqDto dto) {

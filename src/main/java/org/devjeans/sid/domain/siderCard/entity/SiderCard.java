@@ -45,7 +45,7 @@ public class SiderCard extends BaseEntity {
     @OneToMany(mappedBy = "siderCard", cascade = CascadeType.ALL)
     private List<SiderCardTechStack> siderCardTechStacks = new ArrayList<>();
 
-    public SiderCardResDto fromEntity(Member member) {
+    public SiderCardResDto fromEntity(Member member, List<LaunchedProjectResDto> dto) {
         List<CareerResDto> careerResDtos = new ArrayList<>();
         for (Career career : this.careers) {
             careerResDtos.add(career.fromEntity());
@@ -63,6 +63,7 @@ public class SiderCard extends BaseEntity {
                 .socialLinkRes(new SocialLinkDto(member.getEmail(),this.github,this.behance,this.linkedin,this.etc))
                 .careerRes(careerResDtos)
                 .teckStackRes(teckStackResDtos)
+                .launchedProjectRes(dto)
                 .build();
     }
 

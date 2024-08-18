@@ -21,4 +21,5 @@ public class SiderCardResDto {
     private SocialLinkDto socialLinkRes;
     private List<CareerResDto> careerRes;
     private List<TeckStackResDto> teckStackRes;
+    private List<LaunchedProjectResDto> launchedProjectRes;
 }
