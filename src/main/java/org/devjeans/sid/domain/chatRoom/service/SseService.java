@@ -8,6 +8,9 @@ import org.devjeans.sid.domain.chatRoom.dto.sse.NotificationResponse;
 import org.devjeans.sid.domain.chatRoom.dto.sse.SseChatResponse;
 import org.devjeans.sid.domain.chatRoom.dto.sse.SseEnterResponse;
 import org.devjeans.sid.domain.chatRoom.dto.sse.SseTeamBuildResponse;
+import org.devjeans.sid.domain.chatRoom.entity.Alert;
+import org.devjeans.sid.domain.chatRoom.entity.AlertType;
+import org.devjeans.sid.domain.chatRoom.repository.AlertRepository;
 import org.devjeans.sid.global.exception.BaseException;
 import org.devjeans.sid.global.util.SecurityUtil;
 import org.springframework.stereotype.Service;
@@ -29,6 +32,7 @@ public class SseService {
     // key: memberId
     private static final Map<Long, SseEmitter> clients = new ConcurrentHashMap<>();
     private final SecurityUtil securityUtil;
+    private final AlertRepository alertRepository;
 
     // 로그인하면 emitter 생성
     public SseEmitter subscribe() {
@@ -66,12 +70,9 @@ public class SseService {
     public void sendChatNotification(Long memberId, SseChatResponse sseChatResponse) {
         SseEmitter emitter = clients.get(memberId);
         NotificationResponse noti = new NotificationResponse("chat", sseChatResponse, LocalDateTime.now());
-//        ObjectMapper om = new ObjectMapper();
-//        om.registerModule(new JavaTimeModule());
+        
         if (emitter != null) {
             try {
-//                String notification = om.writeValueAsString(noti);
-//                emitter.send(notification);
                 emitter.send(SseEmitter.event().name("chat").data(noti));
             } catch (IOException e) {
                 throw new BaseException(FAIL_TO_NOTIFY);
@@ -79,24 +80,6 @@ public class SseService {
         }
     }
 
-    // 채팅방에 들어올 때 전송 => Chat List를 refresh 시키기 위함
-    // type: enter
-    public void sendEnterChatroom(Long memberId, SseEnterResponse sseEnterResponse) {
-        SseEmitter emitter = clients.get(memberId);
-        NotificationResponse noti = new NotificationResponse("enter", sseEnterResponse, LocalDateTime.now());
-
-        ObjectMapper om = new ObjectMapper();
-        om.registerModule(new JavaTimeModule());
-        if (emitter != null) {
-            try {
-                String notification = om.writeValueAsString(noti);
-                emitter.send(notification);
-            } catch (IOException e) {
-                log.error(e.getMessage());
-                throw new BaseException(FAIL_TO_NOTIFY);
-            }
-        }
-    }
 
     // 프로젝트가 마감됐을때 모든 팀원들에게 알림 TODO: 어디서 마감되는지 물어봐야겠다.
     // type: team
@@ -104,12 +87,30 @@ public class SseService {
         SseEmitter emitter = clients.get(memberId);
         NotificationResponse noti = new NotificationResponse("team", sseTeamBuildResponse, LocalDateTime.now());
 
-        ObjectMapper om = new ObjectMapper();
-        om.registerModule(new JavaTimeModule());
+        // 알림을 DB에 저장하기
+        String content;
+        if(sseTeamBuildResponse.getPmId().equals(memberId)) {
+            content = "내가 PM(Leader)인 " + sseTeamBuildResponse.getProjectName() + " 프로젝트의 모집이 종료되었어요. " +
+                    "수신 메일함을 확인하여 팀원들에게 연락을 취해보세요!";
+        } else {
+            content = "내가 속해 있는 " + sseTeamBuildResponse.getProjectName() + " 프로젝트의 모집이 종료되었어요." +
+                    " 멋진 동료들과 좋은 서비스를 만드는 경험이 되기를 바랄게요!";
+        }
+
+        Alert alert = Alert.builder()
+                .title("프로젝트 모집 종료!")
+                .content(content)
+                .alertType(AlertType.TEAM)
+                .isRead("N")
+                .memberId(memberId)
+                .build();
+
+        alertRepository.save(alert);
+
+
         if (emitter != null) {
             try {
-                String notification = om.writeValueAsString(noti);
-                emitter.send(notification);
+                emitter.send(SseEmitter.event().name("team").data(noti));
             } catch (IOException e) {
                 throw new BaseException(FAIL_TO_NOTIFY);
             }
