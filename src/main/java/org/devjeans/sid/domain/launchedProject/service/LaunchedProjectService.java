@@ -326,4 +326,12 @@ public class LaunchedProjectService {
                 .scrapCount(scrapCount)
                 .build();
     }
+
+    // 스크랩 상태 확인
+    public boolean isScrapped(Long launchedProjectId){
+        launchedProjectRepository.findByIdOrThrow(launchedProjectId);
+        String memberId = securityUtil.getCurrentMemberId().toString();
+
+        return launchedProjectScrapService.isScraped(launchedProjectId, memberId);
+    }
 }

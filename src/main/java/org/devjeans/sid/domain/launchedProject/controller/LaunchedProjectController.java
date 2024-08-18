@@ -47,12 +47,11 @@ public class LaunchedProjectController {
         return ResponseEntity.ok(message); // 수정된 글 id 반환
     }
 
-//    // 유저는 프로젝트 완성글에 사이다를 누를 수 있다.
-//    @PostMapping("/scrap")
-//    public ResponseEntity<LaunchedProjectScrapResponse> toggleScrap(@RequestBody LaunchedProjectScrapRequest scrapRequest){
-//        LaunchedProjectScrapResponse scrapResponse = launchedProjectService.toggleScrap(scrapRequest);
-//        return ResponseEntity.ok(scrapResponse);
-//    }
+    @GetMapping("/is-scrapped/{id}")
+    public ResponseEntity<Boolean> isScrapped(@PathVariable Long id){
+        Boolean isScrapped = launchedProjectService.isScrapped(id);
+        return ResponseEntity.ok(isScrapped);
+    }
 
     @PostMapping("/scrap/{id}")
     public ResponseEntity<LaunchedProjectScrapResponse> addScrap(@PathVariable Long id){
