@@ -38,6 +38,15 @@ public class SseService {
         clients.put(memberId, emitter);
         emitter.onCompletion(() -> clients.remove(memberId));
         emitter.onTimeout(() -> clients.remove(memberId));
+
+        try {
+            // "connect": 이벤트 이름
+            // "connected!!" : 메시지 내용
+            emitter.send(SseEmitter.event().name("connect").data("connected!!"));
+        } catch(IOException e) {
+            e.printStackTrace();
+        }
+
         return emitter;
     }
 
@@ -57,12 +66,13 @@ public class SseService {
     public void sendChatNotification(Long memberId, SseChatResponse sseChatResponse) {
         SseEmitter emitter = clients.get(memberId);
         NotificationResponse noti = new NotificationResponse("chat", sseChatResponse, LocalDateTime.now());
-        ObjectMapper om = new ObjectMapper();
-        om.registerModule(new JavaTimeModule());
+//        ObjectMapper om = new ObjectMapper();
+//        om.registerModule(new JavaTimeModule());
         if (emitter != null) {
             try {
-                String notification = om.writeValueAsString(noti);
-                emitter.send(notification);
+//                String notification = om.writeValueAsString(noti);
+//                emitter.send(notification);
+                emitter.send(SseEmitter.event().name("chat").data(noti));
             } catch (IOException e) {
                 throw new BaseException(FAIL_TO_NOTIFY);
             }

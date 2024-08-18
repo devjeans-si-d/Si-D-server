@@ -13,12 +13,12 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 @RestController
 public class SseController {
     private final SseService sseService;
-    @PostMapping("/subscribe")
+    @GetMapping("/subscribe")
     public SseEmitter subscribe() {
         return sseService.subscribe();
     }
 
-    @PostMapping("/complete")
+    @GetMapping("/complete")
     public void completeEmitter() {
         sseService.completeEmitter();
     }
