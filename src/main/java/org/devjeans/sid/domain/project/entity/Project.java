@@ -29,7 +29,7 @@ public class Project extends BaseEntity {
     @Column(nullable = false)
     private String description;
 
-    @Column
+    @Column(columnDefinition = "TEXT")
     private String recruitmentContents;
 
     @Column(columnDefinition = "varchar(1) default 'N'")

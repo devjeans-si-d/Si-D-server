@@ -31,7 +31,7 @@ public class DetailProjectResponse {
     private Long id;
     private String imageUrl;
     private String projectName;
-
+    private boolean isScrap;
     private String description;
 
 
@@ -73,6 +73,10 @@ public class DetailProjectResponse {
         // Todo 사이더카드 연결
         private Long id;
         private String memberName;
+        private String memberNickname;
+        private Long memberId;
+        private String memberEmail;
+        private String memberImageUrl;
         @Enumerated(EnumType.STRING)
         private JobField jobField;
     }
@@ -81,7 +85,7 @@ public class DetailProjectResponse {
 
 //    private List<ChatRoomDto> chatRooms;
 
-    public static DetailProjectResponse fromEntity(Project project, Long scrapCount, Long views){
+    public static DetailProjectResponse fromEntity(Project project, Long scrapCount, Long views, boolean isScrap){
         List<RecruitInfo> recruitInfoList = project.getRecruitInfos();
         List<ProjectScrap> projectScrapList = project.getProjectScraps();
         List<ChatRoom> chatRoomList=project.getChatRooms();
@@ -104,6 +108,10 @@ public class DetailProjectResponse {
             DetailProjectResponse.ProjectMemberDto projectMemberDto = ProjectMemberDto.builder()
                     .id(projectMember.getId())
                     .memberName(projectMember.getMember().getName())
+                    .memberId(projectMember.getMember().getId())
+                    .memberNickname(projectMember.getMember().getNickname())
+                    .memberEmail(projectMember.getMember().getEmail())
+                    .memberImageUrl(projectMember.getMember().getProfileImageUrl())
                     .jobField(projectMember.getJobField())
                     .build();
             projectMemberDtos.add(projectMemberDto);
@@ -111,6 +119,7 @@ public class DetailProjectResponse {
 
         return DetailProjectResponse.builder()
                 .id(project.getId())
+                .isScrap(isScrap)
                 .imageUrl(project.getImageUrl())
                 .pmName(project.getPm().getName())
                 .pmEmail(project.getPm().getEmail())
