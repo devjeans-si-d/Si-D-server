@@ -19,4 +19,8 @@ public class Alert extends BaseEntity {
     private String content;
     private String isRead; // Y N
     private AlertType alertType;
+
+    public void updateIsRead(String yn) {
+        this.isRead = yn;
+    }
 }

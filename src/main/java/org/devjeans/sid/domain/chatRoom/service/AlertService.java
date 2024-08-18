@@ -21,6 +21,13 @@ public class AlertService {
         Long memberId = securityUtil.getCurrentMemberId();
 
         List<Alert> alerts = alertRepository.findAllByMemberIdAndIsRead(memberId, "N");
+
+        // 읽음 처리
+        for (Alert alert : alerts) {
+            alert.updateIsRead("Y");
+
+        }
+
         return alerts.stream()
                 .map(AlertResponse::fromEntity)
                 .collect(Collectors.toList());
