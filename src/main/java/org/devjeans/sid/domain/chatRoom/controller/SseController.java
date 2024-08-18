@@ -18,7 +18,7 @@ public class SseController {
         return sseService.subscribe();
     }
 
-    @PostMapping("/subscribe")
+    @PostMapping("/complete")
     public void completeEmitter() {
         sseService.completeEmitter();
     }

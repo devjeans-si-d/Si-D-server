@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.devjeans.sid.domain.chatRoom.component.ConnectedMap;
 import org.devjeans.sid.domain.chatRoom.dto.ChatMessageRequest;
 import org.devjeans.sid.domain.chatRoom.dto.ChatRoomMessageResponse;
-import org.devjeans.sid.domain.chatRoom.dto.SseChatResponse;
+import org.devjeans.sid.domain.chatRoom.dto.sse.SseChatResponse;
 import org.devjeans.sid.domain.chatRoom.entity.ChatMessage;
 import org.devjeans.sid.domain.chatRoom.entity.ChatRoom;
 import org.devjeans.sid.domain.chatRoom.repository.ChatMessageRepository;
@@ -13,8 +13,6 @@ import org.devjeans.sid.domain.chatRoom.repository.ChatRoomRepository;
 import org.devjeans.sid.domain.member.entity.Member;
 import org.devjeans.sid.domain.member.repository.MemberRepository;
 import org.devjeans.sid.global.exception.BaseException;
-import org.devjeans.sid.global.exception.exceptionType.ChatExceptionType;
-import org.devjeans.sid.global.util.SecurityUtil;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -60,8 +58,8 @@ public class WebSocketService {
 
 
         //== SSE 로직 => member 닉네임 ==//
-        SseChatResponse sseChatResponse = new SseChatResponse(sender.getNickname(), chatMessage.getContent());
-        sseService.sendChatNotification(memberId, sseChatResponse);
+        SseChatResponse sseChatResponse = new SseChatResponse(chatRoom.getId(), sender.getNickname(), chatMessage.getContent());
+        sseService.sendChatNotification(receiverId, sseChatResponse);
 
         messagingTemplate.convertAndSend("/sub/chatroom/" + chatRoomId, chatRoomMessageResponse);
     }
