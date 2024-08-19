@@ -136,7 +136,9 @@ public class ProjectAcceptService {
     // 팀원 프로젝트 찾기
     public Page<MyProjectResponse> getMyTeamProjectList(Pageable pageable) {
         Long currentMemberId = securityUtil.getCurrentMemberId();
-        Long count = projectMemberRepository.countByTeamMemberId(currentMemberId);
+        Long totalCount = projectMemberRepository.countByMemberId(currentMemberId);
+        Long pmCount = projectMemberRepository.countByMemberIdAndJobField(currentMemberId, JobField.PM);
+
         List<ProjectMember> projectMember = projectMemberRepository.findAllMyTeamProjects(pageable, currentMemberId);
 
         List<MyProjectResponse> dtoList = projectMember.stream().map(p -> {
@@ -146,7 +148,7 @@ public class ProjectAcceptService {
             return MyProjectResponse.fromEntity(p, isLaunched);
         }).collect(Collectors.toList());
 
-        return new PageImpl<>(dtoList, pageable, count);
+        return new PageImpl<>(dtoList, pageable, totalCount - pmCount);
     }
 
     // 지원하기
