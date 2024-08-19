@@ -118,6 +118,7 @@ public class LaunchedProject extends BaseEntity {
                 .id(launchedProject.getId())
                 .launchedProjectImage(launchedProject.getLaunchedProjectImage())
                 .projectName(launchedProject.getProject().getProjectName())
+                .siteUrl(launchedProject.getSiteUrl())
                 .launchedProjectContents(launchedProject.getLaunchedProjectContents())
                 .views(views)
                 .scraps(scraps)

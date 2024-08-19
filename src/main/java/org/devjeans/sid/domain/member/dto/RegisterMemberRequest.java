@@ -26,7 +26,6 @@ public class RegisterMemberRequest {
                 .phoneNumber(this.phoneNumber)
                 .profileImageUrl("https://sejeong-file.s3.ap-northeast-2.amazonaws.com/devjeans-sid/devjeans-spring.png")
                 .build();
-        System.out.println(member);
         return member;
     }
 }

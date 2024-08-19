@@ -5,15 +5,11 @@ import org.devjeans.sid.domain.launchedProject.repository.LaunchedProjectReposit
 import org.devjeans.sid.domain.launchedProject.service.LaunchedProjectScrapService;
 import org.devjeans.sid.domain.launchedProject.service.LaunchedProjectViewService;
 import org.devjeans.sid.domain.mainPage.dto.TopListLaunchedProjectResponse;
-import org.devjeans.sid.domain.mainPage.dto.TopListProjectResponse;
 import org.devjeans.sid.domain.mainPage.dto.TopListMemberResponse;
 import org.devjeans.sid.domain.member.entity.Member;
 import org.devjeans.sid.domain.member.repository.MemberRepository;
 import org.devjeans.sid.domain.project.dto.read.ListProjectResponse;
-import org.devjeans.sid.domain.project.entity.JobField;
-import org.devjeans.sid.domain.project.entity.Project;
 import org.devjeans.sid.domain.project.repository.ProjectMemberRepository;
-import org.devjeans.sid.domain.project.repository.ProjectRepository;
 import org.devjeans.sid.domain.project.service.ProjectService;
 import org.devjeans.sid.domain.siderCard.entity.SiderCard;
 import org.devjeans.sid.domain.siderCard.repository.SiderCardRepository;

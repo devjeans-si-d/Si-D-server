@@ -20,7 +20,7 @@ public interface ChatRoomRepository extends JpaRepository<ChatRoom, Long> {
     @Query("select r from ChatRoom r inner join fetch ChatParticipant p on r.id = p.chatRoom.id where p.chatRoom.id = :memberId order by r.updatedAt desc")
     Page<ChatRoom> findAllByMemberIdOrderByUpdatedAtDesc(Pageable pageable, @Param("memberId") Long memberId);
 
-    @Query("select r from ChatRoom r where r.id in :ids and r.chatMessages.size >= 1 order by r.updatedAt")
+    @Query("select r from ChatRoom r where r.id in :ids order by r.updatedAt")
     Page<ChatRoom> findAllByIds(Pageable pageable, @Param("ids") List<Long> ids);
 
     Optional<ChatRoom> findByStarterMemberIdAndProject(Long chatStarterMemberId, Project project);

@@ -13,6 +13,7 @@ import org.devjeans.sid.domain.launchedProject.entity.LaunchedProject;
 import org.devjeans.sid.domain.launchedProject.entity.LaunchedProjectTechStack;
 import org.devjeans.sid.domain.launchedProject.repository.LaunchedProjectRepository;
 import org.devjeans.sid.domain.launchedProject.repository.LaunchedProjectScrapRepository;
+import org.devjeans.sid.domain.mainPage.dto.TopListLaunchedProjectResponse;
 import org.devjeans.sid.domain.member.entity.Member;
 import org.devjeans.sid.domain.member.repository.MemberRepository;
 import org.devjeans.sid.domain.project.entity.Project;
@@ -26,12 +27,11 @@ import org.devjeans.sid.global.exception.exceptionType.LaunchedProjectExceptionT
 import org.devjeans.sid.global.exception.exceptionType.LaunchedProjectScrapExceptionType;
 import org.devjeans.sid.global.util.SecurityUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import java.util.Comparator;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -252,18 +252,47 @@ public class LaunchedProjectService {
     }
 
     // LaunchedProject 리스트 조회
-    public Page<ListLaunchedProjectResponse> getList(Pageable pageable){
+    public Page<ListLaunchedProjectResponse> getList(String sorted, Pageable pageable) {
+        // 데이터베이스에서 페이지별로 데이터 가져오기
         Page<LaunchedProject> launchedProjects = launchedProjectRepository.findByDeletedAtIsNull(pageable);
 
-        List<ListLaunchedProjectResponse> listLaunchedProjectResponses = launchedProjects.stream()
-                .map(l -> l.listResFromEntity(l,
-                        launchedProjectViewService.getViews(l.getId()),
-                        launchedProjectScrapService.getScrapCount(l.getId())))
-                .collect(Collectors.toList());
+        List<ListLaunchedProjectResponse> listLaunchedProjectResponses = new ArrayList<>();
+        // sorted 파라미터에 따른 정렬 적용
+        if ("views".equals(sorted)) {
+            // LaunchedProject 리스트 -> DTO 리스트로 변환하면서 레디스에서 views와 scraps를 가져오기
+            listLaunchedProjectResponses = launchedProjects.stream()
+                    .map(l -> l.listResFromEntity(
+                            l,
+                            launchedProjectViewService.getViews(l.getId()), // 레디스에서 views 가져오기
+                            launchedProjectScrapService.getScrapCount(l.getId()) // 레디스에서 scraps 가져오기
+                    ))
+                    .sorted(Comparator.comparingLong(ListLaunchedProjectResponse::getViews).reversed()) // 조회수 기준으로 내림차순 정렬
+                    .collect(Collectors.toList());
+        } else if ("scraps".equals(sorted)) {
+            listLaunchedProjectResponses = launchedProjects.stream()
+                    .map(l -> l.listResFromEntity(
+                            l,
+                            launchedProjectViewService.getViews(l.getId()), // 레디스에서 views 가져오기
+                            launchedProjectScrapService.getScrapCount(l.getId()) // 레디스에서 scraps 가져오기
+                    ))
+                    .sorted(Comparator.comparingLong(ListLaunchedProjectResponse::getScraps).reversed()) // 조회수 기준으로 내림차순 정렬
+                    .collect(Collectors.toList());
+        }else{
+            listLaunchedProjectResponses = launchedProjects.stream()
+                    .map(l -> l.listResFromEntity(
+                            l,
+                            launchedProjectViewService.getViews(l.getId()), // 레디스에서 views 가져오기
+                            launchedProjectScrapService.getScrapCount(l.getId()) // 레디스에서 scraps 가져오기
+                    ))
+                    .collect(Collectors.toList());
+        }
 
-        // List -> Page로 변환
-        return new PageImpl<>(listLaunchedProjectResponses, pageable ,launchedProjects.getTotalElements());
+        // 정렬된 리스트를 페이지 객체로 변환
+        return new PageImpl<>(listLaunchedProjectResponses, pageable, launchedProjects.getTotalElements());
     }
+
+
+
 
     // 글을 올린사람은 Launched-Project 글을 삭제할 수 있다.
     public String delete(Long id){
