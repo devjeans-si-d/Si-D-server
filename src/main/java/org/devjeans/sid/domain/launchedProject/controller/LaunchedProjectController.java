@@ -43,8 +43,8 @@ public class LaunchedProjectController {
     @PostMapping("/update/{launchedProjectId}")
     public ResponseEntity<Object> update(@PathVariable Long launchedProjectId,
                                          @RequestBody UpdateLaunchedProjectRequest updateRequest){
-        String message = launchedProjectService.update(launchedProjectId, updateRequest);
-        return ResponseEntity.ok(message); // 수정된 글 id 반환
+        LaunchedProject launchedProject = launchedProjectService.update(launchedProjectId, updateRequest);
+        return ResponseEntity.ok(launchedProject.getId()); // 수정된 글 id 반환
     }
 
     @GetMapping("/is-scrapped/{id}")

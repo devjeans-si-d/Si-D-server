@@ -158,7 +158,7 @@ public class LaunchedProjectService {
         return launchedProjectRepository.save(launchedProject);
     }
 
-    public String update(Long launchedProjectId,
+    public LaunchedProject update(Long launchedProjectId,
                          UpdateLaunchedProjectRequest dto) {
         // LaunchedProject 객체 찾아서 수정
         LaunchedProject launchedProject = launchedProjectRepository.findByIdOrThrow(launchedProjectId);
@@ -205,7 +205,7 @@ public class LaunchedProjectService {
         }).collect(Collectors.toList());
         launchedProject.getProject().updateNewProjectMembers(newMembers); // project에 갈아 끼워주기
 
-        return "수정완료";
+        return launchedProject;
     }
 
     // READ

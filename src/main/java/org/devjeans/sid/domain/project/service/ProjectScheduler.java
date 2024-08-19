@@ -1,10 +1,13 @@
 package org.devjeans.sid.domain.project.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
+import org.devjeans.sid.domain.chatRoom.dto.sse.SseTeamBuildResponse;
+import org.devjeans.sid.domain.chatRoom.service.SseService;
 import org.devjeans.sid.domain.member.entity.Member;
 import org.devjeans.sid.domain.member.repository.MemberRepository;
 import org.devjeans.sid.domain.project.dto.scrap.ScrapResponse;
 import org.devjeans.sid.domain.project.entity.Project;
+import org.devjeans.sid.domain.project.entity.ProjectMember;
 import org.devjeans.sid.domain.project.entity.ProjectScrap;
 import org.devjeans.sid.domain.project.repository.ProjectRepository;
 import org.devjeans.sid.domain.project.repository.ProjectScrapRepository;
@@ -21,11 +24,13 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.devjeans.sid.global.util.SecurityUtil;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 
 import static org.devjeans.sid.global.exception.exceptionType.MemberExceptionType.MEMBER_NOT_FOUND;
 import static org.devjeans.sid.global.exception.exceptionType.ProjectExceptionType.PROJECT_NOT_FOUND;
 
+@Slf4j
 @Component
 public class ProjectScheduler {
     private static final String PROJECT_SCRAP_COUNT = "project_scrap_count:";
@@ -37,14 +42,22 @@ public class ProjectScheduler {
     private final MemberRepository memberRepository;
     private final RedisTemplate<String,String> redisTemplate;
     private final RedisTemplate<String, Object> scrapRedisTemplate;
+    private final SseService sseService;
     @Autowired
-    public ProjectScheduler(SecurityUtil securityUtil, @Qualifier("scrapRedisTemplate") RedisTemplate<String, Object> scrapRedisTemplate, ProjectRepository projectRepository, ProjectScrapRepository projectScrapRepository, MemberRepository memberRepository, @Qualifier("viewRedisTemplate")RedisTemplate<String, String> redisTemplate) {
+    public ProjectScheduler(SecurityUtil securityUtil,
+                            @Qualifier("scrapRedisTemplate") RedisTemplate<String, Object> scrapRedisTemplate,
+                            ProjectRepository projectRepository,
+                            ProjectScrapRepository projectScrapRepository,
+                            MemberRepository memberRepository,
+                            @Qualifier("viewRedisTemplate")RedisTemplate<String, String> redisTemplate,
+                            SseService sseService) {
         this.securityUtil = securityUtil;
         this.projectRepository = projectRepository;
         this.projectScrapRepository = projectScrapRepository;
         this.memberRepository = memberRepository;
         this.redisTemplate = redisTemplate;
         this.scrapRedisTemplate =scrapRedisTemplate;
+        this.sseService = sseService;
     }
 
     @Scheduled(cron = "0 0/1 * * * *")
@@ -52,10 +65,21 @@ public class ProjectScheduler {
     public void projectSchedule(){
 
         Page<Project> projects = projectRepository.findByIsClosed(Pageable.unpaged(),"N");
+
         for(Project p : projects){
             if(p.getDeadline().isBefore(LocalDateTime.now())){
                 p.updateIsClosed("Y");
                 projectRepository.save(p);
+
+                //== SSE ==//
+                List<ProjectMember> projectMembers = p.getProjectMembers();
+                log.info("line 76: {}", projectMembers.size());
+                for (ProjectMember projectMember : projectMembers) {
+                    log.info("SSE 전송: projectMember: {}", projectMember.getId());
+                    SseTeamBuildResponse sseTeamBuildResponse = new SseTeamBuildResponse(p.getId(), p.getProjectName(), p.getPm().getId());
+                    sseService.sendTeamBuild(projectMember.getMember().getId(), sseTeamBuildResponse);
+                }
+
             }
         }
     }

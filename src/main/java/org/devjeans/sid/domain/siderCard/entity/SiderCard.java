@@ -67,11 +67,12 @@ public class SiderCard extends BaseEntity {
                 .build();
     }
 
-    public SiderCard update(SiderCardUpdateReqDto dto,SiderCard siderCard,List<SiderCardTechStack> techStacks) {
+    public SiderCard update(SiderCardUpdateReqDto dto,SiderCard siderCard,List<SiderCardTechStack> techStacks, Member member) {
         List<Career> careers = new ArrayList<>();
         for (CareerReqDto career : dto.getCareers()) {
             careers.add(career.toEntity(siderCard));
         }
+        member.updateProfileImageUrl(dto.getImage());
         this.jobField = dto.getJobField();
         this.introduction = dto.getIntroduction();
         this.image = dto.getImage();
