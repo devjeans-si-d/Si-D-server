@@ -8,4 +8,8 @@ import java.util.List;
 public interface AlertRepository extends JpaRepository<Alert, Long> {
 
     List<Alert> findAllByMemberIdAndIsRead(Long memberId, String isRead);
+
+    List<Alert> findAllByMemberId(Long memberId);
+
+    List<Alert> findAllByMemberIdOrderByCreatedAtDesc(Long memberId);
 }

@@ -22,15 +22,17 @@ public class AlertService {
     public List<AlertResponse> findAllUnread() {
         Long memberId = securityUtil.getCurrentMemberId();
 
-        List<Alert> alerts = alertRepository.findAllByMemberIdAndIsRead(memberId, "N");
+        List<Alert> alerts = alertRepository.findAllByMemberIdOrderByCreatedAtDesc(memberId);
+
+        List<AlertResponse> response = alerts.stream()
+                .map(AlertResponse::fromEntity)
+                .collect(Collectors.toList());
 
         // 읽음 처리
         for (Alert alert : alerts) {
             alert.updateIsRead("Y");
         }
 
-        return alerts.stream()
-                .map(AlertResponse::fromEntity)
-                .collect(Collectors.toList());
+        return response;
     }
 }

@@ -6,6 +6,7 @@ import org.devjeans.sid.domain.chatRoom.entity.AlertType;
 import org.devjeans.sid.domain.common.BaseEntity;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Builder
 @AllArgsConstructor
@@ -18,6 +19,7 @@ public class AlertResponse extends BaseEntity {
     private String content;
     private String isRead; // Y N
     private AlertType alertType;
+    private LocalDateTime createdAt;
 
     public static AlertResponse fromEntity(Alert alert) {
         return AlertResponse.builder()
@@ -27,6 +29,7 @@ public class AlertResponse extends BaseEntity {
                 .isRead(alert.getIsRead())
                 .alertType(alert.getAlertType())
                 .memberId(alert.getMemberId())
+                .createdAt(alert.getCreatedAt())
                 .build();
     }
 }
