@@ -20,7 +20,7 @@ public interface ProjectMemberRepository extends JpaRepository<ProjectMember,Lon
 
     Long countByMemberIdAndJobField(@Param("memberId") Long memberId, @Param("jobField") JobField jobField);
 
-    @Query("select count(pm) from ProjectMember pm where pm.jobField != 'PM'")
+    @Query("select count(pm) from ProjectMember pm where pm.member.id = :memberId AND pm.jobField != 'PM'")
     Long countByTeamMemberId(@Param("memberId") Long memberId);
 
     @Query("select pm from ProjectMember pm join fetch pm.member join fetch pm.project p where pm.member.id = :memberId order by pm.createdAt desc")
