@@ -55,7 +55,6 @@ public class ChatService {
                 .distinct()
                 .collect(Collectors.toList());
 
-
         // 최신 순 정렬
         Page<ChatRoom> chatRooms = chatRoomRepository.findAllByIds(pageable, chatRoomIds);
 
@@ -64,9 +63,9 @@ public class ChatService {
             // 최근 메시지 뽑기
             List<ChatMessage> recentMessages = chatMessageRepository.findRecentMessageByChatRoom(chatRoom);
 
-            if(recentMessages.isEmpty()) {
-                throw new BaseException(NO_RECENT_MESSAGE);
-            }
+//            if(recentMessages.isEmpty()) {
+//                throw new BaseException(NO_RECENT_MESSAGE);
+//            }
             // 상대방 찾기
             Member participant = chatRoom.getChatParticipants().stream()
                     .filter(p -> !p.getMember().getId().equals(memberId))
@@ -74,11 +73,10 @@ public class ChatService {
                     .map(ChatParticipant::getMember)
                     .orElseThrow(() -> new BaseException(INVALID_CHATROOM));
 
+            String recentMsg = recentMessages.isEmpty() ? "" : recentMessages.get(0).getContent();
             // 안읽은 메시지 개수 뽑기
             Long unreadCount = chatMessageRepository.countChatMessageByChatRoomAndIsReadAndMember(chatRoom, false, participant);
-
-
-            return ChatRoomSimpleResponse.fromEntity(chatRoom, unreadCount, participant, recentMessages.get(0).getContent());
+            return ChatRoomSimpleResponse.fromEntity(chatRoom, unreadCount, participant, recentMsg);
         });
 
 
