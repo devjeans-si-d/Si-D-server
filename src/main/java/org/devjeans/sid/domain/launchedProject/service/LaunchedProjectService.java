@@ -194,16 +194,16 @@ public class LaunchedProjectService {
 
         // 새로운 프로젝트 멤버 리스트 업데이트
         // 우선 기존 프로젝트 멤버를 모두 delete 해준다.
-        List<ProjectMember> projectMembers = project.getProjectMembers();
-        projectMemberRepository.deleteAll(projectMembers); // deleteAll -> 벌크성 쿼리를 줄여줌
-        
-        // memberDto를 ProjectMember로 변환
-        List<LaunchedProjectMemberRequest> memberDtos = dto.getMembers();
-        List<ProjectMember> newMembers = memberDtos.stream().map(memberDto -> {
-            Member member = memberRepository.findByIdOrThrow(memberDto.getId());
-            return LaunchedProjectMemberRequest.toEntity(memberDto, member, project);
-        }).collect(Collectors.toList());
-        launchedProject.getProject().updateNewProjectMembers(newMembers); // project에 갈아 끼워주기
+//        List<ProjectMember> projectMembers = project.getProjectMembers();
+//        projectMemberRepository.deleteAll(projectMembers); // deleteAll -> 벌크성 쿼리를 줄여줌
+//
+//        // memberDto를 ProjectMember로 변환
+//        List<LaunchedProjectMemberRequest> memberDtos = dto.getMembers();
+//        List<ProjectMember> newMembers = memberDtos.stream().map(memberDto -> {
+//            Member member = memberRepository.findByIdOrThrow(memberDto.getId());
+//            return LaunchedProjectMemberRequest.toEntity(memberDto, member, project);
+//        }).collect(Collectors.toList());
+//        launchedProject.getProject().updateNewProjectMembers(newMembers); // project에 갈아 끼워주기
 
         return launchedProject;
     }

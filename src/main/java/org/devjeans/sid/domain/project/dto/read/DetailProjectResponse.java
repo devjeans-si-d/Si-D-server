@@ -33,7 +33,7 @@ public class DetailProjectResponse {
     private String projectName;
     private boolean isScrap;
     private String description;
-
+    private LocalDateTime createdAt;
 
     private String recruitmentContents;
 
@@ -48,6 +48,7 @@ public class DetailProjectResponse {
     private String pmEmail;
     private String pmNickname;
     private String pmImage;
+    private Long pmId;
     @Builder.Default
     private List<ProjectMemberDto> projectMembers=new ArrayList<>();
     @Builder.Default
@@ -121,8 +122,10 @@ public class DetailProjectResponse {
                 .id(project.getId())
                 .isScrap(isScrap)
                 .imageUrl(project.getImageUrl())
+                .pmId(project.getPm().getId())
                 .pmName(project.getPm().getName())
                 .pmEmail(project.getPm().getEmail())
+                .createdAt(project.getCreatedAt())
                 .pmNickname(project.getPm().getNickname())
                 .pmImage(project.getPm().getProfileImageUrl())
                 .scrapCount(scrapCount)

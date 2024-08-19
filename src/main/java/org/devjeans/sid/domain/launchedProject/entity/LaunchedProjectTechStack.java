@@ -33,7 +33,7 @@ public class LaunchedProjectTechStack extends BaseEntity {
 
     public static LaunchedProjectTechStackResponse stackResFromEntity(LaunchedProjectTechStack launchedProjectTechStack){
         return LaunchedProjectTechStackResponse.builder()
-                .jobField(launchedProjectTechStack.getTechStack().getJobField())
+                .jobField(launchedProjectTechStack.getTechStack().getJobField().getJobName())
                 .techStackName(launchedProjectTechStack.getTechStack().getTechStackName())
                 .build();
     }

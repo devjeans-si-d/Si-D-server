@@ -16,7 +16,7 @@ import javax.persistence.Enumerated;
 public class LaunchedProjectTechStackResponse {
 
     @Enumerated(EnumType.STRING)
-    private JobField jobField; // 직무 명
+    private String jobField; // 직무 명
 
     private String techStackName; // 기술스택 명
 
