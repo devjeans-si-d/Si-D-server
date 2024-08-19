@@ -57,6 +57,7 @@ public class SiderCardService {
     public SiderCardResDto updateSiderCard(SiderCardUpdateReqDto dto) {
         Long id = securityUtil.getCurrentMemberId();
         SiderCard siderCard = siderCardRepository.findById(id).orElseThrow(()->new EntityNotFoundException("SiderCard not found"));
+        Member member = memberRepository.findById(id).orElseThrow(()->new EntityNotFoundException("member not found"));
         careerRepository.deleteCareerBySiderCard(siderCard);
         siderCardTechStackRepository.deleteSiderCardTechStackBySiderCard(siderCard);
         List<SiderCardTechStack> techStacks = new ArrayList<>();
@@ -64,7 +65,7 @@ public class SiderCardService {
             TechStack ts = techStackRepository.findByIdOrThrow(teckStack.getId());
             techStacks.add(SiderCardTechStack.builder().techStack(ts).siderCard(siderCard).build());
         }
-        siderCard.update(dto,siderCard,techStacks);
+        siderCard.update(dto,siderCard,techStacks,member);
         return getSiderCard(id);
     }
 
