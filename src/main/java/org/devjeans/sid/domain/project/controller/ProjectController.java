@@ -97,5 +97,20 @@ public class ProjectController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @GetMapping("/api/project/listIsCloseN")
+    public ResponseEntity<List<ListProjectResponse>> listIsClosedN(
+            @RequestParam(defaultValue = "recent") String sorted
+    ){
+        List<ListProjectResponse> listProjectResponses = projectService.projectListReadIsClosedN(sorted);
+        return new ResponseEntity<>(listProjectResponses,HttpStatus.OK);
+    }
+    @GetMapping("/api/project/listAll")
+    public ResponseEntity<List<ListProjectResponse>> listAll(
+            @RequestParam(defaultValue = "recent") String sorted
+    ){
+        List<ListProjectResponse> listProjectResponses = projectService.projectListReadAll(sorted);
+        return new ResponseEntity<>(listProjectResponses,HttpStatus.OK);
+    }
+
 
 }
