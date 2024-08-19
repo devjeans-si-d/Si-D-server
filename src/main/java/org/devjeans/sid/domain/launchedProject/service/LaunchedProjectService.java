@@ -252,9 +252,9 @@ public class LaunchedProjectService {
     }
 
     // LaunchedProject 리스트 조회
-    public Page<ListLaunchedProjectResponse> getList(String sorted, Pageable pageable) {
+    public List<ListLaunchedProjectResponse> getList(String sorted) {
         // 데이터베이스에서 페이지별로 데이터 가져오기
-        Page<LaunchedProject> launchedProjects = launchedProjectRepository.findByDeletedAtIsNull(pageable);
+        List<LaunchedProject> launchedProjects = launchedProjectRepository.findByDeletedAtIsNullOrderByCreatedAtDesc();
 
         List<ListLaunchedProjectResponse> listLaunchedProjectResponses = new ArrayList<>();
         // sorted 파라미터에 따른 정렬 적용
@@ -287,8 +287,7 @@ public class LaunchedProjectService {
                     .collect(Collectors.toList());
         }
 
-        // 정렬된 리스트를 페이지 객체로 변환
-        return new PageImpl<>(listLaunchedProjectResponses, pageable, launchedProjects.getTotalElements());
+        return listLaunchedProjectResponses;
     }
 
 
