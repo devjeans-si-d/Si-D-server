@@ -67,6 +67,14 @@ public class ProjectService {
         this.projectScrapRepository = projectScrapRepository;
     }
 
+    public String updateisClosed(Long id){
+        Project project = projectRepository.findById(id).orElseThrow(() -> new BaseException(PROJECT_NOT_FOUND));
+        if(project.getIsClosed().equals("N")) project.setIsClosed("Y");
+        else throw new BaseException(PROJECT_ALREADY_CLOSED);
+        return "project 마감 여부 :" + project.getIsClosed();
+    }
+
+
     //create
     public Project projectCreate(CreateProjectRequest dto) {
         Member pm = memberRepository.findById(securityUtil.getCurrentMemberId()).orElseThrow(() -> new BaseException(MEMBER_NOT_FOUND));
@@ -176,6 +184,7 @@ public class ProjectService {
         }
         return new PageImpl<>(listProjectResponses, pageable, projectList.getTotalElements());
     }
+
 
     // update project
     public UpdateProjectResponse projectUpdate(UpdateProjectRequest dto, Long projectId) {

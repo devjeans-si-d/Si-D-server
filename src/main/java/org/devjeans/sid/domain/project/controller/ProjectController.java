@@ -59,6 +59,11 @@ public class ProjectController {
         return new ResponseEntity<>(updateProjectResponse, HttpStatus.OK);
     }
 
+    @PatchMapping("/api/project/{id}/deadline")
+    public String projectIsClosed(@PathVariable Long id){
+        return projectService.updateisClosed(id);
+    }
+
     // project delete
     @DeleteMapping("/api/project/{id}")
     public ResponseEntity<String> projectDelete(@PathVariable Long id) {
