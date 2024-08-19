@@ -55,8 +55,7 @@ public class ScrapService {
             throw new BaseException(ALREADY_SCRAP_PROJECT);
         }
         memberSrapSet.add(memberKey, projectId);
-//        System.out.println("여러번 스크랩해도 괜찮은지"+check);
-//        if (check != null && check < 1) throw new BaseException(ALREADY_SCRAP_PROJECT);
+
 
         // 프로젝트 id - 스크랩 카운트 (set 아님)
         // 프로젝트별 스크랩 수 증가 (String)

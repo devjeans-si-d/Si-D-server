@@ -134,7 +134,6 @@ public class ProjectService {
             JobField jobField = (JobField) result[0];
             Long countApply = (Long) result[1];
 
-            System.out.println("Job Field: " + jobField + ", Count: " + countApply);
         }
         return DetailProjectResponse.fromEntity(project, scrapCount, viewCount,isScrap);
     }
@@ -165,7 +164,6 @@ public class ProjectService {
             String memberKey = MEMBER_SCRAP_LIST + securityUtil.getCurrentMemberId();
             SetOperations<String, Object> setOperations = scrapRedisTemplate.opsForSet();
             Boolean isScrap = setOperations.isMember(memberKey,project.getId());
-            System.out.println("checkcheckScrap"+isScrap);
 
             ListProjectResponse listProjectResponse = ListProjectResponse.builder()
                     .id(project.getId())

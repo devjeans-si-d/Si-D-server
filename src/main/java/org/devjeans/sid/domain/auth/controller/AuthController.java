@@ -36,7 +36,6 @@ public class AuthController {
     @GetMapping("/kakao/callback")
     public ResponseEntity<?> kakaoCallback(KakaoRedirect kakaoRedirect) throws JsonProcessingException {
         KakaoProfile kakaoProfile = authService.login(kakaoRedirect);
-        System.out.println(kakaoProfile.getId());
 
 //            가입자 or 비가입자 체크해서 처리
         Member originMember = authService.getMemberByKakaoId(kakaoProfile.getId());
@@ -77,7 +76,6 @@ public class AuthController {
 
         Member originMember = authService.getMemberByKakaoId(kakaoProfile.getId());
 //        TODO: 탈퇴한 회원일 경우 처리해야함
-        System.out.println(originMember);
         if(originMember == null) {
 //           신규 회원일경우 errorResponse에 소셜id를 담아 예외를 프론트로 던지기
 //            프론트는 예외일경우 회원가입 화면으로 이동하여 회원가입 정보와 소셜id를 담아 다시 회원가입 요청

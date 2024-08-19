@@ -79,7 +79,7 @@ public class CreateProjectResponse {
                     .build();
             projectMemberDtos.add(projectMemberDto);
         }
-        System.out.println("왜 recruitmentcontents 안 나와"+project.getRecruitmentContents());
+
         return CreateProjectResponse.builder()
                 .id(project.getId())
                 .imageUrl(project.getImageUrl())
