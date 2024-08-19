@@ -56,7 +56,7 @@ public class CreateProjectRequest {
 
 
     public Project toEntity(Member member){
-        if(this.imageUrl == null) {
+        if(this.imageUrl == null || this.imageUrl.equals("") || this.imageUrl.isEmpty() || this.getImageUrl().isBlank()) {
             this.imageUrl = "https://sejeong-file.s3.ap-northeast-2.amazonaws.com/devjeans-sid/%EC%8A%A4%EB%88%84%ED%94%BC.jpg"; // TODO: 변경 필요
         }
         return Project.builder()
