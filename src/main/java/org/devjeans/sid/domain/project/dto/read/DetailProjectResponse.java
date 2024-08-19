@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.devjeans.sid.domain.chatRoom.entity.ChatRoom;
 import org.devjeans.sid.domain.member.entity.Member;
+import org.devjeans.sid.domain.project.dto.ApplicantsCountResDto;
 import org.devjeans.sid.domain.project.entity.Project;
 import org.devjeans.sid.domain.project.entity.ProjectScrap;
 import org.devjeans.sid.domain.project.entity.RecruitInfo;
@@ -54,6 +55,7 @@ public class DetailProjectResponse {
     @Builder.Default
     private List<RecruitInfoDto> recruitInfos=new ArrayList<>();
 
+    private ApplicantsCountResDto applicantsCount;
 
     @Data
     @Builder
@@ -86,7 +88,7 @@ public class DetailProjectResponse {
 
 //    private List<ChatRoomDto> chatRooms;
 
-    public static DetailProjectResponse fromEntity(Project project, Long scrapCount, Long views, boolean isScrap){
+    public static DetailProjectResponse fromEntity(Project project, Long scrapCount, Long views, boolean isScrap, ApplicantsCountResDto dto){
         List<RecruitInfo> recruitInfoList = project.getRecruitInfos();
         List<ProjectScrap> projectScrapList = project.getProjectScraps();
         List<ChatRoom> chatRoomList=project.getChatRooms();
@@ -137,6 +139,7 @@ public class DetailProjectResponse {
                 .recruitInfos(recruitInfoDtos)
                 .recruitmentContents(project.getRecruitmentContents())
                 .projectMembers(projectMemberDtos)
+                .applicantsCount(dto)
                 .build();
     }
 }

@@ -2,6 +2,7 @@ package org.devjeans.sid.domain.project.service;
 
 import org.devjeans.sid.domain.member.entity.Member;
 import org.devjeans.sid.domain.member.repository.MemberRepository;
+import org.devjeans.sid.domain.project.dto.ApplicantsCountResDto;
 import org.devjeans.sid.domain.project.dto.create.CreateProjectRequest;
 import org.devjeans.sid.domain.project.dto.read.DetailProjectResponse;
 import org.devjeans.sid.domain.project.dto.read.ListProjectResponse;
@@ -128,14 +129,18 @@ public class ProjectService {
         SetOperations<String, Object> setOperations = scrapRedisTemplate.opsForSet();
         Boolean isScrap = setOperations.isMember(memberKey,project.getId());
 
+        ApplicantsCountResDto applicantsCountResDto = new ApplicantsCountResDto();
         // jobfield별 모집자 수
         List<Object[]> results = projectApplicationRepository.countApplicationsByJobFieldAndProjectId(project.getId());
         for (Object[] result : results) {
             JobField jobField = (JobField) result[0];
             Long countApply = (Long) result[1];
-
+            if(jobField == JobField.BACKEND) applicantsCountResDto.setBackends(countApply);
+            if(jobField == JobField.FRONTEND) applicantsCountResDto.setFrontends(countApply);
+            if(jobField == JobField.APP) applicantsCountResDto.setApps(countApply);
+            if(jobField == JobField.DESIGNER) applicantsCountResDto.setDesigners(countApply);
         }
-        return DetailProjectResponse.fromEntity(project, scrapCount, viewCount,isScrap);
+        return DetailProjectResponse.fromEntity(project, scrapCount, viewCount,isScrap, applicantsCountResDto);
     }
 
     // read-list
