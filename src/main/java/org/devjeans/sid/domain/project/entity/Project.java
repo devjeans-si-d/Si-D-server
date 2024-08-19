@@ -44,6 +44,7 @@ public class Project extends BaseEntity {
     @ColumnDefault("0")
     private Long scrapCount=0L;
 
+    @Column(length = 5000)
     private String imageUrl;
 
     @ManyToOne(fetch = FetchType.LAZY)
