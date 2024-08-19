@@ -29,6 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import static org.devjeans.sid.global.exception.exceptionType.MemberExceptionType.MEMBER_NOT_FOUND;
@@ -135,10 +136,10 @@ public class ProjectService {
         for (Object[] result : results) {
             JobField jobField = (JobField) result[0];
             Long countApply = (Long) result[1];
-            if(jobField == JobField.BACKEND) applicantsCountResDto.setBackends(countApply);
-            if(jobField == JobField.FRONTEND) applicantsCountResDto.setFrontends(countApply);
-            if(jobField == JobField.APP) applicantsCountResDto.setApps(countApply);
-            if(jobField == JobField.DESIGNER) applicantsCountResDto.setDesigners(countApply);
+            if(jobField == JobField.BACKEND) applicantsCountResDto.setBACKEND(countApply);
+            if(jobField == JobField.FRONTEND) applicantsCountResDto.setFRONTEND(countApply);
+            if(jobField == JobField.APP) applicantsCountResDto.setAPP(countApply);
+            if(jobField == JobField.DESIGNER) applicantsCountResDto.setDESIGNER(countApply);
         }
         return DetailProjectResponse.fromEntity(project, scrapCount, viewCount,isScrap, applicantsCountResDto);
     }
@@ -240,5 +241,100 @@ public class ProjectService {
     public void incrementViews(Long id) {
         String key = VIEWS_KEY_PREFIX + id;
         Long views = redisTemplate.opsForValue().increment(key, 1);
+    }
+
+
+    public List<ListProjectResponse> projectListReadIsClosedN(String sorted) {
+        List<ListProjectResponse> listProjectResponses = new ArrayList<>();
+        List<Project> projectList = projectRepository.findByIsClosedAndDeletedAtIsNullOrderByCreatedAtDesc("N");
+        for (Project project : projectList) {
+            // view redis 가져오기
+            String viewKey = VIEWS_KEY_PREFIX + project.getId();
+            String views = redisTemplate.opsForValue().get(viewKey);
+            Long viewCount = (views != null) ? Long.parseLong(views) : 0L;
+
+            // scrap redis 가져오기
+            String projectKey = "project_scrap_count:" + project.getId();
+            ValueOperations<String, Object> valueOperations = scrapRedisTemplate.opsForValue();
+            Object count = valueOperations.get(projectKey);
+            Long scrapCount = count != null ? Long.valueOf(count.toString()) : 0L;
+
+            List<ListProjectResponse.RecruitInfoDto> recruitInfoDtos = new ArrayList<>();
+            for( RecruitInfo recruitInfo :project.getRecruitInfos()){
+                ListProjectResponse.RecruitInfoDto recruitInfoDto = ListProjectResponse.RecruitInfoDto.builder()
+                        .id(recruitInfo.getId())
+                        .count(recruitInfo.getCount())
+                        .jobField(recruitInfo.getJobField())
+                        .build();
+                recruitInfoDtos.add(recruitInfoDto);
+            }
+
+            ListProjectResponse listProjectResponse = ListProjectResponse.builder()
+                    .id(project.getId())
+                    .projectName(project.getProjectName())
+//                    .isScrap(isScrap)
+                    .views(viewCount)
+                    .imageUrl(project.getImageUrl())
+                    .scrapCount(scrapCount)
+                    .recruitInfos(recruitInfoDtos)
+
+                    .isClosed(project.getIsClosed())
+                    .description(project.getDescription())
+                    .deadline(project.getDeadline())
+                    .build();
+            listProjectResponses.add(listProjectResponse);
+
+        }
+        if( "views".equals(sorted)) listProjectResponses.sort(Comparator.comparing(ListProjectResponse::getViews).reversed());
+        else if("scraps".equals(sorted))    listProjectResponses.sort(Comparator.comparing(ListProjectResponse::getScrapCount).reversed());
+
+        return listProjectResponses;
+    }
+
+    public List<ListProjectResponse> projectListReadAll(String sorted) {
+        List<ListProjectResponse> listProjectResponses = new ArrayList<>();
+        List<Project> projectList = projectRepository.findByDeletedAtIsNullOrderByCreatedAtDesc();
+        for (Project project : projectList) {
+            // view redis 가져오기
+            String viewKey = VIEWS_KEY_PREFIX + project.getId();
+            String views = redisTemplate.opsForValue().get(viewKey);
+            Long viewCount = (views != null) ? Long.parseLong(views) : 0L;
+
+            // scrap redis 가져오기
+            String projectKey = "project_scrap_count:" + project.getId();
+            ValueOperations<String, Object> valueOperations = scrapRedisTemplate.opsForValue();
+            Object count = valueOperations.get(projectKey);
+            Long scrapCount = count != null ? Long.valueOf(count.toString()) : 0L;
+
+            List<ListProjectResponse.RecruitInfoDto> recruitInfoDtos = new ArrayList<>();
+            for( RecruitInfo recruitInfo :project.getRecruitInfos()){
+                ListProjectResponse.RecruitInfoDto recruitInfoDto = ListProjectResponse.RecruitInfoDto.builder()
+                        .id(recruitInfo.getId())
+                        .count(recruitInfo.getCount())
+                        .jobField(recruitInfo.getJobField())
+                        .build();
+                recruitInfoDtos.add(recruitInfoDto);
+            }
+
+            ListProjectResponse listProjectResponse = ListProjectResponse.builder()
+                    .id(project.getId())
+                    .projectName(project.getProjectName())
+//                    .isScrap(isScrap)
+                    .views(viewCount)
+                    .recruitInfos(recruitInfoDtos)
+                    .imageUrl(project.getImageUrl())
+                    .scrapCount(scrapCount)
+                    .isClosed(project.getIsClosed())
+
+                    .description(project.getDescription())
+                    .deadline(project.getDeadline())
+                    .build();
+            listProjectResponses.add(listProjectResponse);
+
+        }
+        if( "views".equals(sorted)) listProjectResponses.sort(Comparator.comparing(ListProjectResponse::getViews).reversed());
+        else if("scraps".equals(sorted))    listProjectResponses.sort(Comparator.comparing(ListProjectResponse::getScrapCount).reversed());
+
+        return listProjectResponses;
     }
 }

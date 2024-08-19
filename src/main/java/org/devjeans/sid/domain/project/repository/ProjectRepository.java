@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+import java.util.List;
 
 import java.util.Optional;
 
@@ -25,9 +26,11 @@ public interface ProjectRepository extends JpaRepository<Project,Long> {
 
     // isclosed=n, deletedat!=null, orderby updatedAt
     Page<Project> findByIsClosedAndDeletedAtIsNullOrderByUpdatedAtDesc(Pageable pageable,String isClosed);
+    List<Project> findByIsClosedAndDeletedAtIsNullOrderByCreatedAtDesc(String isClosed);
+    List<Project> findByDeletedAtIsNullOrderByCreatedAtDesc();
 
     //deletedat!=null, orderby updatedAt
-    Page<Project> findByDeletedAtIsNullOrderByUpdatedAtDesc(Pageable pageable);
+//    Page<Project> findByDeletedAtIsNullOrderByAtDesc(Pageable pageable);
 
     // 삭제되지 않고 마감되지 않은 Project 중 조회수 수 내림차순 정렬
     @Query("SELECT p FROM Project p " +
