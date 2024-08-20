@@ -38,9 +38,16 @@ public interface ProjectMemberRepository extends JpaRepository<ProjectMember,Lon
     List<ProjectMember> findAllMyTeamProjects(Pageable pageable, @Param("memberId") Long memberId);
 
 
-    @Query("SELECT pm.member " +
-            "FROM ProjectMember pm " +
-            "GROUP BY pm.member " +
-            "ORDER BY COUNT(pm.member.id) DESC")
+//    @Query("SELECT pm.member " +
+//            "FROM ProjectMember pm " +
+//            "GROUP BY pm.member " +
+//            "ORDER BY COUNT(pm.member.id) DESC")
+//    Page<Member> findMembersOrderByProjectCountDesc(Pageable pageable);
+
+    @Query("SELECT m " +
+            "FROM Member m " +
+            "LEFT JOIN ProjectMember pm ON m.id = pm.member.id " +
+            "GROUP BY m " +
+            "ORDER BY COUNT(pm.id) DESC")
     Page<Member> findMembersOrderByProjectCountDesc(Pageable pageable);
 }
