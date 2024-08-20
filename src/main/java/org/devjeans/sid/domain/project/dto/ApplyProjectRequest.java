@@ -19,6 +19,7 @@ public class ApplyProjectRequest {
     public static ProjectApplication toEntity(Project project, Member member, ApplyProjectRequest applyProjectRequest) {
         return ProjectApplication.builder()
                 .project(project)
+                .content(applyProjectRequest.getContent())
                 .member(member)
                 .jobField(applyProjectRequest.getJobField())
                 .isAccepted(false)
