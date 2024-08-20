@@ -14,7 +14,7 @@ import javax.persistence.Enumerated;
 @AllArgsConstructor
 @Builder
 public class LaunchedProjectTechStackResponse {
-
+    private Long id;
     @Enumerated(EnumType.STRING)
     private String jobField; // 직무 명
 
