@@ -63,6 +63,10 @@ PM(Leader)에게 1:1 채팅으로 문의
 프로젝트 모집이 마감되면, PM과 승인된 모든 지원자에게 알림이 발송됩니다.
 ![모두에게 알림](https://github.com/user-attachments/assets/83e24f47-6e11-4b7c-9278-665bb57b4c79)
 
+채팅 알림
+![채팅알림](https://github.com/user-attachments/assets/9c5f7e0b-365f-4a2c-b392-c2bfb1a09815)
+
+
 
 
 ### 완성된 프로젝트 등록 및 사용
