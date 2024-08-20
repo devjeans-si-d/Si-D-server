@@ -37,30 +37,32 @@ chore: 코드 수정, 내부 파일 수정
 ### 두번째 플로우 (임시 제목입니다)
 
 프로젝트 모집 글 등록
-![모집글 등록](https://github.com/user-attachments/assets/c33bfbf5-0730-4c1d-bf17-4eb37f99a319)
+![프로젝트 모집글 등록](https://github.com/user-attachments/assets/e305596d-8a89-414d-b692-a71d7740d97f)
+
 
 PM(Leader)에게 1:1 채팅으로 문의
-![채팅문의](https://github.com/user-attachments/assets/9484094f-1c64-4fc4-9f2d-369f9d22f84f)
+![PM에게 문의](https://github.com/user-attachments/assets/936f2008-02ad-40c2-a867-7243d094291d)
 
-채팅방
-![채팅 답장](https://github.com/user-attachments/assets/76eb6f8d-5c17-45dd-90ac-ff6b147c65f3)
+
+채팅방에서 채팅 답장하기
+![PM이 답변](https://github.com/user-attachments/assets/042b9572-1b17-41d3-9b1b-9c18edccace4)
 
 프로젝트 지원하기
-![프로젝트 지원하기](https://github.com/user-attachments/assets/d027bb8e-7c77-4df0-a7af-33e0ea883310)
-
-내 지원 목록 보기
-![내 지원목록](https://github.com/user-attachments/assets/789fe57e-7289-4458-92e1-f01f49019624)
+![프로젝트 지원하기](https://github.com/user-attachments/assets/d87b0293-8dc2-4ddc-9e2b-795ead582063)
 
 지원자 승인하기
-![지원자 승인](https://github.com/user-attachments/assets/c724df0c-a7e7-4015-90d7-b1c5aa444f60)
+![승인하기](https://github.com/user-attachments/assets/be2eb0e1-3bd3-4db4-8cfc-c78eeee285f5)
+
 
 프로젝트 모집 마감하기
 모집 마감 기간에 자동으로 마감되지만, 수동으로 조기마감이 가능합니다!
-![프로젝트 모집 마감하기](https://github.com/user-attachments/assets/b8179bdc-f226-401f-96f8-ac8318445bae)
+![프로젝트 수동마감](https://github.com/user-attachments/assets/80c963da-5794-4c1f-889a-16a3e6cd3675)
+
 
 마감 알림
 프로젝트 모집이 마감되면, PM과 승인된 모든 지원자에게 알림이 발송됩니다.
-![팀원 전체에게 알림발송](https://github.com/user-attachments/assets/07737a10-da77-48da-b1bd-a538cfed1a9d)
+![모두에게 알림](https://github.com/user-attachments/assets/83e24f47-6e11-4b7c-9278-665bb57b4c79)
+
 
 
 ### 완성된 프로젝트 등록 및 사용
