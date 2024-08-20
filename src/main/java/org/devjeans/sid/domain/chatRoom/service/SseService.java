@@ -103,6 +103,7 @@ public class SseService {
                 String msg = "\r\n 이름: " + member.getMember().getName() + " / 전화번호: " + member.getMember().getPhoneNumber() + "\r\n";
                 content.append(msg);
             }
+            content.append("\r\n멋진 동료들과 좋은 서비스를 만드는 경험이 되기를 바랄게요!");
         } else {
             content = new StringBuilder("내가 속해 있는 " + sseTeamBuildResponse.getProjectName() + " 프로젝트의 모집이 종료되었어요.\r\n" +
                     "멋진 동료들과 좋은 서비스를 만드는 경험이 되기를 바랄게요!");
