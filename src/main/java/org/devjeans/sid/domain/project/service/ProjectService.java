@@ -1,5 +1,7 @@
 package org.devjeans.sid.domain.project.service;
 
+import org.devjeans.sid.domain.chatRoom.dto.sse.SseTeamBuildResponse;
+import org.devjeans.sid.domain.chatRoom.service.SseService;
 import org.devjeans.sid.domain.member.entity.Member;
 import org.devjeans.sid.domain.member.repository.MemberRepository;
 import org.devjeans.sid.domain.project.dto.ApplicantsCountResDto;
@@ -48,6 +50,8 @@ public class ProjectService {
     private final RedisTemplate<String, String> redisTemplate;
     private final RedisTemplate<String, Object> scrapRedisTemplate;
 
+    private final SseService sseService;
+
     private final SecurityUtil securityUtil;
     private final ProjectScrapRepository projectScrapRepository;
     private static final String VIEWS_KEY_PREFIX = "project_views:";
@@ -56,7 +60,16 @@ public class ProjectService {
 
 
     @Autowired
-    public ProjectService(@Qualifier("scrapRedisTemplate") RedisTemplate<String, Object> scrapRedisTemplate, ProjectRepository projectRepository, ProjectApplicationRepository projectApplicationRepository, MemberRepository memberRepository, ProjectMemberRepository projectMemberRepository, RecruitInfoRepository recruitInfoRepository, @Qualifier("viewRedisTemplate") RedisTemplate<String, String> redisTemplate, SecurityUtil securityUtil, ProjectScrapRepository projectScrapRepository) {
+    public ProjectService(@Qualifier("scrapRedisTemplate") RedisTemplate<String, Object> scrapRedisTemplate,
+                          ProjectRepository projectRepository,
+                          ProjectApplicationRepository projectApplicationRepository,
+                          MemberRepository memberRepository,
+                          ProjectMemberRepository projectMemberRepository,
+                          RecruitInfoRepository recruitInfoRepository,
+                          @Qualifier("viewRedisTemplate") RedisTemplate<String, String> redisTemplate,
+                          SecurityUtil securityUtil,
+                          ProjectScrapRepository projectScrapRepository,
+                          SseService sseService) {
         this.projectRepository = projectRepository;
         this.projectApplicationRepository = projectApplicationRepository;
         this.memberRepository = memberRepository;
@@ -67,12 +80,24 @@ public class ProjectService {
 
         this.securityUtil = securityUtil;
         this.projectScrapRepository = projectScrapRepository;
+        this.sseService = sseService;
     }
 
-    public String updateisClosed(Long id){
+    public String updateIsClosed(Long id){
         Project project = projectRepository.findById(id).orElseThrow(() -> new BaseException(PROJECT_NOT_FOUND));
-        if(project.getIsClosed().equals("N")) project.setIsClosed("Y");
-        else throw new BaseException(PROJECT_ALREADY_CLOSED);
+        if(project.getIsClosed().equals("N")) {
+            project.setIsClosed("Y");
+        } else {
+            throw new BaseException(PROJECT_ALREADY_CLOSED);
+        }
+
+        //== SSE ==//
+        List<ProjectMember> projectMembers = project.getProjectMembers();
+        for (ProjectMember projectMember : projectMembers) {
+            SseTeamBuildResponse sseTeamBuildResponse = new SseTeamBuildResponse(project.getId(), project.getProjectName(), project.getPm().getId());
+            sseService.sendTeamBuild(projectMember.getMember().getId(), sseTeamBuildResponse, projectMembers);
+        }
+
         return "project 마감 여부 :" + project.getIsClosed();
     }
 

@@ -61,7 +61,7 @@ public class ProjectController {
 
     @PatchMapping("/api/project/{id}/deadline")
     public String projectIsClosed(@PathVariable Long id){
-        return projectService.updateisClosed(id);
+        return projectService.updateIsClosed(id);
     }
 
     // project delete
