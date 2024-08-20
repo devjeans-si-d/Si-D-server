@@ -74,4 +74,6 @@ PM(Leader)에게 1:1 채팅으로 문의
 
 - 완성된 프로젝트 상세 페이지에서 사이더 카드로 이동
 완성된 프로젝트 상세 페이지에서 팀원 클릭 시 해당 팀원의 사이더 카드로 이동됩니다.
-![사이더카드 이동](https://github.com/user-attachments/assets/488678ec-b868-436f-bf96-2758b0dce907)
+
+![사이더카드 이동 (1)](https://github.com/user-attachments/assets/6b8a8a2f-7981-46ef-87a2-f7e474e468c5)
+
