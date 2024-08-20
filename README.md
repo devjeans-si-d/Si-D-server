@@ -72,7 +72,7 @@ Designer와 Developer를 이어주는 사이드(Side) 프로젝트 플랫폼
 </table>
 
 <h2>요구사항 정리</h2>
-<img width="384" alt="image" align="center" src="https://github.com/user-attachments/assets/34200ec2-9e57-42f6-91cb-defa0d8fd368">
+[요구사항 정리](https://www.notion.so/01f6e9a772864d789a2aa5f35798e92b?v=8288992a047b499f853c24bfc5f2c1cd&pvs=4)
 
 <h2>ERD</h2>
 <img alt="ERD" align="center" src="https://cdn.discordapp.com/attachments/1254677623242493975/1275450348819189860/2024-08-20_9.14.53.png?ex=66c5ef33&is=66c49db3&hm=15effec0a39ab3bc0c10894372e3646bf8de8e7b93962ac657719680a6e8d0ad&">
@@ -80,7 +80,8 @@ Designer와 Developer를 이어주는 사이드(Side) 프로젝트 플랫폼
 <h2>Wire Frame</h2>
 
 <h2>이슈 관리</h2>
-<img width="503" alt="image" align="center" src="https://github.com/user-attachments/assets/31e34689-1604-4c61-a41c-96df70826b84">
+[이슈 관리](https://www.notion.so/af1a856a1abc4164a9efece3bf72cc57?v=8e30938bc7664893bed667c194fde673)
+
 
 ## 기술스택
 ### ✔️Frond-end
