@@ -165,15 +165,9 @@ public class ProjectService {
     }
 
     // read-list
-    // Todo page 적용 & deletedAt==null 인 것만 조회
     public Page<ListProjectResponse> projectReadAll(Pageable pageable) {
         List<ListProjectResponse> listProjectResponses = new ArrayList<>();
-//        Page<Project> projectList = projectRepository.findAll(pageable);
         Page<Project> projectList = projectRepository.findByIsClosedAndDeletedAtIsNullOrderByUpdatedAtDesc(pageable, "N");
-//        Page<Project> projectList = projectRepository.findByDeletedAtIsNullOrderByUpdatedAtDesc(pageable);
-//        List<Project> projectList = projectRepository.findByIsClosedAndDeletedAtIsNullOrderUpdatedAtDesc("N");
-        //Todo isClosed=N, deletedAt is null, orderby updatedAt repository 구현
-//        Page<Project> projectList = projectRepository.findActiveNotDeletedProjectsOrderByUpdatedAt(pageable,"N");
         for (Project project : projectList) {
             // view redis 가져오기
             String viewKey = VIEWS_KEY_PREFIX + project.getId();
@@ -186,15 +180,10 @@ public class ProjectService {
             Object count = valueOperations.get(projectKey);
             Long scrapCount = count != null ? Long.valueOf(count.toString()) : 0L;
 
-            // member scrap 체크
-            String memberKey = MEMBER_SCRAP_LIST + securityUtil.getCurrentMemberId();
-            SetOperations<String, Object> setOperations = scrapRedisTemplate.opsForSet();
-            Boolean isScrap = setOperations.isMember(memberKey,project.getId());
 
             ListProjectResponse listProjectResponse = ListProjectResponse.builder()
                     .id(project.getId())
                     .projectName(project.getProjectName())
-//                    .isScrap(isScrap)
                     .views(viewCount)
                     .imageUrl(project.getImageUrl())
                     .scrapCount(scrapCount)

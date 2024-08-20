@@ -27,7 +27,18 @@ public class SecurityConfigs {
                 .cors().and() //CORS활성화 다른 도메인에서 서버로 호출하는 것을 금지
                 .httpBasic().disable() // 관례적으로 들어감
                 .authorizeRequests()
-                .antMatchers("/","/api/auth/register","https://kauth.kakao.com/oauth/authorize","/api/auth/kakao/callback", "/api/auth/login", "/chat/**")
+                .antMatchers("/",
+                        "/api/auth/register",
+                        "https://kauth.kakao.com/oauth/authorize",
+                        "/api/auth/kakao/callback",
+                        "/api/auth/login",
+                        "/chat/**",
+                        "/api/launched-project/list",
+                        "/api/main/top-launched-project",
+                        "/api/main/top-sider-card",
+                        "/api/main/top-project",
+                        "/api/project/listAll",
+                        "/api/sider-card/list")
                 .permitAll()
                 .anyRequest().authenticated()
                 .and()
