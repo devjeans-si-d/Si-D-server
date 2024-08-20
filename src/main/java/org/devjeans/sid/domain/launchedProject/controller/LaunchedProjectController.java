@@ -95,12 +95,10 @@ public class LaunchedProjectController {
 
     // Launched-Project의 전체 리스트(페이지) 조회
     @GetMapping("/list")
-    public ResponseEntity<Page<ListLaunchedProjectResponse>> getList(
-            @RequestParam(defaultValue = "recent") String sorted,
-            @PageableDefault(size=12, sort ="createdAt", direction = Sort.Direction.DESC) Pageable pageable
-    ) {
+    public ResponseEntity<List<ListLaunchedProjectResponse>> getList(
+            @RequestParam(defaultValue = "recent") String sorted) {
 
-        Page<ListLaunchedProjectResponse> launchedProjectList = launchedProjectService.getList(sorted, pageable);
+        List<ListLaunchedProjectResponse> launchedProjectList = launchedProjectService.getList(sorted);
         return ResponseEntity.ok(launchedProjectList);
     }
 
