@@ -111,11 +111,6 @@ public class ProjectService {
         ProjectMember pmToAddProjectMember = ProjectMember.builder().member(pm).jobField(JobField.PM).project(project).build();
         project.getProjectMembers().add(pmToAddProjectMember);
 
-        for (CreateProjectRequest.ProjectMemberCreateRequest inputMember : dto.getProjectMembers()) {
-            Member memberInput = memberRepository.findById(inputMember.getMemberId()).orElseThrow(() -> new BaseException(MEMBER_NOT_FOUND));
-            ProjectMember projectMember = ProjectMember.builder().member(memberInput).project(project).jobField(inputMember.getJobField()).build();
-            project.getProjectMembers().add(projectMember);
-        }
 
         for (CreateProjectRequest.RecruitInfoCreateRequest recruitInfoInput : dto.getRecruitInfos()) {
             // jobfield, count, project
@@ -220,17 +215,6 @@ public class ProjectService {
         // Todo : dto랑 실제 고치려는 프로젝트랑 체크해서 다르면 error 날려야하는데 아직 unique값이 없어서 나중에 처리
 
         Project project = projectRepository.findById(projectId).orElseThrow(() -> new BaseException(PROJECT_NOT_FOUND)); //Todo : 에러 처리 컨벤션 적용
-        List<ProjectMember> toDelete = project.getProjectMembers();
-        for (ProjectMember member : toDelete) {
-            projectMemberRepository.delete(member);
-        }
-        List<ProjectMember> toUpdateProjectMember = new ArrayList<>();
-        for (UpdateProjectRequest.ProjectMemberUpdateRequest inputMember : dto.getProjectMembers()) {
-            Member memberInput = memberRepository.findById(inputMember.getMemberId()).orElseThrow(() -> new BaseException(MEMBER_NOT_FOUND));
-            ProjectMember projectMember = ProjectMember.builder().member(memberInput).project(project).jobField(inputMember.getJobField()).build();
-            toUpdateProjectMember.add(projectMember);
-        }
-        project.setProjectMembers(toUpdateProjectMember);
 
         List<RecruitInfo> toDeleteRecruit = project.getRecruitInfos();
         for (RecruitInfo recruitInfo : toDeleteRecruit) recruitInfoRepository.delete(recruitInfo);

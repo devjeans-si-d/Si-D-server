@@ -118,9 +118,7 @@ public class LaunchedProjectService {
         // dto에서 받은 projectId(Long)로 project 객체 찾음
         Project project = projectRepository.findByIdOrThrow(dto.getProjectId());
 
-        // 우선 기존 프로젝트 멤버를 모두 delete 해준다.
-        List<ProjectMember> projectMembers = project.getProjectMembers();
-        projectMemberRepository.deleteAll(projectMembers); // deleteAll -> 벌크성 쿼리를 줄여줌
+
 
 
         Path imagePath = null;
@@ -145,16 +143,6 @@ public class LaunchedProjectService {
             launchedProject.getLaunchedProjectTechStacks().add(launchedProjectTechStack);
         }
 
-
-        // memberDto를 ProjectMember로 변환
-        List<LaunchedProjectMemberRequest> memberDtos = dto.getMembers();
-        List<ProjectMember> newMembers = memberDtos.stream().map(memberDto -> {
-            Member member = memberRepository.findByIdOrThrow(memberDto.getId());
-
-            return LaunchedProjectMemberRequest.toEntity(memberDto, member, project);
-        }).collect(Collectors.toList());
-
-        launchedProject.getProject().updateNewProjectMembers(newMembers); // project에 갈아 끼워주기
         return launchedProjectRepository.save(launchedProject);
     }
 
