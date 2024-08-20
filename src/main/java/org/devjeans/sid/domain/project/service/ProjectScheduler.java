@@ -73,11 +73,11 @@ public class ProjectScheduler {
 
                 //== SSE ==//
                 List<ProjectMember> projectMembers = p.getProjectMembers();
-                log.info("line 76: {}", projectMembers.size());
+//                log.info("line 76: {}", projectMembers.size());
                 for (ProjectMember projectMember : projectMembers) {
-                    log.info("SSE 전송: projectMember: {}", projectMember.getId());
+//                    log.info("SSE 전송: projectMember: {}", projectMember.getId());
                     SseTeamBuildResponse sseTeamBuildResponse = new SseTeamBuildResponse(p.getId(), p.getProjectName(), p.getPm().getId());
-                    sseService.sendTeamBuild(projectMember.getMember().getId(), sseTeamBuildResponse);
+                    sseService.sendTeamBuild(projectMember.getMember().getId(), sseTeamBuildResponse, projectMembers);
                 }
 
             }

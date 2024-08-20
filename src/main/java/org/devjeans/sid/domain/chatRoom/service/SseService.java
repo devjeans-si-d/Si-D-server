@@ -11,6 +11,7 @@ import org.devjeans.sid.domain.chatRoom.dto.sse.SseTeamBuildResponse;
 import org.devjeans.sid.domain.chatRoom.entity.Alert;
 import org.devjeans.sid.domain.chatRoom.entity.AlertType;
 import org.devjeans.sid.domain.chatRoom.repository.AlertRepository;
+import org.devjeans.sid.domain.project.entity.ProjectMember;
 import org.devjeans.sid.global.exception.BaseException;
 import org.devjeans.sid.global.util.SecurityUtil;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -83,23 +85,32 @@ public class SseService {
 
     // 프로젝트가 마감됐을때 모든 팀원들에게 알림 TODO: 어디서 마감되는지 물어봐야겠다.
     // type: team
-    public void sendTeamBuild(Long memberId, SseTeamBuildResponse sseTeamBuildResponse) {
+    public void sendTeamBuild(Long memberId, SseTeamBuildResponse sseTeamBuildResponse, List<ProjectMember> projectMemberList) {
         SseEmitter emitter = clients.get(memberId);
         NotificationResponse noti = new NotificationResponse("team", sseTeamBuildResponse, LocalDateTime.now());
 
         // 알림을 DB에 저장하기
-        String content;
+        StringBuilder content;
         if(sseTeamBuildResponse.getPmId().equals(memberId)) {
-            content = "내가 PM(Leader)인 " + sseTeamBuildResponse.getProjectName() + " 프로젝트의 모집이 종료되었어요. " +
-                    "수신 메일함을 확인하여 팀원들에게 연락을 취해보세요!";
+            content = new StringBuilder("내가 PM(Leader)인 " + sseTeamBuildResponse.getProjectName() + " 프로젝트의 모집이 종료되었어요. \r\n");
+            content.append("\r\n팀원 정보: \r\n");
+
+            for (ProjectMember member : projectMemberList) {
+                if(member.getMember().getId().equals(memberId)) {
+                    continue;
+                }
+
+                String msg = "\r\n 이름: " + member.getMember().getName() + " / 전화번호: " + member.getMember().getPhoneNumber() + "\r\n";
+                content.append(msg);
+            }
         } else {
-            content = "내가 속해 있는 " + sseTeamBuildResponse.getProjectName() + " 프로젝트의 모집이 종료되었어요." +
-                    " 멋진 동료들과 좋은 서비스를 만드는 경험이 되기를 바랄게요!";
+            content = new StringBuilder("내가 속해 있는 " + sseTeamBuildResponse.getProjectName() + " 프로젝트의 모집이 종료되었어요.\r\n" +
+                    "멋진 동료들과 좋은 서비스를 만드는 경험이 되기를 바랄게요!");
         }
 
         Alert alert = Alert.builder()
                 .title("프로젝트 모집 종료!")
-                .content(content)
+                .content(content.toString())
                 .alertType(AlertType.TEAM)
                 .isRead("N")
                 .memberId(memberId)
