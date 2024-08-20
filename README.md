@@ -63,4 +63,15 @@ PM(Leader)에게 1:1 채팅으로 문의
 ![팀원 전체에게 알림발송](https://github.com/user-attachments/assets/07737a10-da77-48da-b1bd-a538cfed1a9d)
 
 
+### 완성된 프로젝트 등록 및 사용
 
+- 완성된 프로젝트 등록하기
+프로젝트 관리 페이지에서 내가 리더(PM)로 참여한 프로젝트에서 'LAUNCHED-PROJECT로 등록' 버튼 클릭하고 내용을 입력합니다.
+![런칭프로젝트 등록](https://github.com/user-attachments/assets/0815e787-bc3a-4478-9656-f16e12ccc026)
+
+- 완성된 프로젝트에 사이다🍾 누르기
+![사이다 누르기](https://github.com/user-attachments/assets/2109b5f8-043a-4967-98f1-6771166da3cb)
+
+- 완성된 프로젝트 상세 페이지에서 사이더 카드로 이동
+완성된 프로젝트 상세 페이지에서 팀원 클릭 시 해당 팀원의 사이더 카드로 이동됩니다.
+![사이더카드 이동](https://github.com/user-attachments/assets/488678ec-b868-436f-bf96-2758b0dce907)
