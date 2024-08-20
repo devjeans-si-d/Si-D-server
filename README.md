@@ -31,3 +31,8 @@ refactor: 리팩토링 작업
 test: 테스트 코드 추가, 테스트 코드 리팩토링
 chore: 코드 수정, 내부 파일 수정
 ```
+
+## 기능
+
+![모집글 등록](https://github.com/user-attachments/assets/c33bfbf5-0730-4c1d-bf17-4eb37f99a319)
+
