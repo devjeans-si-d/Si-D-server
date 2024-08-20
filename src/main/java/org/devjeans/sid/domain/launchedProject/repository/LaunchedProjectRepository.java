@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.devjeans.sid.global.exception.exceptionType.LaunchedProjectExceptionType.LAUNCHED_PROJECT_NOT_FOUND;
@@ -35,7 +36,10 @@ public interface LaunchedProjectRepository extends JpaRepository<LaunchedProject
         @Query("SELECT lp FROM LaunchedProject lp WHERE lp.deletedAt IS NULL ORDER BY lp.views DESC")
         Page<LaunchedProject> findTopLaunchedProjects(Pageable pageable);
 
-        // 삭제되지 않은 Launched-Project 불러오기
+        // 삭제되지 않은 Launched-Project 페이지 불러오기
         Page<LaunchedProject> findByDeletedAtIsNull(Pageable pageable);
+
+        // 삭제되지 않은 Launched-Project 리스트 불러오기
+        List<LaunchedProject> findByDeletedAtIsNullOrderByCreatedAtDesc();
 
 }
