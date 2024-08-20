@@ -22,7 +22,7 @@ import java.util.List;
 public class ChatController {
     private final ChatService chatService;
     @GetMapping("/list")
-    public ResponseEntity<Page<ChatRoomSimpleResponse>> getChatRoomList(@PageableDefault(size = 5) Pageable pageable) {
+    public ResponseEntity<Page<ChatRoomSimpleResponse>> getChatRoomList(@PageableDefault(size = 300) Pageable pageable) {
         Page<ChatRoomSimpleResponse> chatRoomList = chatService.getChatRoomList(pageable);
 
         return new ResponseEntity<>(chatRoomList, HttpStatus.OK);

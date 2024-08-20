@@ -17,6 +17,8 @@ import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+
 import static org.devjeans.sid.global.exception.exceptionType.ChatExceptionType.NO_RECEIVER;
 
 @Slf4j
@@ -36,6 +38,7 @@ public class WebSocketService {
     public void sendMessage(Long chatRoomId, Long memberId, ChatMessageRequest chatMessageRequest) {
         // chat room 찾기
         ChatRoom chatRoom = chatRoomRepository.findByIdOrThrow(chatRoomId);
+        chatRoom.updateRecentChatTime(LocalDateTime.now());
         boolean isRead = false;
 
         // TODO: 인증 구현 후, 상대방 찾기 => findReceiverMemberId

@@ -100,7 +100,8 @@ public class ChatService {
         // 이미 채팅방이 있지 않은지 검증 => 프로젝트 아이디와 스타터 아이디가 동일한게 존재하면 Exception
         Optional<ChatRoom> findChatRoom = chatRoomRepository.findByStarterMemberIdAndProject(createChatRoomRequest.getChatStarterMemberId(), project);
         if(findChatRoom.isPresent()) {
-            throw new BaseException(CHATROOM_ALREADY_EXIST);
+//            throw new BaseException(CHATROOM_ALREADY_EXIST);
+            return CreateChatRoomResponse.fromEntity(findChatRoom.get());
         }
 
         // chatroom 만들기

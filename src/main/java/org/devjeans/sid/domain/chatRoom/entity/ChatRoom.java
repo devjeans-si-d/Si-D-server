@@ -5,6 +5,7 @@ import org.devjeans.sid.domain.common.BaseEntity;
 import org.devjeans.sid.domain.project.entity.Project;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,7 +32,13 @@ public class ChatRoom extends BaseEntity {
     @OneToMany(mappedBy = "chatRoom", cascade = CascadeType.ALL)
     private List<ChatMessage> chatMessages = new ArrayList<>();
 
+    private LocalDateTime recentChatTime;
+
     public void setChatParticipants(List<ChatParticipant> list) {
         this.chatParticipants = list;
+    }
+
+    public void updateRecentChatTime(LocalDateTime now) {
+        this.recentChatTime = now;
     }
 }

@@ -5,6 +5,7 @@ import org.devjeans.sid.domain.chatRoom.entity.ChatParticipant;
 import org.devjeans.sid.domain.chatRoom.entity.ChatRoom;
 import org.devjeans.sid.domain.project.entity.Project;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +25,7 @@ public class CreateChatRoomRequest {
         return ChatRoom.builder()
                 .starterMemberId(createChatRoomRequest.chatStarterMemberId)
                 .project(project)
+                .recentChatTime(LocalDateTime.now())
                 .build();
     }
 }
