@@ -65,7 +65,7 @@ chore: 코드 수정, 내부 파일 수정
 
 ## Si-D🍾 소개합니다 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/17ea70cd-77cb-4eb4-a6b0-16b2f4853ed0" alt="로고" width="300" />
+  <img src="https://github.com/user-attachments/assets/17ea70cd-77cb-4eb4-a6b0-16b2f4853ed0" alt="로고" width="400" />
 </p>
 
 
