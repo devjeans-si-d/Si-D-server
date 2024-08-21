@@ -32,9 +32,38 @@ test: 테스트 코드 추가, 테스트 코드 리팩토링
 chore: 코드 수정, 내부 파일 수정
 ```
 
-## 프로젝트 소개
 
-<h2> Si-D🍾 소개합니다!</h2>
+## 목차
+
+1. [주요기능](#주요-기능)
+
+2. [프로젝트 소개: Si-D란?](#si-d-소개합니다)
+
+3. [요구사항정의](#요구사항정의)
+
+4. [ERD](#erd)
+
+5. [기술스택](#기술스택)
+
+6. [협업관리](#️-협업-관리)
+
+7. [기능 및 시연영상](#기능)
+
+## 주요 기능
+
+1. [소셜로그인, 회원정보 입력](#-회원가입--카카오-소셜로그인-si-der-card-등록)
+
+2. [Team-Building: 프로젝트 모집](#-프로젝트-모집team-building)
+
+    -[프로젝트 지원](#-프로젝트-모집공고-지원-팀원)
+
+    -[프로젝트 관리](#-프로젝트-관리-pm)
+
+3. [Launched-Project: 완성된 프로젝트 자랑하기](#-완성된-프로젝트-등록-launched-project)
+
+
+
+## Si-D🍾 소개합니다 
 <h3> Si-D란?</h3>
 Designer와 Developer를 이어주는 사이드(Side) 프로젝트 플랫폼
 
@@ -42,7 +71,6 @@ Designer와 Developer를 이어주는 사이드(Side) 프로젝트 플랫폼
 
 자신이 원하는 주제를 선택하여 프로젝트를 모집하거나 지원하여 다양한 프로젝트로 포트폴리오를 채워나갈 수 있는 서비스를 제공하고자 합니다.
 
-<h2>주요 기능</h2>
 
 <table>
   <thead>
@@ -71,18 +99,16 @@ Designer와 Developer를 이어주는 사이드(Side) 프로젝트 플랫폼
   </tbody>
 </table>
 
-## 요구사항 정리
-[요구사항 정리](https://www.notion.so/01f6e9a772864d789a2aa5f35798e92b?v=8288992a047b499f853c24bfc5f2c1cd&pvs=4)
+## 요구사항정의
+[요구사항 정의 보기](https://www.notion.so/af1a856a1abc4164a9efece3bf72cc57?v=8e30938bc7664893bed667c194fde673&pvs=4)
 
 ## ERD
-<img alt="ERD" align="center" src="https://cdn.discordapp.com/attachments/1254677623242493975/1275450348819189860/2024-08-20_9.14.53.png?ex=66c5ef33&is=66c49db3&hm=15effec0a39ab3bc0c10894372e3646bf8de8e7b93962ac657719680a6e8d0ad&">
+<img alt="ERD" src="https://cdn.discordapp.com/attachments/1254677623242493975/1275450348819189860/2024-08-20_9.14.53.png?ex=66c5ef33&is=66c49db3&hm=15effec0a39ab3bc0c10894372e3646bf8de8e7b93962ac657719680a6e8d0ad&">
 
-<h2>Wire Frame</h2>
+<!-- <h2>Wire Frame</h2> -->
 
 ## 이슈 관리
-[이슈 관리](https://www.notion.so/af1a856a1abc4164a9efece3bf72cc57?v=8e30938bc7664893bed667c194fde673)
-
-
+[이슈 관리 보기](https://www.notion.so/01f6e9a772864d789a2aa5f35798e92b?v=8288992a047b499f853c24bfc5f2c1cd&pvs=4)
 ## 기술스택
 ### ✔️Frond-end
 <img src="https://img.shields.io/badge/Vue.js-4FC08D?style=for-the-badge&logo=Vue.js&logoColor=white" ><img src="https://img.shields.io/badge/Vuetify-1867C0?style=for-the-badge&logo=vuetify&logoColor=#1867C0" ><img src="https://img.shields.io/badge/javascript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black" >
@@ -95,74 +121,99 @@ Designer와 Developer를 이어주는 사이드(Side) 프로젝트 플랫폼
 
 ## 기능
 
-<details>
-<summary> <h3> 📍 회원가입 : OAuth 카카오 소셜로그인, 회원 프로필 (Si-der Card)</h3> </summary>
-
+ ### 📍 회원가입 : 카카오 소셜로그인, Si-der Card 등록
 
 - OAuth 카카오 소셜로그인으로 회원가입 구현
-![카카오 로그인 - 편집본](https://github.com/user-attachments/assets/bfba76fa-7dbd-4994-9263-a2c1aa1d070b)
-
 - 회원가입 후 SiderCard(프로필) 업데이트 가능
-    
     - 프로필 사진, 직무, 자기소개, 재직정보, 사용가능 기술스택 선택가능
-    - 이후 프로젝트 참여 시 참여했던 프로젝트 정보(Launched Project) 까지 자동으로 추가됨
-  ![사이더카드 사진,직무,자기소개-편집본](https://github.com/user-attachments/assets/4efb262a-3fe8-4b86-ac0e-f3842a9f6cd5)
-![사이더카드 소셜,재직정보, 사용기술-편집본](https://github.com/user-attachments/assets/0dd03d3e-652a-4eb5-89a7-db942ee49e2c)
-
+    - 이후 프로젝트 참여 시 참여했던 프로젝트 정보(Launched Project) 까지 자동으로 추가됨 
 - 다른 회원들의 SiderCard 조회 가능하다
 - 해당 회원이 진행한 프로젝트도 조회 가능하다.
-![사이더카드 목록 조회 - 편집본](https://github.com/user-attachments/assets/ab16cace-8ab2-4240-b034-ff361166b2a6)
 
-</details>
+    <details>
+    <summary>카카오 로그인 시연영상</summary>
+	![카카오 로그인 - 편집본](https://github.com/user-attachments/assets/908c8b20-f9c5-4ad1-85f2-fe4114091cb0)
 
-<details>
-<summary><h3>📍 프로젝트 모집(Team-Building)</h3></summary>
+    </details>
+
+    <details>
+    <summary>사이더 카드 등록 시연영상</summary>
+	![사이더카드 사진,직무,자기소개-편집본](https://github.com/user-attachments/assets/2a5ef3ef-3712-4eec-b806-eb9439175b9f)
+	![사이더카드 소셜,재직정보, 사용기술-편집본](https://github.com/user-attachments/assets/fb1c9019-3713-4a97-9ad4-044c3f73fe22)
+    </details>
+
+    <details>
+    <summary>사이더 카드 목록 조회 시연영상</summary>
+	 ![사이더카드 목록 조회 - 편집본](https://github.com/user-attachments/assets/a755b3f7-8f4c-4608-b3bf-0fab2cbcfe32)
+    </details>
+
+
+### 📍 프로젝트 모집(Team-Building)
 
 - 프로젝트 등록 (PM)
     - 프로젝트를 등록한 사람이 자동으로 PM이 된다.
     - 프로젝트 사진, 프로젝트 글, 모집마감 기한, 모집정보(직무, 필요인원) 등록 가능
     - 모집기한이 만료되면 스케쥴러에 의해 자동으로 마감처리된다.
-![프로젝트 모집글 등록 - 편집본](https://github.com/user-attachments/assets/20ddac21-a8ee-4c75-868f-bd3d7445447f)
 
-</details>
+    <details>
+    <summary>프로젝트 모집글 등록 시연영상</summary>
+	![프로젝트 모집글 등록 - 편집본](https://github.com/user-attachments/assets/a8c35781-a6f2-4164-a834-53f6f658daff)
+    </details>
 
-<details>
-<summary><h3>📍 프로젝트 모집공고 지원 (팀원)</h3></summary>
+### 📍 프로젝트 모집공고 지원 (팀원)
 
 - 프로젝트 모집공고 지원 (팀원)
     - 지원자는 'PM과의 채팅'을 통해 문의채팅이 가능하다.
     - 지원자는 '프로젝트 지원'을 통해 공고에 지원이 가능하다
     - Sider Card에 등록한 직무와 상관없이 직무는 자유롭게 선택이 가능하다
     - 프로젝트 지원 내역은 '마이페이지 > 신청내역'에서 확인 가능하다
-![프로젝트 지원하기-편집본](https://github.com/user-attachments/assets/023d392e-1d44-4544-b28b-67f0b24f01d9)
-![PM에게 문의-편집본](https://github.com/user-attachments/assets/23bc3345-fc80-43c3-b170-6923d46dcbc7)
-![PM이 답변-편집본](https://github.com/user-attachments/assets/5e6ec3af-9834-431e-9238-e0e600be698c)
-</details>
+    <details>
+    <summary>프로젝트 지원하기 시연 영상</summary>
+	 ![프로젝트 지원하기-편집본](https://github.com/user-attachments/assets/206b6578-3e89-402c-9e98-9b63c1c57ea8)
+    </details>
 
-<details>
-<summary><h3>📍 프로젝트 관리 (PM)</h3></summary>
+    <details>
+    <summary>PM에게 문의채팅 시연영상</summary>
+	 ![PM에게 문의-편집본](https://github.com/user-attachments/assets/779cde0c-cdac-46e9-b588-fac7b42ba510)
+    </details>
+
+    <details>
+    <summary>PM이 답변채팅 시연영상</summary>
+	 ![PM이 답변-편집본](https://github.com/user-attachments/assets/39d09b75-aa11-4c01-a9e8-2ecca3ec0b23)
+    </details>
+
+
+### 📍 프로젝트 관리 (PM)
 
 - 프로젝트 관리
     - 프로젝트는 수동으로 마감이 가능하다. 
     - '프로젝트 관리'에서 지원자 조회가 가능하다.
     - 지원자를 승인하고 프로젝트에 초대하면 지원자에게 승인안내 메일이 전송된다.
-![승인하기-편집본](https://github.com/user-attachments/assets/c9c3851b-7574-424d-82f9-166196dd9ebb)
+    - 프로젝트가 마감되면 프로젝트 참여자에게 프로젝트 모집이 종료되었다는 알림이 간다.
 
-    - 프로젝트가 마감되면 프로젝트를 지원한 모든사람에게 프로젝트 모집이 종료되었다는 알림이 간다.
-![모두에게 알림-편집본2](https://github.com/user-attachments/assets/b84c0108-0f80-4510-8fbb-65cb288d7e20)
+    <details>
+    <summary>프로젝트 지원자 승인하기 시연 영상</summary>
+	 ![승인하기-편집본](https://github.com/user-attachments/assets/af1c3f2a-7874-4bb5-bc0c-15d02e71c47d)
+    </details>
 
-</details>
+    <details>
+    <summary>프로젝트 마감 시 알람수신 시연영상</summary>
+	 ![모두에게 알림-편집본2](https://github.com/user-attachments/assets/4d27ebf2-0616-465d-8f54-9285d87e43e4)
+    </details>
+    
 
-<details>
-<summary><h3>📍 완성된 프로젝트 등록 (Launched Project) </h3></summary>
+### 📍 완성된 프로젝트 등록 (Launched Project) 
 
 - 완성된 프로젝트(Launched Project)
     - 프로젝트가 완료되면 PM은 Launched Project글을 작성할 수 있다.
     - 기술스택, 프로젝트 URL, 글쓰기 등록 가능하다.
     - Launched Project 글에는 좋아요(사이다)를 누를 수 있다.
-![런칭프로젝트 등록-편집본](https://github.com/user-attachments/assets/6621d844-8878-4531-bcbd-d4ebb6279963)
 
-</details>
+    <details>
+    <summary>런칭 프로젝트 등록 시연영상</summary>
+	 ![런칭프로젝트 등록-편집본](https://github.com/user-attachments/assets/c82e24ca-f942-4a0a-92a1-43e0424c5f8e)
+    </details>
+
 
 
 
