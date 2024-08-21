@@ -64,7 +64,11 @@ chore: 코드 수정, 내부 파일 수정
 
 
 ## Si-D🍾 소개합니다 
-<h3> Si-D란?</h3>
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/17ea70cd-77cb-4eb4-a6b0-16b2f4853ed0" alt="로고" width="300" />
+</p>
+
+
 Designer와 Developer를 이어주는 사이드(Side) 프로젝트 플랫폼
 
 사이드 프로젝트를 구하기 힘들었던 사람들을 위하여 만들어진 사이트입니다. 
@@ -131,6 +135,7 @@ Designer와 Developer를 이어주는 사이드(Side) 프로젝트 플랫폼
 - 다른 회원들의 SiderCard 조회 가능하다
 - 해당 회원이 진행한 프로젝트도 조회 가능하다.
 
+
     <details> <summary><b>카카오 로그인 시연영상</b></summary>
         <div markdown="1"> 
             <img src="https://github.com/user-attachments/assets/c0825004-48f7-43b0-929d-c921ef0c342a"/>
@@ -161,8 +166,9 @@ Designer와 Developer를 이어주는 사이드(Side) 프로젝트 플랫폼
     - 프로젝트를 등록한 사람이 자동으로 PM이 된다.
     - 프로젝트 사진, 프로젝트 글, 모집마감 기한, 모집정보(직무, 필요인원) 등록 가능
     - 모집기한이 만료되면 스케쥴러에 의해 자동으로 마감처리된다.
+      
 
-    <details> <summary><b>>프로젝트 모집글 등록 시연영상</b></summary>
+    <details> <summary><b>프로젝트 모집글 등록 시연영상</b></summary>
         <div markdown="1"> 
             <img src="https://github.com/user-attachments/assets/7cf6db13-dc39-40e9-886d-c336d538c61e"/>
         </div>
@@ -175,30 +181,32 @@ Designer와 Developer를 이어주는 사이드(Side) 프로젝트 플랫폼
     - 지원자는 '프로젝트 지원'을 통해 공고에 지원이 가능하다
     - Sider Card에 등록한 직무와 상관없이 직무는 자유롭게 선택이 가능하다
     - 프로젝트 지원 내역은 '마이페이지 > 신청내역'에서 확인 가능하다
+      
 
-    <details> <summary><b>>프로젝트 지원하기 시연 영상</b></summary>
+    <details> <summary><b>프로젝트 지원하기 시연 영상</b></summary>
         <div markdown="1"> 
             <img src="https://github.com/user-attachments/assets/2fc988d1-19f8-44de-bbb2-6dafa98c73e5"/>
         </div>
     </details>
 
-    <details> <summary><b>>PM에게 문의채팅 시연영상</b></summary>
+    <details> <summary><b>PM에게 문의채팅 시연영상</b></summary>
         <div markdown="1"> 
             <img src="https://github.com/user-attachments/assets/a13f56d2-e755-445c-9e23-7f9283d78ce9"/>
         </div>
     </details>
 
-    <details> <summary><b>>채팅알림</b></summary>
+    <details> <summary><b>채팅알림</b></summary>
         <div markdown="1"> 
             <img src="https://github.com/user-attachments/assets/043207e3-0486-491c-9dd6-940ce1a3f13a"/>
         </div>
     </details>
 
-    <details> <summary><b>>PM이 답변채팅 시연영상</b></summary>
+    <details> <summary><b>PM이 답변채팅 시연영상</b></summary>
         <div markdown="1"> 
             <img src="https://github.com/user-attachments/assets/a37e732e-17f7-45b9-b6b3-7b2b0e92e6f2"/>
         </div>
     </details>
+
 
 ### 📍 프로젝트 관리 (PM)
 
@@ -207,8 +215,9 @@ Designer와 Developer를 이어주는 사이드(Side) 프로젝트 플랫폼
     - '프로젝트 관리'에서 지원자 조회가 가능하다.
     - 지원자를 승인하고 프로젝트에 초대하면 지원자에게 승인안내 메일이 전송된다.
     - 프로젝트가 마감되면 프로젝트 참여자에게 프로젝트 모집이 종료되었다는 알림이 간다.
+    - 
 
-    <details> <summary><b>>프로젝트 지원자 승인하기 시연 영상</b></summary>
+    <details> <summary><b>프로젝트 지원자 승인하기 시연 영상</b></summary>
         <div markdown="1"> 
             <img src="https://github.com/user-attachments/assets/52e74684-6ec4-4dac-b918-517dda2bd8fc"/>
         </div>
@@ -226,6 +235,7 @@ Designer와 Developer를 이어주는 사이드(Side) 프로젝트 플랫폼
     - 프로젝트가 완료되면 PM은 Launched Project글을 작성할 수 있다.
     - 기술스택, 프로젝트 URL, 글쓰기 등록 가능하다.
     - Launched Project 글에는 좋아요(사이다)를 누를 수 있다.
+  
 
     <details> <summary><b>>런칭 프로젝트 등록 시연영상</b></summary>
         <div markdown="1"> 
