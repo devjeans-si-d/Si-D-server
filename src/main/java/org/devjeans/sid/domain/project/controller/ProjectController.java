@@ -10,6 +10,7 @@ import org.devjeans.sid.domain.project.dto.update.UpdateProjectResponse;
 import org.devjeans.sid.domain.project.entity.Project;
 import org.devjeans.sid.domain.project.service.ProjectService;
 import org.devjeans.sid.domain.project.service.ScrapService;
+import org.devjeans.sid.global.util.SecurityUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,6 +19,8 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -26,10 +29,13 @@ import java.util.stream.Collectors;
 public class ProjectController {
     private final ProjectService projectService;
     private final ScrapService scrapService;
+    private final SecurityUtil securityUtil;
+
     @Autowired
-    public ProjectController(ProjectService projectService, ScrapService scrapService) {
+    public ProjectController(ProjectService projectService, ScrapService scrapService, SecurityUtil securityUtil) {
         this.projectService = projectService;
         this.scrapService = scrapService;
+        this.securityUtil = securityUtil;
     }
 
     // project create
@@ -108,8 +114,17 @@ public class ProjectController {
     public ResponseEntity<List<ListProjectResponse>> listAll(
             @RequestParam(defaultValue = "recent") String sorted
     ){
+
         List<ListProjectResponse> listProjectResponses = projectService.projectListReadAll(sorted);
+//        if(securityUtil.isMember()) listProjectResponses = projectService.projectListReadAll(sorted);
+//        else listProjectResponses = projectService.projectListReadAllNotMember(sorted);
         return new ResponseEntity<>(listProjectResponses,HttpStatus.OK);
+    }
+
+    @GetMapping("/api/project/{id}/isScrap")
+    public ResponseEntity<Boolean> isScrap(@PathVariable Long id){
+        boolean isScrap = scrapService.isProjectScrappedByMember(id);
+        return new ResponseEntity<>(isScrap,HttpStatus.OK);
     }
 
 
