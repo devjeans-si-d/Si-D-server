@@ -31,6 +31,8 @@ public class SiderCard extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private JobField jobField;
     private String introduction;
+
+    @Column(length = 3000)
     private String image;
 
     private String email;

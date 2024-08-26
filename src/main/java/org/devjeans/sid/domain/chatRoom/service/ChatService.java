@@ -131,7 +131,6 @@ public class ChatService {
         return CreateChatRoomResponse.fromEntity(chatRoom);
     }
 
-    // TODO: FRONT - 만약 방을 만들려고 했는데 createChatRoom에서 CHATROOM_ALREADY_EXIST가 떨어지면 enterChatRoom 호출
     public void enterChatRoom(Long chatRoomId) {
         Long memberId = securityUtil.getCurrentMemberId();
 
