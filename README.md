@@ -112,7 +112,8 @@ Designer와 Developer를 이어주는 사이드(Side) 프로젝트 플랫폼
 <!-- <h2>Wire Frame</h2> -->
 
 ## 이슈 관리
-[이슈 관리 보기](https://www.notion.so/01f6e9a772864d789a2aa5f35798e92b?v=8288992a047b499f853c24bfc5f2c1cd&pvs=4)
+[이슈 관리 보기](https://quark-smile-890.notion.site/01f6e9a772864d789a2aa5f35798e92b?v=8288992a047b499f853c24bfc5f2c1cd&pvs=4)
+
 
 ## 기술스택
 ### ✔️Frond-end
