@@ -155,8 +155,19 @@ public class ScrapService {
     }
 
     public boolean isProjectScrappedByMember(Long projectId) {
-        String memberKey = MEMBER_SCRAP_LIST + securityUtil.getCurrentMemberId();
-        SetOperations<String, Object> setOperations = scrapRedisTemplate.opsForSet();
-        return Boolean.TRUE.equals(setOperations.isMember(memberKey, projectId));
+//        String memberKey = MEMBER_SCRAP_LIST + securityUtil.getCurrentMemberId();
+//        SetOperations<String, Object> setOperations = scrapRedisTemplate.opsForSet();
+//        return Boolean.TRUE.equals(setOperations.isMember(memberKey, projectId));
+        boolean isScrap=false;
+        if(securityUtil.isMember().equals(true)) {
+            String memberKey = MEMBER_SCRAP_LIST + securityUtil.getCurrentMemberId();
+            SetOperations<String, Object> setOperations = scrapRedisTemplate.opsForSet();
+            isScrap = setOperations.isMember(memberKey, projectId);
+        }
+        return isScrap;
+
     }
+
+
+
 }

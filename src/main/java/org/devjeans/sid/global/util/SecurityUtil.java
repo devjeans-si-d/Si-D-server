@@ -19,5 +19,10 @@ public class SecurityUtil {
             throw new BaseException(UNAUTHENTICATED_USER);
         }
     }
+    public Boolean isMember(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(authentication.getPrincipal().equals("anonymousUser")) return false;
+        else return true;
+    }
 
 }
