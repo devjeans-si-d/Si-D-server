@@ -49,8 +49,6 @@ public class WebSocketService {
         boolean isRead = false;
 
 
-        // 멤버가 현재 접속해있는지를 확인
-        // TODO: chatroom에 포함된 모든 멤버 들고 오기
         List<ChatParticipant> memberList = chatParticipantRepository.findAllByChatRoom(chatRoom);
 
         for (ChatParticipant receiver : memberList) {
@@ -59,6 +57,8 @@ public class WebSocketService {
                 continue;
             }
 
+            // 멤버가 현재 접속해있는지를 확인
+            // TODO: 레디스로 변경
             Long receiverChatRoomId = connectedMap.getChatroomIdByMemberId(receiverId);
             if(receiverChatRoomId != null && receiverChatRoomId.equals(chatRoomId)) {
                 // 접속해있다면 읽음 표시
