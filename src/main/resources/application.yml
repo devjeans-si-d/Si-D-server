@@ -22,7 +22,7 @@ spring:
     host: smtp.gmail.com
     port: 587
     username: "clearrworld@gmail.com"
-    password: "ddtq pucr hreu nwue"
+    password: xxxx
     properties:
       mail.smtp.debug: true
       mail.smtp.connectiontimeout: 1000 #1초
@@ -40,7 +40,7 @@ logging:
 auth:
   oauth:
     kakao:
-      api: ${{secrets.KAKAO_API_KEY}}
+      api: xxxx
 
 jwt:
   expiration: 30
@@ -54,5 +54,5 @@ cloud:
     region:
       static: ap-northeast-2
     credentials:
-      access-key: ${{secrets.S3_KEY}}
-      secret-key: ${{secrets.S3_SECRET}}
+      access-key: xxxxx
+      secret-key: xxxxx
