@@ -22,7 +22,7 @@ jobs:
       - name: ec2 ssh login and docker compose update
         uses: appleboy/ssh-action@master
         with:
-          host: ec2-43-203-254-30.ap-northeast-2.compute.amazonaws.com
+          host: ec2-3-38-168-222.ap-northeast-2.compute.amazonaws.com
           username: ubuntu
           key: ${{secrets.EC2_PEMKEY}}
           script: |
