@@ -1,6 +1,7 @@
 package org.devjeans.sid.config;
 
 
+import lombok.extern.slf4j.Slf4j;
 import org.devjeans.sid.domain.member.dto.MemberIdEmailCode;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,6 +19,7 @@ import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 
+@Slf4j
 @Configuration
 @EnableRedisRepositories
 public class RedisConfig {
@@ -56,6 +58,7 @@ public class RedisConfig {
     @Bean
     public RedisConnectionFactory viewsRedisConnectionFactory() {
         RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
+        log.info("line 59: host: {}", host);
         redisStandaloneConfiguration.setHostName(host);
         redisStandaloneConfiguration.setPort(port);
         redisStandaloneConfiguration.setDatabase(3); // view 데이터베이스
