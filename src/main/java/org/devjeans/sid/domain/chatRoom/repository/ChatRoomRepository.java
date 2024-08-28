@@ -1,5 +1,6 @@
 package org.devjeans.sid.domain.chatRoom.repository;
 
+import org.devjeans.sid.domain.chatRoom.entity.ChatParticipant;
 import org.devjeans.sid.domain.chatRoom.entity.ChatRoom;
 import org.devjeans.sid.domain.project.entity.Project;
 import org.devjeans.sid.global.exception.BaseException;

@@ -105,6 +105,27 @@ public class RedisConfig {
     }
 
     @Bean
+    @Qualifier("chatConnectionMap") // 채팅 참여자가 채팅방에 접속해 있는지 확인
+    public RedisConnectionFactory chatRedisConnectionFactory() {
+        RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
+        redisStandaloneConfiguration.setHostName(host);
+        redisStandaloneConfiguration.setPort(port);
+        redisStandaloneConfiguration.setDatabase(3);
+        redisStandaloneConfiguration.setPassword(password);
+        return new LettuceConnectionFactory(redisStandaloneConfiguration);
+    }
+
+    @Bean
+    @Qualifier("chatConnectionMap") // 채팅 참여자가 채팅방에 접속해 있는지 확인
+    public RedisTemplate<String, Object> chatRedisTemplate(@Qualifier("chatConnectionMap")RedisConnectionFactory chatRedisConnectionFactory){
+        RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
+        redisTemplate.setKeySerializer(new StringRedisSerializer()); // String 형태를 직렬화 시키겠다. (String으로 직렬화), Redis의 키를 문자열로 직렬화
+        redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer()); //json으로 직렬화, Redis의 값을 JSON형태로 직렬화
+        redisTemplate.setConnectionFactory(chatRedisConnectionFactory);
+        return redisTemplate;
+    }
+
+    @Bean
     @Qualifier("LaunchedProjectView") // 완성된프로젝트 조회수 RedisConnectionFactory
     public RedisConnectionFactory LPviewRedisConnectionFactory() {
         RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
