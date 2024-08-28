@@ -83,6 +83,16 @@ public class RedisConfig {
 
     }
 
+
+    @Bean
+    public RedisConnectionFactory scrapConnectionFactory() {
+        RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
+        redisStandaloneConfiguration.setHostName(host);
+        redisStandaloneConfiguration.setPort(port);
+        redisStandaloneConfiguration.setDatabase(2); // view 데이터베이스
+        return new LettuceConnectionFactory(redisStandaloneConfiguration);
+    }
+
     @Bean
     @Qualifier("scrapRedisTemplate")
     public RedisTemplate<String, Object> scrapRedisTemplate(@Qualifier("scrapConnectionFactory") RedisConnectionFactory connectionFactory) {
@@ -92,13 +102,6 @@ public class RedisConfig {
         template.setValueSerializer(new GenericToStringSerializer<>(Object.class));
         template.setConnectionFactory(scrapConnectionFactory());
         return template;
-    }
-
-    @Bean
-    public RedisConnectionFactory scrapConnectionFactory() {
-        LettuceConnectionFactory factory = new LettuceConnectionFactory();
-        factory.setDatabase(2); // Scrap 데이터베이스
-        return factory;
     }
 
     @Bean
