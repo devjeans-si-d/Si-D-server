@@ -40,7 +40,7 @@ logging:
 auth:
   oauth:
     kakao:
-      api: xxxx
+      api: dddd
 
 jwt:
   expiration: 30
