@@ -40,6 +40,8 @@ public class JwtAuthfilter extends GenericFilter {
                 String token = bearerToken.substring(7);
 //            token 검증 및 claims(사용자정보) 추출
 //            token생성시에 사용한 secret키값을 넣어 토큰 검증에 사용
+                log.info("JWT TOKEN: {}", token);
+
                 Claims claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody(); // 다시 암호화해서 토큰검증과 동시에 사용자 정보 페이로드 입력        }else {
 
                 List<GrantedAuthority> authorities = new ArrayList<>();
