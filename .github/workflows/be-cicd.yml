@@ -2,7 +2,7 @@ name: deploy to ec2 with docker
 on:
   push:
     branches:
-      - fix/IS-133
+      - main
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
