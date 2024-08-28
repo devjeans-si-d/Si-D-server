@@ -20,7 +20,6 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
 @EnableRedisRepositories
-@PropertySource("classpath:application.yml")
 public class RedisConfig {
     @Value("${spring.redis.host}")
     private String host;
