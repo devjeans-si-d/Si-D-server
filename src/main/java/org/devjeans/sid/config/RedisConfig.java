@@ -145,7 +145,7 @@ public class RedisConfig {
 
     // RedisTemplate은 redis와 상호작용할 때 redis key, value의 형식을 지정한다.
     @Bean
-    @Qualifier("chatPubSubTemplate")
+    @Qualifier("chatPubSub")
     public RedisTemplate<String, Object> chatPubSubTemplate(@Qualifier("chatPubSub") RedisConnectionFactory chatPubSubFactory) {
         // Object에는 주로 json이 들어옴
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();

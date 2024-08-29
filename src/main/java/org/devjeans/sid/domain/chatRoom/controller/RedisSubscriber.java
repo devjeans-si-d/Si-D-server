@@ -24,14 +24,14 @@ public class RedisSubscriber implements MessageListener {
     private final SimpMessageSendingOperations messagingTemplate;
 
     public RedisSubscriber(ObjectMapper objectMapper,
-                           @Qualifier("chatPubSubTemplate") RedisTemplate<String, Object> redisTemplate,
+                           @Qualifier("chatPubSub") RedisTemplate<String, Object> redisTemplate,
                            SimpMessageSendingOperations messagingTemplate) {
         this.objectMapper = objectMapper;
         this.redisTemplate = redisTemplate;
         this.messagingTemplate = messagingTemplate;
     }
 
-    //== Redis Subscribe ==//
+    //== Redis Chat Subscribe ==//
     @Override
     public void onMessage(Message message, byte[] pattern) {
         String body = new String(message.getBody());

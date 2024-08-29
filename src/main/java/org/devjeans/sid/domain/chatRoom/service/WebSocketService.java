@@ -43,7 +43,7 @@ public class WebSocketService {
     private final ConnectedMap connectedMap;
 
     //== 서버 이중화를 위한 채팅 펍섭 처리 ==//
-    @Qualifier("chatPubSubTemplate")
+    @Qualifier("chatPubSub")
     private final RedisTemplate<String, Object> redisTemplate;
 
 //    @Qualifier("chatPubSubContainer")
@@ -60,7 +60,7 @@ public class WebSocketService {
                             MemberRepository memberRepository,
                             SseService sseService,
                             ConnectedMap connectedMap,
-                            @Qualifier("chatPubSubTemplate") RedisTemplate<String, Object> redisTemplate,
+                            @Qualifier("chatPubSub") RedisTemplate<String, Object> redisTemplate,
                             @Qualifier("chatTopic") ChannelTopic topic,
                             ObjectMapper om) {
         this.chatMessageRepository = chatMessageRepository;
