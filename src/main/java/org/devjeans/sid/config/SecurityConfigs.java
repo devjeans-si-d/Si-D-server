@@ -32,7 +32,7 @@ public class SecurityConfigs {
                         "https://kauth.kakao.com/oauth/authorize",
                         "/api/auth/kakao/callback",
                         "/api/auth/login",
-                        "/chat/**",
+//                        "/chat/**",
                         "/api/launched-project/list",
                         "/api/main/top-launched-project",
                         "/api/main/top-sider-card",

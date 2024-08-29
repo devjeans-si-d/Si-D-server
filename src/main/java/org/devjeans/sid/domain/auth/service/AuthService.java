@@ -17,10 +17,7 @@ import org.devjeans.sid.domain.siderCard.entity.SiderCard;
 import org.devjeans.sid.domain.siderCard.repository.SiderCardRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,6 +41,9 @@ public class AuthService {
     @Value("${auth.oauth.kakao.api}")
     private String authOauthKakaoApi;
 
+    @Value("${auth.oauth.kakao.redirect-url}")
+    private String redirectUrl;
+
     public KakaoProfile login(KakaoRedirect kakaoRedirect) throws JsonProcessingException {
         OAuthToken oAuthToken = getAccessToken(kakaoRedirect.getCode());
         KakaoProfile kakaoProfile = getKakaoProfile(oAuthToken.getAccess_token());
@@ -54,12 +54,14 @@ public class AuthService {
 
         RestTemplate rt = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Content-Type", "application/x-www-form-urlencoded");
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        headers.add("Accept", "application/json");
+
 
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("grant_type", "authorization_code");
         params.add("client_id",authOauthKakaoApi);
-        params.add("redirect_uri","https://dev.si-d.site/oauth");
+        params.add("redirect_uri", redirectUrl);
         params.add("code",code);
 
         HttpEntity<MultiValueMap<String, String>> kakaoTokenRequest = new HttpEntity<>(params, headers);

@@ -34,6 +34,9 @@ public class RedisSubscriber implements MessageListener {
     //== Redis Subscribe ==//
     @Override
     public void onMessage(Message message, byte[] pattern) {
+        String body = new String(message.getBody());
+        String channel = new String(message.getChannel());
+        System.out.println("line 39: Received message from Redis: " + body + " on channel: " + channel);
         try {
             String publishMessage = (String) redisTemplate.getStringSerializer().deserialize(message.getBody());
 

@@ -172,7 +172,7 @@ public class RedisConfig {
     @Bean
     @Qualifier("chatTopic")
     public ChannelTopic topic() {
-        return new ChannelTopic("chatroom");
+        return new ChannelTopic("chat");
     }
 
     //== 10번 ==//

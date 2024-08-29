@@ -6,6 +6,7 @@ import org.devjeans.sid.domain.chatRoom.entity.ChatMessage;
 import java.time.LocalDateTime;
 
 @Builder
+@ToString
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter

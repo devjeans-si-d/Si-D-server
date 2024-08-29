@@ -108,7 +108,7 @@ public class WebSocketService {
 
         ChatRoomMessageResponse chatRoomMessageResponse = ChatRoomMessageResponse.fromEntity(savedMessage);
 
-        // TODO: 레디스로 퍼블리시
+        //== Redis Publish ==//
         ObjectMapper om = new ObjectMapper();
         publish(om.writeValueAsString(chatRoomMessageResponse));
     }
