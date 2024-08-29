@@ -57,6 +57,9 @@ public class AuthService {
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         headers.add("Accept", "application/json");
 
+        log.info("line 60: {}", redirectUrl);
+        log.info("line 60: {}",authOauthKakaoApi);
+        log.info("line 60: {}", code);
 
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("grant_type", "authorization_code");
