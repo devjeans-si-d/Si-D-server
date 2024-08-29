@@ -10,12 +10,14 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 public class ChatRoomMessageResponse {
+    private Long chatroomId;
     private Long sender;
     private String content;
     private LocalDateTime createdAt;
 
     public static ChatRoomMessageResponse fromEntity(ChatMessage message) {
         return ChatRoomMessageResponse.builder()
+                .chatroomId(message.getChatRoom().getId())
                 .sender(message.getMember().getId())
                 .content(message.getContent())
                 .createdAt(message.getCreatedAt())
