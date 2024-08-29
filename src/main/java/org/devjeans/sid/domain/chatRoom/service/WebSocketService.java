@@ -114,6 +114,8 @@ public class WebSocketService {
 
         //== Redis Publish ==//
         publish(om.writeValueAsString(chatRoomMessageResponse));
+
+        log.info("line 118: !!!!!!!!!!!!!!!!!!!!!!!!!!");
     }
 
     // 추후 jwt 인증이 구현되면 사용할 수 있는 메서드. receiverId를 받을 필요없이 자신의 아이디로 상대방을 찾을 수 있다.
