@@ -52,6 +52,8 @@ public class WebSocketService {
     @Qualifier("chatTopic")
     private final ChannelTopic topic;
 
+    private final ObjectMapper om;
+
     public WebSocketService(ChatMessageRepository chatMessageRepository,
                             ChatRoomRepository chatRoomRepository,
                             ChatParticipantRepository chatParticipantRepository,
@@ -59,7 +61,8 @@ public class WebSocketService {
                             SseService sseService,
                             ConnectedMap connectedMap,
                             @Qualifier("chatPubSubTemplate") RedisTemplate<String, Object> redisTemplate,
-                            @Qualifier("chatTopic") ChannelTopic topic) {
+                            @Qualifier("chatTopic") ChannelTopic topic,
+                            ObjectMapper om) {
         this.chatMessageRepository = chatMessageRepository;
         this.chatRoomRepository = chatRoomRepository;
         this.chatParticipantRepository = chatParticipantRepository;
@@ -68,6 +71,7 @@ public class WebSocketService {
         this.connectedMap = connectedMap;
         this.redisTemplate = redisTemplate;
         this.topic = topic;
+        this.om = om;
     }
 
     //== ==//
@@ -109,7 +113,6 @@ public class WebSocketService {
         ChatRoomMessageResponse chatRoomMessageResponse = ChatRoomMessageResponse.fromEntity(savedMessage);
 
         //== Redis Publish ==//
-        ObjectMapper om = new ObjectMapper();
         publish(om.writeValueAsString(chatRoomMessageResponse));
     }
 
