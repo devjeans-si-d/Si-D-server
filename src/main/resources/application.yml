@@ -6,7 +6,7 @@ spring:
     driver-class-name: org.mariadb.jdbc.Driver
   jpa:
     hibernate:
-      ddl-auto: validate
+      ddl-auto: create
     database: mysql
     database-platform: org.hibernate.dialect.MariaDBDialect
     generate-ddl: true
@@ -27,9 +27,9 @@ spring:
       mail.smtp.connectiontimeout: 1000 #1초
       mail.starttls.enable: true
       mail.smtp.auth: true
-  sql:
-    init:
-      mode: always
+#  sql:
+#    init:
+#      mode: always
 
 logging:
   level:

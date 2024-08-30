@@ -31,9 +31,9 @@ public class Career{
     private Boolean employedYn;
 
     @Column(nullable = false)
-    private YearMonth employedStart;
+    private String employedStart;
 
-    private YearMonth employedEnd;
+    private String employedEnd;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sider_card_id")
