@@ -13,6 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SiderCardUpdateReqDto {
+    private Long id;
     private JobField jobField;
     private String introduction;
     private String image;
