@@ -47,6 +47,12 @@ public class RedisSubscriber implements MessageListener {
 
 
         } catch (Exception e) {
+            e.printStackTrace();
+            /**
+             * /com.fasterxml.jackson.databind.exc.MismatchedInputException: Cannot construct instance of `org.devjeans.sid.domain.chatRoom.dto.ChatRoomMessageResponse` (although at least one Creator exists): no String-argument constructor/factory method to deserialize from String value ('{"chatroomId":2,"sender":1,"content":"fd","createdAt":"2024-08-30T02:17:43.555948"}')
+             *  at [Source: (String)""{\"chatroomId\":2,\"sender\":1,\"content\":\"fd\",\"createdAt\":\"2024-08-30T02:17:43.555948\"}""; line: 1, column: 1]
+             * 	at com.fasterxml.jackson.databind.exc.MismatchedInputException.from(MismatchedInputException.java:63)
+             */
             throw new BaseException(INVALID_CHATROOM);
         }
     }

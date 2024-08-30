@@ -15,14 +15,14 @@ public class ChatRoomMessageResponse {
     private Long sender;
     private String content;
 //    private LocalDateTime createdAt;
-    private String createdAt;
+//    private String createdAt;
 
     public static ChatRoomMessageResponse fromEntity(ChatMessage message) {
         return ChatRoomMessageResponse.builder()
                 .chatroomId(message.getChatRoom().getId())
                 .sender(message.getMember().getId())
                 .content(message.getContent())
-                .createdAt(message.getCreatedAt().toString()) // 임시 수정
+//                .createdAt(message.getCreatedAt().toString()) // 임시 수정
                 .build();
     }
 
