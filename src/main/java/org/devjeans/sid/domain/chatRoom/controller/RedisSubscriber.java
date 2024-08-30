@@ -37,9 +37,10 @@ public class RedisSubscriber implements MessageListener {
         String body = new String(message.getBody());
         String channel = new String(message.getChannel());
         System.out.println("line 39: Received message from Redis: " + body + " on channel: " + channel);
+        log.info("line 40: Redis subscriber: {}", message.getBody());
         try {
             String publishMessage = (String) redisTemplate.getStringSerializer().deserialize(message.getBody());
-
+            log.info("line 42: Redis subscriber: {}", publishMessage);
             ChatRoomMessageResponse roomMessage = objectMapper.readValue(publishMessage, ChatRoomMessageResponse.class);
 
             messagingTemplate.convertAndSend("/sub/chatroom/" + roomMessage.getChatroomId(), roomMessage);
