@@ -1,5 +1,7 @@
 package org.devjeans.sid.domain.chatRoom.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.devjeans.sid.domain.chatRoom.component.ConnectedMap;
@@ -15,6 +17,10 @@ import org.devjeans.sid.domain.chatRoom.repository.ChatRoomRepository;
 import org.devjeans.sid.domain.member.entity.Member;
 import org.devjeans.sid.domain.member.repository.MemberRepository;
 import org.devjeans.sid.global.exception.BaseException;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.listener.ChannelTopic;
+import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,21 +31,52 @@ import java.util.List;
 import static org.devjeans.sid.global.exception.exceptionType.ChatExceptionType.NO_RECEIVER;
 
 @Slf4j
-@RequiredArgsConstructor
 @Service
 public class WebSocketService {
     private final ChatMessageRepository chatMessageRepository;
     private final ChatRoomRepository chatRoomRepository;
     private final ChatParticipantRepository chatParticipantRepository;
     private final MemberRepository memberRepository;
-    private final SimpMessageSendingOperations messagingTemplate;
     private final SseService sseService;
 
     // 웹소켓 커넥션 상태 관리
     private final ConnectedMap connectedMap;
 
+    //== 서버 이중화를 위한 채팅 펍섭 처리 ==//
+    @Qualifier("chatPubSub")
+    private final RedisTemplate<String, Object> redisTemplate;
+
+//    @Qualifier("chatPubSubContainer")
+//    private final RedisMessageListenerContainer redisContainer;
+
+    @Qualifier("chatTopic")
+    private final ChannelTopic topic;
+
+    private final ObjectMapper om;
+
+    public WebSocketService(ChatMessageRepository chatMessageRepository,
+                            ChatRoomRepository chatRoomRepository,
+                            ChatParticipantRepository chatParticipantRepository,
+                            MemberRepository memberRepository,
+                            SseService sseService,
+                            ConnectedMap connectedMap,
+                            @Qualifier("chatPubSub") RedisTemplate<String, Object> redisTemplate,
+                            @Qualifier("chatTopic") ChannelTopic topic,
+                            ObjectMapper om) {
+        this.chatMessageRepository = chatMessageRepository;
+        this.chatRoomRepository = chatRoomRepository;
+        this.chatParticipantRepository = chatParticipantRepository;
+        this.memberRepository = memberRepository;
+        this.sseService = sseService;
+        this.connectedMap = connectedMap;
+        this.redisTemplate = redisTemplate;
+        this.topic = topic;
+        this.om = om;
+    }
+
+    //== ==//
     @Transactional
-    public void sendMessage(Long chatRoomId, Long memberId, ChatMessageRequest chatMessageRequest) {
+    public void sendMessage(Long chatRoomId, Long memberId, ChatMessageRequest chatMessageRequest) throws JsonProcessingException {
         // 보낸 사람 찾기
         Member sender = memberRepository.findByIdOrThrow(memberId);
 
@@ -75,10 +112,8 @@ public class WebSocketService {
 
         ChatRoomMessageResponse chatRoomMessageResponse = ChatRoomMessageResponse.fromEntity(savedMessage);
 
-
-
-
-        messagingTemplate.convertAndSend("/sub/chatroom/" + chatRoomId, chatRoomMessageResponse);
+        //== Redis Publish ==//
+        publish(om.writeValueAsString(chatRoomMessageResponse));
     }
 
     // 추후 jwt 인증이 구현되면 사용할 수 있는 메서드. receiverId를 받을 필요없이 자신의 아이디로 상대방을 찾을 수 있다.
@@ -90,4 +125,8 @@ public class WebSocketService {
                 .getId();
     }
 
+    private void publish(String message) {
+        log.info("redis pub-sub topic: " + topic.getTopic());
+        redisTemplate.convertAndSend(topic.getTopic(), message);
+    }
 }

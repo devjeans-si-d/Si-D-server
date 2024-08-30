@@ -100,7 +100,6 @@ public class ChatService {
         // 이미 채팅방이 있지 않은지 검증 => 프로젝트 아이디와 스타터 아이디가 동일한게 존재하면 Exception
         Optional<ChatRoom> findChatRoom = chatRoomRepository.findByStarterMemberIdAndProject(createChatRoomRequest.getChatStarterMemberId(), project);
         if(findChatRoom.isPresent()) {
-//            throw new BaseException(CHATROOM_ALREADY_EXIST);
             return CreateChatRoomResponse.fromEntity(findChatRoom.get());
         }
 
@@ -148,9 +147,6 @@ public class ChatService {
         // 메모리에 저장
         connectedMap.enterChatRoom(chatRoomId, memberId);
 
-        //== SSE 입장 노티 전송 ==//
-//        SseEnterResponse sseEnterResponse = new SseEnterResponse(chatRoomId);
-//        sseService.sendEnterChatroom(memberId, sseEnterResponse);
     }
 
     public List<MemberInfoResponse> getMemberInfo(Long chatroomId) {
