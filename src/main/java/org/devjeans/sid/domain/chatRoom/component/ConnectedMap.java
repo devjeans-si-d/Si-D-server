@@ -28,7 +28,6 @@ public class ConnectedMap {
     public void exitRoom(String sessionId) {
         // memberIdToChatRoomId, sessionToMemberId에서 지워주기
         Long memberId = sessionToMemberId.get(sessionId);
-        log.info("[connected map line 28 exit]: member id: " + memberId);
         memberIdToChatroomId.remove(memberId);
         sessionToMemberId.remove(sessionId);
     }

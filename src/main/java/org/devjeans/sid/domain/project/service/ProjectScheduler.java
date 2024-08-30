@@ -104,6 +104,7 @@ public class ProjectScheduler {
 
     @Qualifier("scrapRedisTemplate")
     @Scheduled(cron = "0 0 4 * * *")
+//    @Scheduled(cron = "* * * * * *")
     @Transactional
     public void syncScraps() {
         //set(MEMBER_SCRAP_LIST+memberId).members = project id들
@@ -129,17 +130,21 @@ public class ProjectScheduler {
             }
         }
 
-        // project count도 복구
         for(Project p : projectRepository.findAll()){
-            // scrap 저장
+            // scrapCount
+            Long scrapCount = 0L;
+
             String projectKey = PROJECT_SCRAP_COUNT + p.getId();
             ValueOperations<String, Object> valueOperations = scrapRedisTemplate.opsForValue();
             Object count = valueOperations.get(projectKey);
             if(count !=null){
-                Long views = Long.valueOf(count.toString());
-                p.setScrapCount(views);
-                projectRepository.save(p);
+                scrapCount = Long.valueOf(count.toString());
+
             }
+            p.setScrapCount(scrapCount);
+            projectRepository.save(p);
         }
+
+
     }
 }

@@ -32,7 +32,7 @@ public class DetailProjectResponse {
     private Long id;
     private String imageUrl;
     private String projectName;
-    private boolean isScrap;
+//    private boolean isScrap;
     private String description;
     private LocalDateTime createdAt;
 
@@ -88,7 +88,7 @@ public class DetailProjectResponse {
 
 //    private List<ChatRoomDto> chatRooms;
 
-    public static DetailProjectResponse fromEntity(Project project, Long scrapCount, Long views, boolean isScrap, ApplicantsCountResDto dto){
+    public static DetailProjectResponse fromEntity(Project project, Long scrapCount, Long views, ApplicantsCountResDto dto){
         List<RecruitInfo> recruitInfoList = project.getRecruitInfos();
         List<ProjectScrap> projectScrapList = project.getProjectScraps();
         List<ChatRoom> chatRoomList=project.getChatRooms();
@@ -122,7 +122,7 @@ public class DetailProjectResponse {
 
         return DetailProjectResponse.builder()
                 .id(project.getId())
-                .isScrap(isScrap)
+//                .isScrap(isScrap)
                 .imageUrl(project.getImageUrl())
                 .pmId(project.getPm().getId())
                 .pmName(project.getPm().getName())

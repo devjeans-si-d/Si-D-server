@@ -7,8 +7,10 @@ import org.devjeans.sid.domain.chatRoom.dto.ChatMessageRequest;
 import org.devjeans.sid.domain.chatRoom.dto.ChatRoomMessageResponse;
 import org.devjeans.sid.domain.chatRoom.dto.sse.SseChatResponse;
 import org.devjeans.sid.domain.chatRoom.entity.ChatMessage;
+import org.devjeans.sid.domain.chatRoom.entity.ChatParticipant;
 import org.devjeans.sid.domain.chatRoom.entity.ChatRoom;
 import org.devjeans.sid.domain.chatRoom.repository.ChatMessageRepository;
+import org.devjeans.sid.domain.chatRoom.repository.ChatParticipantRepository;
 import org.devjeans.sid.domain.chatRoom.repository.ChatRoomRepository;
 import org.devjeans.sid.domain.member.entity.Member;
 import org.devjeans.sid.domain.member.repository.MemberRepository;
@@ -18,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static org.devjeans.sid.global.exception.exceptionType.ChatExceptionType.NO_RECEIVER;
 
@@ -27,6 +30,7 @@ import static org.devjeans.sid.global.exception.exceptionType.ChatExceptionType.
 public class WebSocketService {
     private final ChatMessageRepository chatMessageRepository;
     private final ChatRoomRepository chatRoomRepository;
+    private final ChatParticipantRepository chatParticipantRepository;
     private final MemberRepository memberRepository;
     private final SimpMessageSendingOperations messagingTemplate;
     private final SseService sseService;
@@ -36,33 +40,43 @@ public class WebSocketService {
 
     @Transactional
     public void sendMessage(Long chatRoomId, Long memberId, ChatMessageRequest chatMessageRequest) {
+        // 보낸 사람 찾기
+        Member sender = memberRepository.findByIdOrThrow(memberId);
+
         // chat room 찾기
         ChatRoom chatRoom = chatRoomRepository.findByIdOrThrow(chatRoomId);
         chatRoom.updateRecentChatTime(LocalDateTime.now());
         boolean isRead = false;
 
-        // TODO: 인증 구현 후, 상대방 찾기 => findReceiverMemberId
-        Long receiverId = findReceiverMemberId(chatRoom, memberId);
 
-        // 멤버가 현재 접속해있는지를 확인
-        Long receiverChatRoomId = connectedMap.getChatroomIdByMemberId(receiverId);
+        List<ChatParticipant> memberList = chatParticipantRepository.findAllByChatRoom(chatRoom);
 
-        if(receiverChatRoomId != null && receiverChatRoomId.equals(chatRoomId)) {
-            // 접속해있다면 읽음 표시
-            isRead = true;
+        for (ChatParticipant receiver : memberList) {
+            Long receiverId = receiver.getMember().getId();
+            if(receiverId.equals(memberId)) {
+                continue;
+            }
+
+            // 멤버가 현재 접속해있는지를 확인
+            // TODO: 레디스로 변경
+            Long receiverChatRoomId = connectedMap.getChatroomIdByMemberId(receiverId);
+            if(receiverChatRoomId != null && receiverChatRoomId.equals(chatRoomId)) {
+                // 접속해있다면 읽음 표시
+                isRead = true;
+            } else {
+                //== SSE 로직 => member 닉네임 ==//
+                SseChatResponse sseChatResponse = new SseChatResponse(chatRoom.getId(), sender.getNickname(), chatMessageRequest.getContent());
+                sseService.sendChatNotification(receiverId, sseChatResponse);
+            }
         }
-        
-        // 보낸 사람 찾기
-        Member sender = memberRepository.findByIdOrThrow(memberId);
+
         ChatMessage chatMessage = ChatMessageRequest.toEntity(chatRoom, sender, isRead, chatMessageRequest.getContent());
         ChatMessage savedMessage = chatMessageRepository.save(chatMessage);// 메시지를 저장한다.
 
         ChatRoomMessageResponse chatRoomMessageResponse = ChatRoomMessageResponse.fromEntity(savedMessage);
 
 
-        //== SSE 로직 => member 닉네임 ==//
-        SseChatResponse sseChatResponse = new SseChatResponse(chatRoom.getId(), sender.getNickname(), chatMessage.getContent());
-        sseService.sendChatNotification(receiverId, sseChatResponse);
+
 
         messagingTemplate.convertAndSend("/sub/chatroom/" + chatRoomId, chatRoomMessageResponse);
     }

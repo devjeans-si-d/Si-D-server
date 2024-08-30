@@ -49,7 +49,6 @@ public class ProjectService {
     private final RecruitInfoRepository recruitInfoRepository;
     private final RedisTemplate<String, String> redisTemplate;
     private final RedisTemplate<String, Object> scrapRedisTemplate;
-
     private final SseService sseService;
 
     private final SecurityUtil securityUtil;
@@ -129,7 +128,6 @@ public class ProjectService {
     }
 
     // read-detail
-    // Todo :  deletedAt==null 인 것만 조회 ,isclosed 체크
     public DetailProjectResponse projectReadDetail(Long id) {
         Project project = projectRepository.findById(id).orElseThrow(() -> new BaseException(PROJECT_NOT_FOUND));
         incrementViews(id);
@@ -144,11 +142,14 @@ public class ProjectService {
         ValueOperations<String, Object> valueOperations = scrapRedisTemplate.opsForValue();
         Object count = valueOperations.get(projectKey);
         Long scrapCount = count != null ? Long.valueOf(count.toString()) : 0L;
-
-        // member scrap 체크
-        String memberKey = MEMBER_SCRAP_LIST + securityUtil.getCurrentMemberId();
-        SetOperations<String, Object> setOperations = scrapRedisTemplate.opsForSet();
-        Boolean isScrap = setOperations.isMember(memberKey,project.getId());
+//        Boolean isScrap;
+        // member scrap 체크 -> 이 부분을 따로 빼기 scrap 확인 api 따로 빼기
+//        if(securityUtil.isMember().equals(true)) {
+//            String memberKey = MEMBER_SCRAP_LIST + securityUtil.getCurrentMemberId();
+//            SetOperations<String, Object> setOperations = scrapRedisTemplate.opsForSet();
+//            isScrap = setOperations.isMember(memberKey, project.getId());
+//        }
+//        else isScrap=false;
 
         ApplicantsCountResDto applicantsCountResDto = new ApplicantsCountResDto();
         // jobfield별 모집자 수
@@ -161,8 +162,11 @@ public class ProjectService {
             if(jobField == JobField.APP) applicantsCountResDto.setAPP(countApply);
             if(jobField == JobField.DESIGNER) applicantsCountResDto.setDESIGNER(countApply);
         }
-        return DetailProjectResponse.fromEntity(project, scrapCount, viewCount,isScrap, applicantsCountResDto);
+        return DetailProjectResponse.fromEntity(project, scrapCount, viewCount, applicantsCountResDto);
     }
+
+
+
 
     // read-list
     public Page<ListProjectResponse> projectReadAll(Pageable pageable) {
@@ -324,6 +328,41 @@ public class ProjectService {
                     .scrapCount(scrapCount)
                     .isClosed(project.getIsClosed())
 
+                    .description(project.getDescription())
+                    .deadline(project.getDeadline())
+                    .build();
+            listProjectResponses.add(listProjectResponse);
+
+        }
+        if( "views".equals(sorted)) listProjectResponses.sort(Comparator.comparing(ListProjectResponse::getViews).reversed());
+        else if("scraps".equals(sorted))    listProjectResponses.sort(Comparator.comparing(ListProjectResponse::getScrapCount).reversed());
+
+        return listProjectResponses;
+    }
+
+    public List<ListProjectResponse> projectListReadAllNotMember(String sorted) {
+        List<ListProjectResponse> listProjectResponses = new ArrayList<>();
+        List<Project> projectList = projectRepository.findByDeletedAtIsNullOrderByCreatedAtDesc();
+        for (Project project : projectList) {
+            List<ListProjectResponse.RecruitInfoDto> recruitInfoDtos = new ArrayList<>();
+            for( RecruitInfo recruitInfo :project.getRecruitInfos()){
+                ListProjectResponse.RecruitInfoDto recruitInfoDto = ListProjectResponse.RecruitInfoDto.builder()
+                        .id(recruitInfo.getId())
+                        .count(recruitInfo.getCount())
+                        .jobField(recruitInfo.getJobField())
+                        .build();
+                recruitInfoDtos.add(recruitInfoDto);
+            }
+
+            ListProjectResponse listProjectResponse = ListProjectResponse.builder()
+                    .id(project.getId())
+                    .projectName(project.getProjectName())
+//                    .isScrap(isScrap)
+                    .views(project.getViews())
+                    .recruitInfos(recruitInfoDtos)
+                    .imageUrl(project.getImageUrl())
+                    .scrapCount(project.getScrapCount())
+                    .isClosed(project.getIsClosed())
                     .description(project.getDescription())
                     .deadline(project.getDeadline())
                     .build();

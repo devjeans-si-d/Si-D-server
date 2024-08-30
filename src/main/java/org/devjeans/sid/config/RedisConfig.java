@@ -1,6 +1,7 @@
 package org.devjeans.sid.config;
 
 
+import lombok.extern.slf4j.Slf4j;
 import org.devjeans.sid.domain.member.dto.MemberIdEmailCode;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,9 +19,9 @@ import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 
+@Slf4j
 @Configuration
 @EnableRedisRepositories
-@PropertySource("classpath:application.yml")
 public class RedisConfig {
     @Value("${spring.redis.host}")
     private String host;
@@ -28,15 +29,11 @@ public class RedisConfig {
     @Value("${spring.redis.port}")
     private int port;
 
-    @Value("${spring.redis.password}")
-    private String password;
-
     @Bean
     public RedisConnectionFactory redisConnectionFactory() {
         RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
         redisStandaloneConfiguration.setHostName(host);
         redisStandaloneConfiguration.setPort(port);
-        redisStandaloneConfiguration.setPassword(password);
         return new LettuceConnectionFactory(redisStandaloneConfiguration);
     }
 
@@ -61,9 +58,9 @@ public class RedisConfig {
     @Bean
     public RedisConnectionFactory viewsRedisConnectionFactory() {
         RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
+        log.info("line 59: host: {}", host);
         redisStandaloneConfiguration.setHostName(host);
         redisStandaloneConfiguration.setPort(port);
-        redisStandaloneConfiguration.setPassword(password);
         redisStandaloneConfiguration.setDatabase(3); // view 데이터베이스
         return new LettuceConnectionFactory(redisStandaloneConfiguration);
 
@@ -86,6 +83,16 @@ public class RedisConfig {
 
     }
 
+
+    @Bean
+    public RedisConnectionFactory scrapConnectionFactory() {
+        RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
+        redisStandaloneConfiguration.setHostName(host);
+        redisStandaloneConfiguration.setPort(port);
+        redisStandaloneConfiguration.setDatabase(2); // view 데이터베이스
+        return new LettuceConnectionFactory(redisStandaloneConfiguration);
+    }
+
     @Bean
     @Qualifier("scrapRedisTemplate")
     public RedisTemplate<String, Object> scrapRedisTemplate(@Qualifier("scrapConnectionFactory") RedisConnectionFactory connectionFactory) {
@@ -98,10 +105,23 @@ public class RedisConfig {
     }
 
     @Bean
-    public RedisConnectionFactory scrapConnectionFactory() {
-        LettuceConnectionFactory factory = new LettuceConnectionFactory();
-        factory.setDatabase(2); // Scrap 데이터베이스
-        return factory;
+    @Qualifier("chatConnectionMap") // 채팅 참여자가 채팅방에 접속해 있는지 확인
+    public RedisConnectionFactory chatRedisConnectionFactory() {
+        RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
+        redisStandaloneConfiguration.setHostName(host);
+        redisStandaloneConfiguration.setPort(port);
+        redisStandaloneConfiguration.setDatabase(3);
+        return new LettuceConnectionFactory(redisStandaloneConfiguration);
+    }
+
+    @Bean
+    @Qualifier("chatConnectionMap") // 채팅 참여자가 채팅방에 접속해 있는지 확인
+    public RedisTemplate<String, Object> chatRedisTemplate(@Qualifier("chatConnectionMap")RedisConnectionFactory chatRedisConnectionFactory){
+        RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
+        redisTemplate.setKeySerializer(new StringRedisSerializer()); // String 형태를 직렬화 시키겠다. (String으로 직렬화), Redis의 키를 문자열로 직렬화
+        redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer()); //json으로 직렬화, Redis의 값을 JSON형태로 직렬화
+        redisTemplate.setConnectionFactory(chatRedisConnectionFactory);
+        return redisTemplate;
     }
 
     @Bean
@@ -111,7 +131,6 @@ public class RedisConfig {
         redisStandaloneConfiguration.setHostName(host);
         redisStandaloneConfiguration.setPort(port);
         redisStandaloneConfiguration.setDatabase(10);
-        redisStandaloneConfiguration.setPassword(password);
         return new LettuceConnectionFactory(redisStandaloneConfiguration);
     }
 
@@ -132,7 +151,6 @@ public class RedisConfig {
         redisStandaloneConfiguration.setHostName(host);
         redisStandaloneConfiguration.setPort(port);
         redisStandaloneConfiguration.setDatabase(11);
-        redisStandaloneConfiguration.setPassword(password);
         return new LettuceConnectionFactory(redisStandaloneConfiguration);
     }
 

@@ -37,7 +37,12 @@ public class SecurityConfigs {
                         "/api/main/top-launched-project",
                         "/api/main/top-sider-card",
                         "/api/main/top-project",
+                        "/api/launched-project/detail/{id}/basic-info",
+                        "/api/launched-project/detail/{id}/tech-stacks",
+                        "/api/launched-project/detail/{id}/members",
                         "/api/project/listAll",
+                        "/api/project/{id}",
+                        "/api/project/{id}/isScrap",
                         "/api/sider-card/list")
                 .permitAll()
                 .anyRequest().authenticated()

@@ -41,7 +41,6 @@ public class StompHandler implements ChannelInterceptor {
         // 웹소켓 연결 시 헤더의 jwt token 유효성 검증
         String bearerToken = null;
         if (StompCommand.CONNECT == accessor.getCommand()) {
-            log.info("웹소켓 토큰 검증 시작!");
             // "Authorization"이라는 이름의 헤더를 찾아 그 헤더의 첫 번째 값을 반환.
             // Authorization 헤더의 형식 => `Authorization: <type> <credentials>`
             // type: 사용하는 인증 방식.(e.g., Bearer)
@@ -49,12 +48,6 @@ public class StompHandler implements ChannelInterceptor {
             bearerToken = accessor.getFirstNativeHeader("Authorization");
             // 토큰 검증
             jwtTokenProvider.validateWebSocketToken(bearerToken);
-
-
-
-            // 토큰 검증 통과
-            log.info("토큰 검증 통과 WebSocket CONNECT");
-
 
             // 저장
             String sessionId = accessor.getSessionId();

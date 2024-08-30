@@ -50,6 +50,7 @@ public class Member extends BaseEntity {
     @Column(nullable = false)
     private String phoneNumber;
 
+    @Column(length = 3000)
     private String profileImageUrl;
 
 //    트랜잭션으로 회원가입할때 사이더카드도 같이 생성하여 id 공유
