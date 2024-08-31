@@ -45,7 +45,6 @@ public class RedisSubscriber implements MessageListener {
 
 
         } catch (Exception e) {
-            e.printStackTrace();
             throw new BaseException(INVALID_CHATROOM);
         }
     }
