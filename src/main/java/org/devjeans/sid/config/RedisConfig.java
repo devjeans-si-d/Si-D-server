@@ -226,4 +226,32 @@ public class RedisConfig {
         redisTemplate.setConnectionFactory(LPscrapRedisConnectionFactory);
         return redisTemplate;
     }
+
+    //== 13번 ==//
+    @Bean
+    @Qualifier("ssePubSub")
+    public RedisConnectionFactory ssePubSubFactory() {
+        RedisStandaloneConfiguration configuration = new RedisStandaloneConfiguration();
+        configuration.setHostName(host);
+        configuration.setPort(port);
+        configuration.setDatabase(13);
+        return new LettuceConnectionFactory(configuration);
+    }
+
+    @Bean
+    @Qualifier("ssePubSub")
+    public RedisTemplate<String, Object> ssePubSubTemplate(@Qualifier("ssePubSub") RedisConnectionFactory ssePubSubFactory) {
+        RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
+        redisTemplate.setKeySerializer(new StringRedisSerializer());
+
+        //== 객체 안의 객체 직렬화  이슈로 인해 아래와 같이 serializer 커스텀
+        Jackson2JsonRedisSerializer<Object> serializer = new Jackson2JsonRedisSerializer<>(Object.class);
+        ObjectMapper objectMapper = new ObjectMapper();
+        serializer.setObjectMapper(objectMapper);
+        redisTemplate.setValueSerializer(serializer);
+
+        redisTemplate.setConnectionFactory(ssePubSubFactory);
+        return redisTemplate;
+    }
+
 }
