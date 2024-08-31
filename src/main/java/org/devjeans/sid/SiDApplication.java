@@ -4,6 +4,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
+import javax.annotation.PostConstruct;
+import java.util.TimeZone;
+
 @EnableScheduling
 @SpringBootApplication(
 		exclude = {
@@ -16,6 +19,13 @@ public class SiDApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(SiDApplication.class, args);
+	}
+
+
+	@PostConstruct
+	public void init() {
+		// timezone KST로 설정
+		TimeZone.setDefault(TimeZone.getTimeZone("Asia/Seoul"));
 	}
 
 }
