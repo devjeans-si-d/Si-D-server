@@ -113,7 +113,7 @@ public class WebSocketService {
         ChatRoomMessageResponse chatRoomMessageResponse = ChatRoomMessageResponse.fromEntity(savedMessage);
 
         //== Redis Publish ==//
-        publish(om.writeValueAsString(chatRoomMessageResponse));
+        publish(chatRoomMessageResponse);
     }
 
     // 추후 jwt 인증이 구현되면 사용할 수 있는 메서드. receiverId를 받을 필요없이 자신의 아이디로 상대방을 찾을 수 있다.
@@ -125,8 +125,7 @@ public class WebSocketService {
                 .getId();
     }
 
-    private void publish(String message) {
-        log.info("redis pub-sub topic: " + topic.getTopic());
+    private void publish(ChatRoomMessageResponse message) {
         redisTemplate.convertAndSend(topic.getTopic(), message);
     }
 }
