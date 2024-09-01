@@ -34,7 +34,6 @@ public class RedisConfig {
     @Value("${spring.redis.port}")
     private int port;
 
-    //== 0번 ==//
     @Bean
     public RedisConnectionFactory redisConnectionFactory() {
         RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();

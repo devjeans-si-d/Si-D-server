@@ -93,6 +93,7 @@ public class LaunchedProject extends BaseEntity {
     public static BasicInfoLaunchedProjectResponse BasicInfoResfromEntity(LaunchedProject launchedProject){
         return BasicInfoLaunchedProjectResponse.builder()
                 .id(launchedProject.getId()) // 완성된 프로젝트 글id
+                .pmId(launchedProject.getProject().getPm().getId()) // pm맡은 회원 id
                 .launchedProjectImage(launchedProject.getLaunchedProjectImage()) // 프로젝트 사진 url(String)
                 .launchedProjectContents(launchedProject.getLaunchedProjectContents()) // 프로젝트 글 내용
                 .siteUrl(launchedProject.getSiteUrl()) // 프로젝트 출시 사이트 링크

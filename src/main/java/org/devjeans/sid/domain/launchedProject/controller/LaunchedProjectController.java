@@ -86,6 +86,8 @@ public class LaunchedProjectController {
         return ResponseEntity.ok(members);
     }
 
+//    @GetMapping("/detail/{id}")
+
 //    // Launched-Project id로 해당 글에 눌린 scrap(사이다) 조회 => 기능삭제
 //    @GetMapping("/detail/{id}/scraps")
 //    public ResponseEntity<List<LaunchedProjectScrapResponse>> getScraps(@PathVariable Long id){

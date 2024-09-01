@@ -12,6 +12,8 @@ public class BasicInfoLaunchedProjectResponse {
 
     private Long id; // 프로젝트 전시(Launched-Project) id
 
+    private Long pmId; // 프로젝트의 PM 맡은 회원 id
+
     private String launchedProjectImage; // 프로젝트 사진(기본사진 url)
 
     private String launchedProjectContents; // Launched-Project 글 내용
