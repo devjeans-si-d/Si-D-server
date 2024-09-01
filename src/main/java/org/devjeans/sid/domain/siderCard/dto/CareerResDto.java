@@ -16,7 +16,7 @@ import java.time.YearMonth;
 public class CareerResDto {
     private String company;
     private String position;
-    private YearMonth employedStart;
-    private YearMonth employedEnd;
+    private String employedStart;
+    private String employedEnd;
     private Boolean employedYn;
 }

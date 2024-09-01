@@ -6,10 +6,11 @@ build/
 !**/src/test/**/build/
 
 src/docker-compose.yml
+src/main/resources/data.sql
 
 src/main/resources/static/chatfromt/**
 src/main/resources/application-secret.properties
-#src/main/resources/application.yml
+src/main/resources/application-local.yml
 #src/main/resources/application.yml
 ### STS ###
 .apt_generated

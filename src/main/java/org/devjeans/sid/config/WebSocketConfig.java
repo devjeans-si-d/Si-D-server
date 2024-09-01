@@ -31,9 +31,9 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         registry
                 .addEndpoint("/chat") //web socket connection이 최초로 이루어지는 곳(handshake)
                 .setAllowedOriginPatterns("*")
-                .setAllowedOrigins("http://localhost:8080")
+                .setAllowedOrigins("http://localhost:8080", "https://server.si-d.site")
                 .withSockJS()
-                .setClientLibraryUrl("http://localhost:8080/myapp/js/sock-client.js");
+                .setClientLibraryUrl("https://server.si-d.site/myapp/js/sock-client.js");
     }
 
     // TCP handshake 시 JWT 인증을 위함. 처음 연결될 때 JWT를 이용해서 단 한 번 유효한 유저인가 판단한다.

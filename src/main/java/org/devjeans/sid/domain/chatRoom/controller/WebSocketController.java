@@ -1,5 +1,6 @@
 package org.devjeans.sid.domain.chatRoom.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.devjeans.sid.domain.auth.JwtTokenProvider;
@@ -32,12 +33,8 @@ public class WebSocketController {
     // 웹소켓 메시지를 특정 경로로 매핑한다.
     @MessageMapping("/{chatRoomId}") // /pub/1
     public void sendMessage(ChatMessageRequest chatMessageRequest,
-                            SimpMessageHeaderAccessor headerAccessor,
-                            @DestinationVariable(value = "chatRoomId") Long chatRoomId) {
+                            @DestinationVariable(value = "chatRoomId") Long chatRoomId) throws JsonProcessingException {
         Long memberId = jwtTokenProvider.getMemberIdFromToken(chatMessageRequest.getToken());
-
         webSocketService.sendMessage(chatRoomId, memberId, chatMessageRequest);
     }
-
-
 }
