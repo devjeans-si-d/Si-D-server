@@ -40,8 +40,12 @@ public class SseService {
     public SseEmitter subscribe() {
         Long memberId = securityUtil.getCurrentMemberId();
 
+        log.info("memberId: {}", memberId);
+
         SseEmitter emitter = new SseEmitter(Long.MAX_VALUE);
         clients.put(memberId, emitter);
+
+        log.info("clients: {}", clients);
         emitter.onCompletion(() -> clients.remove(memberId));
         emitter.onTimeout(() -> clients.remove(memberId));
 
