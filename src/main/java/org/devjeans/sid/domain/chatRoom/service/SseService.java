@@ -52,6 +52,7 @@ public class SseService {
         try {
             // "connect": 이벤트 이름
             // "connected!!" : 메시지 내용
+            log.info("line 55 !! connect");
             emitter.send(SseEmitter.event().name("connect").data("connected!!"));
         } catch(IOException e) {
             e.printStackTrace();
