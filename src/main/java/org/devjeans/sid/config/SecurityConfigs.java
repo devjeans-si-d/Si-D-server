@@ -15,7 +15,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @EnableWebSecurity //시큐리티 코드라고 선언해 알려주는 코드
 @EnableGlobalMethodSecurity(prePostEnabled = true) // pre : 사전검증, post : 사후검증
-public class SecurityConfigs extends WebSecurityConfigurerAdapter {
+public class SecurityConfigs {
     @Autowired
     private JwtAuthfilter jwtAuthfilter;
     //    모든필터가 모여있는 필터 체인
@@ -61,18 +61,18 @@ public class SecurityConfigs extends WebSecurityConfigurerAdapter {
     }
 
 
-    @Bean
-    public WebMvcConfigurer corsConfigurer() {
-        return new WebMvcConfigurer() {
-            @Override
-            public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**")
-                        .allowedOrigins("https://dev.si-d.site", "http://localhost:8082")
-                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-                        .allowedHeaders("*")
-                        .allowCredentials(true)
-                        .maxAge(3600);
-            }
-        };
-    }
+//    @Bean
+//    public WebMvcConfigurer corsConfigurer() {
+//        return new WebMvcConfigurer() {
+//            @Override
+//            public void addCorsMappings(CorsRegistry registry) {
+//                registry.addMapping("/**")
+//                        .allowedOrigins("https://dev.si-d.site", "http://localhost:8082")
+//                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+//                        .allowedHeaders("*")
+//                        .allowCredentials(true)
+//                        .maxAge(3600);
+//            }
+//        };
+//    }
 }
