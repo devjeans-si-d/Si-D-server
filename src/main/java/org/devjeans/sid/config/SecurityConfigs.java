@@ -74,4 +74,5 @@ public class SecurityConfigs extends WebSecurityConfigurerAdapter {
                         .maxAge(3600);
             }
         };
+    }
 }
