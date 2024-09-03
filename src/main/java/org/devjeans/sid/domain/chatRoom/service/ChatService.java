@@ -81,7 +81,6 @@ public class ChatService {
 
             String recentMsg = recentMessages.isEmpty() ? "" : recentMessages.get(0).getContent();
             // 안읽은 메시지 개수 뽑기
-//            Long unreadCount = chatMessageRepository.countChatMessageByChatRoomAndIsReadAndMember(chatRoom, false, participant);
             String key = "chat_" + chatRoom.getId() + "_" + memberId;
             Object obj = redisTemplate.opsForValue().get(key);
             Long num = 0L;
@@ -100,7 +99,6 @@ public class ChatService {
     public Slice<ChatRoomMessageResponse> getChatRoomMessages(Pageable pageable, Long chatRoomId) {
         Long memberId = securityUtil.getCurrentMemberId();
         resolveUnread(chatRoomId, memberId);
-//        Slice<ChatMessage> messages = chatMessageRepository.findAllByChatRoomId(pageable, chatRoomId);
         Slice<ChatMessage> messages = chatMessageRepository.findAllByChatRoomId(pageable, chatRoomId);
         return messages.map(ChatRoomMessageResponse::fromEntity);
     }
@@ -185,6 +183,8 @@ public class ChatService {
 
     // unread message 읽음 처리
     private void resolveUnread(Long chatRoomId, Long memberId) {
+        String key = "chat_" + chatRoomId + "_" + memberId;
+        redisTemplate.opsForValue().getAndDelete(key);
 
     }
 
