@@ -81,8 +81,16 @@ public class ChatService {
 
             String recentMsg = recentMessages.isEmpty() ? "" : recentMessages.get(0).getContent();
             // 안읽은 메시지 개수 뽑기
-            Long unreadCount = chatMessageRepository.countChatMessageByChatRoomAndIsReadAndMember(chatRoom, false, participant);
-            return ChatRoomSimpleResponse.fromEntity(chatRoom, unreadCount, participant, recentMsg);
+//            Long unreadCount = chatMessageRepository.countChatMessageByChatRoomAndIsReadAndMember(chatRoom, false, participant);
+            String key = "chat_" + chatRoom.getId() + "_" + memberId;
+            Object obj = redisTemplate.opsForValue().get(key);
+            Long num = 0L;
+            if(obj == null) {
+                num = 0L;
+            } else {
+                num = Long.parseLong((String )obj);
+            }
+            return ChatRoomSimpleResponse.fromEntity(chatRoom, num, participant, recentMsg);
         });
 
 
