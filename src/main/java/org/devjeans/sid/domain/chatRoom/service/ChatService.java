@@ -34,7 +34,6 @@ import static org.devjeans.sid.global.exception.exceptionType.AuthException.FORB
 import static org.devjeans.sid.global.exception.exceptionType.ChatExceptionType.*;
 
 @Slf4j
-@RequiredArgsConstructor
 @Service
 public class ChatService {
     private final ChatRoomRepository chatRoomRepository;
@@ -49,6 +48,26 @@ public class ChatService {
     private final RedisTemplate<String, Object> redisTemplate;
 
 
+    public ChatService(ChatRoomRepository chatRoomRepository,
+                       ChatMessageRepository chatMessageRepository,
+                       ChatParticipantRepository chatParticipantRepository,
+                       MemberRepository memberRepository,
+                       ProjectRepository projectRepository,
+                       ConnectedMap connectedMap,
+                       SecurityUtil securityUtil,
+                       SseService sseService,
+                       @Qualifier("chatPubSub")
+                       RedisTemplate<String, Object> redisTemplate) {
+        this.chatRoomRepository = chatRoomRepository;
+        this.chatMessageRepository = chatMessageRepository;
+        this.chatParticipantRepository = chatParticipantRepository;
+        this.memberRepository = memberRepository;
+        this.projectRepository = projectRepository;
+        this.connectedMap = connectedMap;
+        this.securityUtil = securityUtil;
+        this.sseService = sseService;
+        this.redisTemplate = redisTemplate;
+    }
 
     // 해당 회원이 속한 채팅방을 updatedAt DESC로 정렬해서 보여주기
     public Page<ChatRoomSimpleResponse> getChatRoomList(Pageable pageable) {
