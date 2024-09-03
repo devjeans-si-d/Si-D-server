@@ -19,9 +19,11 @@ import org.devjeans.sid.domain.project.repository.ProjectRepository;
 import org.devjeans.sid.global.exception.BaseException;
 import org.devjeans.sid.global.exception.exceptionType.AuthException;
 import org.devjeans.sid.global.util.SecurityUtil;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,6 +45,10 @@ public class ChatService {
     private final ConnectedMap connectedMap;
     private final SecurityUtil securityUtil;
     private final SseService sseService;
+    @Qualifier("chatPubSub")
+    private final RedisTemplate<String, Object> redisTemplate;
+
+
 
     // 해당 회원이 속한 채팅방을 updatedAt DESC로 정렬해서 보여주기
     public Page<ChatRoomSimpleResponse> getChatRoomList(Pageable pageable) {
@@ -171,21 +177,7 @@ public class ChatService {
 
     // unread message 읽음 처리
     private void resolveUnread(Long chatRoomId, Long memberId) {
-        // 방 찾기
-        ChatRoom chatRoom = chatRoomRepository.findByIdOrThrow(chatRoomId);
 
-        // 상대방 찾기
-        Member participant = chatRoom.getChatParticipants().stream()
-                .filter(p -> !p.getMember().getId().equals(memberId))
-                .findFirst()
-                .map(ChatParticipant::getMember)
-                .orElseThrow(() -> new BaseException(INVALID_CHATROOM));
-
-        // 안읽은 메시지 모두 가져오기
-        List<ChatMessage> unreadMessages = chatMessageRepository.findChatMessageByChatRoomAndIsReadAndMember(chatRoom, false, participant);
-
-        // 메시지 읽기
-        unreadMessages.stream().forEach(ChatMessage::readMessage);
     }
 
 
