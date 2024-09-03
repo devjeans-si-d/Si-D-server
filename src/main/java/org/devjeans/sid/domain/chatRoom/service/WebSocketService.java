@@ -17,6 +17,7 @@ import org.devjeans.sid.domain.chatRoom.repository.ChatRoomRepository;
 import org.devjeans.sid.domain.member.entity.Member;
 import org.devjeans.sid.domain.member.repository.MemberRepository;
 import org.devjeans.sid.global.exception.BaseException;
+import org.devjeans.sid.global.exception.exceptionType.ChatExceptionType;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.ChannelTopic;
@@ -104,6 +105,24 @@ public class WebSocketService {
                 //== SSE 로직 => member 닉네임 ==//
                 SseChatResponse sseChatResponse = new SseChatResponse(chatRoom.getId(), sender.getNickname(), chatMessageRequest.getContent());
                 sseService.sendChatNotification(receiverId, sseChatResponse);
+
+                // TODO: 안읽었다면 redis
+                String key = "chat_" + chatRoomId + "_" + receiverId;
+                Object obj = redisTemplate.opsForValue().get(key);
+                if(obj != null) {
+                    try {
+                        String s = (String) obj;
+                        int num = Integer.parseInt(s);
+                        redisTemplate.opsForValue().set(key, Integer.toString(num+1));
+                    } catch(Exception e) {
+                        throw new BaseException(ChatExceptionType.INVALID_CHATROOM); // FIXME: ExceptionType 수정 필요
+                    }
+                } else {
+                    redisTemplate.opsForValue().set(key, "1");
+                }
+
+
+
             }
         }
 
