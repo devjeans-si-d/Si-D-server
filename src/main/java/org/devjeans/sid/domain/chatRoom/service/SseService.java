@@ -121,16 +121,16 @@ public class SseService implements MessageListener {
             RedisRes redisRes = objectMapper.readValue(message.getBody(), RedisRes.class);
             if(redisRes.getType().equals("chat")){
                 NotificationResponse noti = new NotificationResponse("chat", redisRes.getData(), LocalDateTime.now());
-                if (emitter != null) {
+//                if (emitter != null) {
                     emitter.send(SseEmitter.event().name("chat").data(noti));
                     System.out.println("herechat");
-                }
+//                }
             }else {
                 NotificationResponse noti = new NotificationResponse("team", redisRes.getData(), LocalDateTime.now());
-                if (emitter != null) {
+//                if (emitter != null) {
                     emitter.send(SseEmitter.event().name("team").data(noti));
                     System.out.println("hereteam");
-                }
+//                }
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -155,7 +155,7 @@ public class SseService implements MessageListener {
         SseEmitter emitter = clients.get(memberId);
 //        NotificationResponse noti = new NotificationResponse("chat", sseChatResponse, LocalDateTime.now());
         
-        if (emitter != null) {
+//        if (emitter != null) {
             publishMessage(new RedisRes("chat",sseChatResponse),memberId);
 
 //            try {
@@ -163,7 +163,7 @@ public class SseService implements MessageListener {
 //            } catch (IOException e) {
 //                throw new BaseException(FAIL_TO_NOTIFY);
 //            }
-        }
+//        }
     }
 
 
@@ -204,14 +204,14 @@ public class SseService implements MessageListener {
         alertRepository.save(alert);
 
 
-        if (emitter != null) {
+//        if (emitter != null) {
             sseRedisTemplate.convertAndSend(String.valueOf(memberId), new RedisRes("team",sseTeamBuildResponse));
 //            try {
 //                emitter.send(SseEmitter.event().name("team").data(noti));
 //            } catch (IOException e) {
 //                throw new BaseException(FAIL_TO_NOTIFY);
 //            }
-        }
+//        }
     }
 }
 
