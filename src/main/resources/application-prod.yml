@@ -17,13 +17,6 @@ spring:
     tomcat:
       max-active: 5
 
-  #  # rabbit mq 환경 설정
-  #  rabbitmq:
-  #    host: localhost
-  #    port: 5672
-  #    username: guest
-  #    password: guest
-  #    virtual-host: / # 관례적으로 적는 것
 
 
   jpa:
@@ -31,7 +24,7 @@ spring:
     database-platform: org.hibernate.dialect.MariaDBDialect
     generate-ddl: true
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
     show_sql: true
 logging:
   level:
