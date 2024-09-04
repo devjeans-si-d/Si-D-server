@@ -6,7 +6,7 @@ build/
 !**/src/test/**/build/
 
 src/docker-compose.yml
-src/main/resources/data.sql
+#src/main/resources/data.sql
 
 src/main/resources/static/chatfromt/**
 src/main/resources/application-secret.properties

@@ -13,12 +13,12 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry){
         registry.addMapping("/**")
-                .allowedOriginPatterns("*")
+                .allowedOrigins("https://dev.si-d.site", "http://localhost:8082")
                 .allowedMethods("*")
-                .allowedOrigins("https://dev.si-d.site")
                 .allowedHeaders("*")
                 .allowCredentials(true); // 쿠키 인증 요청 허용
     }
+
 
     @Bean
     public PasswordEncoder passwordEncoder() {

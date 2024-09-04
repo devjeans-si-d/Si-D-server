@@ -90,4 +90,10 @@ public class AuthController {
         return new ResponseEntity<>(loginInfo,HttpStatus.OK);
     }
 
+    //== TODO: 삭제 ==//
+    @GetMapping("/memberId/{memberId}")
+    public String getToken(@PathVariable("memberId") Long memberId) {
+        return jwtTokenProvider.createToken(String.valueOf(memberId), "USER");
+    }
+
 }

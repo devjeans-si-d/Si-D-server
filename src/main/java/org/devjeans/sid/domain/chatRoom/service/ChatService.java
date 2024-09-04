@@ -19,9 +19,11 @@ import org.devjeans.sid.domain.project.repository.ProjectRepository;
 import org.devjeans.sid.global.exception.BaseException;
 import org.devjeans.sid.global.exception.exceptionType.AuthException;
 import org.devjeans.sid.global.util.SecurityUtil;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,7 +34,6 @@ import static org.devjeans.sid.global.exception.exceptionType.AuthException.FORB
 import static org.devjeans.sid.global.exception.exceptionType.ChatExceptionType.*;
 
 @Slf4j
-@RequiredArgsConstructor
 @Service
 public class ChatService {
     private final ChatRoomRepository chatRoomRepository;
@@ -43,6 +44,30 @@ public class ChatService {
     private final ConnectedMap connectedMap;
     private final SecurityUtil securityUtil;
     private final SseService sseService;
+    @Qualifier("chatPubSub")
+    private final RedisTemplate<String, Object> redisTemplate;
+
+
+    public ChatService(ChatRoomRepository chatRoomRepository,
+                       ChatMessageRepository chatMessageRepository,
+                       ChatParticipantRepository chatParticipantRepository,
+                       MemberRepository memberRepository,
+                       ProjectRepository projectRepository,
+                       ConnectedMap connectedMap,
+                       SecurityUtil securityUtil,
+                       SseService sseService,
+                       @Qualifier("chatPubSub")
+                       RedisTemplate<String, Object> redisTemplate) {
+        this.chatRoomRepository = chatRoomRepository;
+        this.chatMessageRepository = chatMessageRepository;
+        this.chatParticipantRepository = chatParticipantRepository;
+        this.memberRepository = memberRepository;
+        this.projectRepository = projectRepository;
+        this.connectedMap = connectedMap;
+        this.securityUtil = securityUtil;
+        this.sseService = sseService;
+        this.redisTemplate = redisTemplate;
+    }
 
     // 해당 회원이 속한 채팅방을 updatedAt DESC로 정렬해서 보여주기
     public Page<ChatRoomSimpleResponse> getChatRoomList(Pageable pageable) {
@@ -75,8 +100,15 @@ public class ChatService {
 
             String recentMsg = recentMessages.isEmpty() ? "" : recentMessages.get(0).getContent();
             // 안읽은 메시지 개수 뽑기
-            Long unreadCount = chatMessageRepository.countChatMessageByChatRoomAndIsReadAndMember(chatRoom, false, participant);
-            return ChatRoomSimpleResponse.fromEntity(chatRoom, unreadCount, participant, recentMsg);
+            String key = "chat_" + chatRoom.getId() + "_" + memberId;
+            Object obj = redisTemplate.opsForValue().get(key);
+            Long num = 0L;
+            if(obj == null) {
+                num = 0L;
+            } else {
+                num = Long.parseLong((String )obj);
+            }
+            return ChatRoomSimpleResponse.fromEntity(chatRoom, num, participant, recentMsg);
         });
 
 
@@ -86,7 +118,6 @@ public class ChatService {
     public Slice<ChatRoomMessageResponse> getChatRoomMessages(Pageable pageable, Long chatRoomId) {
         Long memberId = securityUtil.getCurrentMemberId();
         resolveUnread(chatRoomId, memberId);
-//        Slice<ChatMessage> messages = chatMessageRepository.findAllByChatRoomId(pageable, chatRoomId);
         Slice<ChatMessage> messages = chatMessageRepository.findAllByChatRoomId(pageable, chatRoomId);
         return messages.map(ChatRoomMessageResponse::fromEntity);
     }
@@ -171,21 +202,9 @@ public class ChatService {
 
     // unread message 읽음 처리
     private void resolveUnread(Long chatRoomId, Long memberId) {
-        // 방 찾기
-        ChatRoom chatRoom = chatRoomRepository.findByIdOrThrow(chatRoomId);
+        String key = "chat_" + chatRoomId + "_" + memberId;
+        redisTemplate.opsForValue().getAndDelete(key);
 
-        // 상대방 찾기
-        Member participant = chatRoom.getChatParticipants().stream()
-                .filter(p -> !p.getMember().getId().equals(memberId))
-                .findFirst()
-                .map(ChatParticipant::getMember)
-                .orElseThrow(() -> new BaseException(INVALID_CHATROOM));
-
-        // 안읽은 메시지 모두 가져오기
-        List<ChatMessage> unreadMessages = chatMessageRepository.findChatMessageByChatRoomAndIsReadAndMember(chatRoom, false, participant);
-
-        // 메시지 읽기
-        unreadMessages.stream().forEach(ChatMessage::readMessage);
     }
 
 

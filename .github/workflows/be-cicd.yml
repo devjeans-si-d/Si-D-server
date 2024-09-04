@@ -9,20 +9,24 @@ jobs:
     steps:
       - name: checkout-branch
         uses: actions/checkout@v2
+
       - name: build image
         working-directory: .
         run: docker build -t clean01/sid:latest .
+
       - name: docker hub login
         uses: docker/login-action@v1
         with:
           username: ${{secrets.DOCKER_EMAIL}}
           password: ${{secrets.DOCKER_PASSWORD}}
+
       - name: push to dockerhub
         run: docker push clean01/sid:latest
+
       - name: ec2 ssh login and docker compose update
         uses: appleboy/ssh-action@master
         with:
-          host: ec2-3-38-168-222.ap-northeast-2.compute.amazonaws.com
+          host: ec2-3-36-130-110.ap-northeast-2.compute.amazonaws.com
           username: ubuntu
           key: ${{secrets.EC2_PEMKEY}}
           script: |
@@ -31,3 +35,6 @@ jobs:
             fi
             sudo docker login --username ${{secrets.DOCKER_EMAIL}} --password ${{secrets.DOCKER_PASSWORD}}
             sudo docker-compose pull && sudo docker-compose up -d
+            
+            # Remove old and unused Docker images
+            sudo docker image prune -f
