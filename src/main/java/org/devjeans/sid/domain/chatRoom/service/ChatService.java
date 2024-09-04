@@ -115,11 +115,11 @@ public class ChatService {
     }
 
     @Transactional
-    public Slice<ChatRoomMessageResponse> getChatRoomMessages(Pageable pageable, Long chatRoomId) {
+    public List<ChatRoomMessageResponse> getChatRoomMessages(Long chatRoomId) {
         Long memberId = securityUtil.getCurrentMemberId();
         resolveUnread(chatRoomId, memberId);
-        Slice<ChatMessage> messages = chatMessageRepository.findAllByChatRoomId(pageable, chatRoomId);
-        return messages.map(ChatRoomMessageResponse::fromEntity);
+        List<ChatMessage> messages = chatMessageRepository.findAllByChatRoomId(chatRoomId);
+        return messages.stream().map(ChatRoomMessageResponse::fromEntity).collect(Collectors.toList());
     }
 
     // TODO: 추후 쿼리 최적화가 필요..
