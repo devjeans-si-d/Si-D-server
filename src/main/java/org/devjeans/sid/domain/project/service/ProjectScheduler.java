@@ -66,7 +66,7 @@ public class ProjectScheduler {
     @Transactional
     public void projectSchedule(){
         String lockKey = "shedLock_deadline";
-        Boolean isLocked = redisTemplate.opsForValue().setIfAbsent(lockKey, "true", Duration.ofSeconds(60)); // 60초 동안 락 유지
+        Boolean isLocked = redisTemplate.opsForValue().setIfAbsent(lockKey, "true", Duration.ofSeconds(80)); // 60초 동안 락 유지
 
         if (Boolean.TRUE.equals(isLocked)) {
             try {
