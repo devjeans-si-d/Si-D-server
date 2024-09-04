@@ -5,6 +5,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.devjeans.sid.domain.chatRoom.controller.SseController;
+import org.devjeans.sid.domain.chatRoom.dto.RedisRes;
 import org.devjeans.sid.domain.chatRoom.dto.sse.NotificationResponse;
 import org.devjeans.sid.domain.chatRoom.dto.sse.SseChatResponse;
 import org.devjeans.sid.domain.chatRoom.dto.sse.SseEnterResponse;
@@ -96,7 +97,7 @@ public class SseService implements MessageListener {
         return new MessageListenerAdapter(sseService, "onMessage");
     }
 
-    public void publishMessage(SseChatResponse sseChatResponse, Long memberId) {
+    public void publishMessage(RedisRes redisRes, Long memberId) {
         SseEmitter emitter = clients.get(memberId);
 //        if(emitter != null){
 //            try {
@@ -105,7 +106,7 @@ public class SseService implements MessageListener {
 //                throw new RuntimeException(e);
 //            }
 //        }else{
-        sseRedisTemplate.convertAndSend(String.valueOf(memberId), sseChatResponse);
+        sseRedisTemplate.convertAndSend(String.valueOf(memberId), redisRes);
 //        }
     }
 
@@ -114,13 +115,22 @@ public class SseService implements MessageListener {
         ObjectMapper objectMapper = new ObjectMapper();
         System.out.println("아아아아 \n"+message);
         try {
-            SseChatResponse sseChatResponse = objectMapper.readValue(message.getBody(), SseChatResponse.class);
-            NotificationResponse noti = new NotificationResponse("chat", sseChatResponse, LocalDateTime.now());
             Long memberId = Long.valueOf(new String(pattern, StandardCharsets.UTF_8));
             SseEmitter emitter = clients.get(memberId);
-            if (emitter != null) {
-                emitter.send(SseEmitter.event().name("chat").data(noti));
-                System.out.println("here");
+
+            RedisRes redisRes = objectMapper.readValue(message.getBody(), RedisRes.class);
+            if(redisRes.getType().equals("chat")){
+                NotificationResponse noti = new NotificationResponse("chat", redisRes.getData(), LocalDateTime.now());
+                if (emitter != null) {
+                    emitter.send(SseEmitter.event().name("chat").data(noti));
+                    System.out.println("herechat");
+                }
+            }else {
+                NotificationResponse noti = new NotificationResponse("team", redisRes.getData(), LocalDateTime.now());
+                if (emitter != null) {
+                    emitter.send(SseEmitter.event().name("team").data(noti));
+                    System.out.println("hereteam");
+                }
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -146,7 +156,7 @@ public class SseService implements MessageListener {
 //        NotificationResponse noti = new NotificationResponse("chat", sseChatResponse, LocalDateTime.now());
         
         if (emitter != null) {
-            publishMessage(sseChatResponse,memberId);
+            publishMessage(new RedisRes("chat",sseChatResponse),memberId);
 
 //            try {
 //                emitter.send(SseEmitter.event().name("chat").data(noti));
@@ -195,11 +205,12 @@ public class SseService implements MessageListener {
 
 
         if (emitter != null) {
-            try {
-                emitter.send(SseEmitter.event().name("team").data(noti));
-            } catch (IOException e) {
-                throw new BaseException(FAIL_TO_NOTIFY);
-            }
+            sseRedisTemplate.convertAndSend(String.valueOf(memberId), new RedisRes("team",sseTeamBuildResponse));
+//            try {
+//                emitter.send(SseEmitter.event().name("team").data(noti));
+//            } catch (IOException e) {
+//                throw new BaseException(FAIL_TO_NOTIFY);
+//            }
         }
     }
 }
