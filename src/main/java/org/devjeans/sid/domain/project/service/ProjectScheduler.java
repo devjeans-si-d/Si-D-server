@@ -70,7 +70,7 @@ public class ProjectScheduler {
 
         if (Boolean.TRUE.equals(isLocked)) {
             try {
-//                System.out.println("서버 1 스케쥴러 시작 ");
+                System.out.println("서버 1 스케쥴러 시작 ");
                 Page<Project> projects = projectRepository.findByIsClosed(Pageable.unpaged(),"N");
 
                 for(Project p : projects){
@@ -88,13 +88,13 @@ public class ProjectScheduler {
 
                     }
                 }
-//                System.out.println("서버 1 스케쥴러 끝 ");
+                System.out.println("서버 1 스케쥴러 끝 ");
             } finally {
                 // 작업이 끝난 후 락 해제
                 redisTemplate.delete(lockKey);
             }
         } else {
-//            System.out.println("다른 인스턴스에서 스케쥴러가 실행 중");
+            System.out.println("다른 인스턴스에서 스케쥴러가 실행 중");
         }
 
 
