@@ -101,14 +101,15 @@ public class ProjectScheduler {
     }
 
     @Qualifier("viewRedisTemplate")
-    @Scheduled(cron = "0 0 4 * * *")
+//    @Scheduled(cron = "0 0 4 * * *")
+    @Scheduled(cron = "0 0/1 * * * *")
     @Transactional
     public void syncViews(){
         String lockKey = "shedLock_view";
         Boolean isLocked = redisTemplate.opsForValue().setIfAbsent(lockKey, "true", Duration.ofSeconds(60)); // 60초 동안 락 유지
         if(Boolean.TRUE.equals(isLocked)){
             try{
-//                System.out.println("서버 1 view 스케쥴러 시작 ");
+                System.out.println("서버 1 view 스케쥴러 시작 ");
 
                 for (Project p : projectRepository.findAll()) {
                     // 조회수 저장
@@ -121,7 +122,7 @@ public class ProjectScheduler {
                         projectRepository.save(p);
                     }
                 }
-//                System.out.println("서버 1 view 스케쥴러 끝 ");
+                System.out.println("서버 1 view 스케쥴러 끝 ");
 
             }
             finally {
@@ -129,20 +130,21 @@ public class ProjectScheduler {
             }
         }
         else {
-//            System.out.println("다른 인스턴스에서 view 스케쥴러가 실행 중");
+            System.out.println("다른 인스턴스에서 view 스케쥴러가 실행 중");
         }
     }
 
 
     @Qualifier("scrapRedisTemplate")
-    @Scheduled(cron = "0 0 4 * * *")
+//    @Scheduled(cron = "0 0 4 * * *")
+    @Scheduled(cron = "0 0/1 * * * *")
     @Transactional
     public void syncScraps() {
         String lockKey = "shedLock_scrap";
         Boolean isLocked = redisTemplate.opsForValue().setIfAbsent(lockKey, "true", Duration.ofSeconds(60)); // 60초 동안 락 유지
         if(Boolean.TRUE.equals(isLocked)) {
             try {
-//                System.out.println("서버 1 scrap 스케쥴러 시작 ");
+                System.out.println("서버 1 scrap 스케쥴러 시작 ");
 
                 //set(MEMBER_SCRAP_LIST+memberId).members = project id들
                 // projectScrapRepository에 있는지 체크
@@ -181,7 +183,7 @@ public class ProjectScheduler {
                     p.setScrapCount(scrapCount);
                     projectRepository.save(p);
                 }
-//                System.out.println("서버 1 scrap 스케쥴러 끝 ");
+                System.out.println("서버 1 scrap 스케쥴러 끝 ");
 
             }
             finally {
@@ -189,7 +191,7 @@ public class ProjectScheduler {
             }
         }
         else {
-//            System.out.println("다른 인스턴스에서 scrap 스케쥴러가 실행 중");
+            System.out.println("다른 인스턴스에서 scrap 스케쥴러가 실행 중");
         }
 
     }
