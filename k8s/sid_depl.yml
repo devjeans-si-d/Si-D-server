@@ -70,6 +70,16 @@ spec:
               secretKeyRef:
                 key: AWS_ACCESS_KEY
                 name: sid-app-secrets
+          - name: SMTP_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                key: SMTP_PASSWORD
+                name: sid-app-secrets
+          - name: KAKAO_API_KEY
+            valueFrom:
+              secretKeyRef:
+                key: KAKAO_API_KEY
+                name: sid-app-secrets
           # 무중단 배포를 위한 컨테이너 헬스체크
           readinessProbe:
             httpGet:
