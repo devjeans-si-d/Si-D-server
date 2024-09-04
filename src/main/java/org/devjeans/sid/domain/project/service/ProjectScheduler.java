@@ -23,6 +23,8 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.devjeans.sid.global.util.SecurityUtil;
+
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
@@ -63,87 +65,132 @@ public class ProjectScheduler {
     @Scheduled(cron = "0 0/1 * * * *")
     @Transactional
     public void projectSchedule(){
+        String lockKey = "shedLock_deadline";
+        Boolean isLocked = redisTemplate.opsForValue().setIfAbsent(lockKey, "true", Duration.ofSeconds(60)); // 60초 동안 락 유지
 
-        Page<Project> projects = projectRepository.findByIsClosed(Pageable.unpaged(),"N");
+        if (Boolean.TRUE.equals(isLocked)) {
+            try {
+//                System.out.println("서버 1 스케쥴러 시작 ");
+                Page<Project> projects = projectRepository.findByIsClosed(Pageable.unpaged(),"N");
 
-        for(Project p : projects){
-            if(p.getDeadline().isBefore(LocalDateTime.now())){
-                p.updateIsClosed("Y");
-                projectRepository.save(p);
+                for(Project p : projects){
+                    if(p.getDeadline().isBefore(LocalDateTime.now())){
+                        p.updateIsClosed("Y");
+                        projectRepository.save(p);
 
-                //== SSE ==//
-                List<ProjectMember> projectMembers = p.getProjectMembers();
+                        //== SSE ==//
+                        List<ProjectMember> projectMembers = p.getProjectMembers();
 
-                for (ProjectMember projectMember : projectMembers) {
-                    SseTeamBuildResponse sseTeamBuildResponse = new SseTeamBuildResponse(p.getId(), p.getProjectName(), p.getPm().getId());
-                    sseService.sendTeamBuild(projectMember.getMember().getId(), sseTeamBuildResponse, projectMembers);
+                        for (ProjectMember projectMember : projectMembers) {
+                            SseTeamBuildResponse sseTeamBuildResponse = new SseTeamBuildResponse(p.getId(), p.getProjectName(), p.getPm().getId());
+                            sseService.sendTeamBuild(projectMember.getMember().getId(), sseTeamBuildResponse, projectMembers);
+                        }
+
+                    }
                 }
-
+//                System.out.println("서버 1 스케쥴러 끝 ");
+            } finally {
+                // 작업이 끝난 후 락 해제
+                redisTemplate.delete(lockKey);
             }
+        } else {
+//            System.out.println("다른 인스턴스에서 스케쥴러가 실행 중");
         }
+
+
     }
 
     @Qualifier("viewRedisTemplate")
     @Scheduled(cron = "0 0 4 * * *")
     @Transactional
     public void syncViews(){
-        for(Project p : projectRepository.findAll()){
-            // 조회수 저장
-            String key = VIEWS_KEY_PREFIX+p.getId();
-            String value = redisTemplate.opsForValue().get(key);
-            Long view = 0L;
-            if(value!=null) {
-                view = Long.parseLong(value);
-                p.setViews(view);
-                projectRepository.save(p);
+        String lockKey = "shedLock_view";
+        Boolean isLocked = redisTemplate.opsForValue().setIfAbsent(lockKey, "true", Duration.ofSeconds(60)); // 60초 동안 락 유지
+        if(Boolean.TRUE.equals(isLocked)){
+            try{
+//                System.out.println("서버 1 view 스케쥴러 시작 ");
+
+                for (Project p : projectRepository.findAll()) {
+                    // 조회수 저장
+                    String key = VIEWS_KEY_PREFIX + p.getId();
+                    String value = redisTemplate.opsForValue().get(key);
+                    Long view = 0L;
+                    if (value != null) {
+                        view = Long.parseLong(value);
+                        p.setViews(view);
+                        projectRepository.save(p);
+                    }
+                }
+//                System.out.println("서버 1 view 스케쥴러 끝 ");
+
             }
+            finally {
+                    redisTemplate.delete(lockKey);
+            }
+        }
+        else {
+//            System.out.println("다른 인스턴스에서 view 스케쥴러가 실행 중");
         }
     }
 
 
     @Qualifier("scrapRedisTemplate")
     @Scheduled(cron = "0 0 4 * * *")
-//    @Scheduled(cron = "* * * * * *")
     @Transactional
     public void syncScraps() {
-        //set(MEMBER_SCRAP_LIST+memberId).members = project id들
-        // projectScrapRepository에 있는지 체크
-        // 없다면 생성 후 save
-        for(Member member:memberRepository.findAll()){
-            String key = MEMBER_SCRAP_LIST+member.getId();
-            SetOperations<String,Object> setOperations = scrapRedisTemplate.opsForSet();
-            Set<Object> projects = setOperations.members(key); // 한 회원이 scrap한 프로젝트 목록
+        String lockKey = "shedLock_scrap";
+        Boolean isLocked = redisTemplate.opsForValue().setIfAbsent(lockKey, "true", Duration.ofSeconds(60)); // 60초 동안 락 유지
+        if(Boolean.TRUE.equals(isLocked)) {
+            try {
+//                System.out.println("서버 1 scrap 스케쥴러 시작 ");
 
-            if(projects!=null){
-                for(Object projectId : projects){
-                    Long id = Long.parseLong(projectId.toString());
-                    Project project = projectRepository.findById(id).orElseThrow(()->new BaseException(PROJECT_NOT_FOUND));
-                    // 해당 projectScrap이 이미 있는지 체크 후 없다면 저장
-                    if(projectScrapRepository.findByProjectIdAndMemberId(id, member.getId())==null) {
-                        ProjectScrap projectScrap = new ProjectScrap();
-                        projectScrap.setProject(project);
-                        projectScrap.setMember(member);
-                        projectScrapRepository.save(projectScrap);
+                //set(MEMBER_SCRAP_LIST+memberId).members = project id들
+                // projectScrapRepository에 있는지 체크
+                // 없다면 생성 후 save
+                for (Member member : memberRepository.findAll()) {
+                    String key = MEMBER_SCRAP_LIST + member.getId();
+                    SetOperations<String, Object> setOperations = scrapRedisTemplate.opsForSet();
+                    Set<Object> projects = setOperations.members(key); // 한 회원이 scrap한 프로젝트 목록
+
+                    if (projects != null) {
+                        for (Object projectId : projects) {
+                            Long id = Long.parseLong(projectId.toString());
+                            Project project = projectRepository.findById(id).orElseThrow(() -> new BaseException(PROJECT_NOT_FOUND));
+                            // 해당 projectScrap이 이미 있는지 체크 후 없다면 저장
+                            if (projectScrapRepository.findByProjectIdAndMemberId(id, member.getId()) == null) {
+                                ProjectScrap projectScrap = new ProjectScrap();
+                                projectScrap.setProject(project);
+                                projectScrap.setMember(member);
+                                projectScrapRepository.save(projectScrap);
+                            }
+                        }
                     }
                 }
+
+                for (Project p : projectRepository.findAll()) {
+                    // scrapCount
+                    Long scrapCount = 0L;
+
+                    String projectKey = PROJECT_SCRAP_COUNT + p.getId();
+                    ValueOperations<String, Object> valueOperations = scrapRedisTemplate.opsForValue();
+                    Object count = valueOperations.get(projectKey);
+                    if (count != null) {
+                        scrapCount = Long.valueOf(count.toString());
+
+                    }
+                    p.setScrapCount(scrapCount);
+                    projectRepository.save(p);
+                }
+//                System.out.println("서버 1 scrap 스케쥴러 끝 ");
+
+            }
+            finally {
+                redisTemplate.delete(lockKey);
             }
         }
-
-        for(Project p : projectRepository.findAll()){
-            // scrapCount
-            Long scrapCount = 0L;
-
-            String projectKey = PROJECT_SCRAP_COUNT + p.getId();
-            ValueOperations<String, Object> valueOperations = scrapRedisTemplate.opsForValue();
-            Object count = valueOperations.get(projectKey);
-            if(count !=null){
-                scrapCount = Long.valueOf(count.toString());
-
-            }
-            p.setScrapCount(scrapCount);
-            projectRepository.save(p);
+        else {
+//            System.out.println("다른 인스턴스에서 scrap 스케쥴러가 실행 중");
         }
-
 
     }
 }
