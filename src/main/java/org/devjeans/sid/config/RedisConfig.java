@@ -176,6 +176,7 @@ public class RedisConfig {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(chatPubSubFactory);
         container.addMessageListener(listenerAdapter, topic());
+
         return container;
     }
 
