@@ -1,0 +1,61 @@
+spring:
+  config:
+    activate:
+      on-profile: prod
+  datasource:
+    url: jdbc:mariadb://${DB_HOST}:3306/sid?characterEncoding=UTF-8&serverTimezone=UTC
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.mariadb.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create
+    database: mysql
+    database-platform: org.hibernate.dialect.MariaDBDialect
+    generate-ddl: true
+#    defer-datasource-initialization: true
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+9
+  redis:
+    host: ${REDIS_HOST}
+    port: 6379
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: "clearrworld@gmail.com"
+    password: ${SMTP_PASSWORD}
+    properties:
+      mail.smtp.debug: true
+      mail.smtp.connectiontimeout: 1000 #1초
+      mail.starttls.enable: true
+      mail.smtp.auth: true
+#  sql:
+#    init:
+#      mode: always
+
+logging:
+  level:
+    org.hibernate.sql: debug
+    org.hibernate.type: trace
+
+auth:
+  oauth:
+    kakao:
+      api: ${KAKAO_API_KEY}
+      redirect-url: https://dev.si-d.site/oauth
+
+jwt:
+  expiration: 30
+  secretKey: ${JWT_SECRET}
+
+cloud:
+  aws:
+    s3:
+      bucket: sejeong-file
+    stack.auto: false
+    region:
+      static: ap-northeast-2
+    credentials:
+      access-key: ${AWS_ACCESS_KEY}
+      secret-key: ${AWS_SECRET_KEY}
