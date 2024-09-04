@@ -4,6 +4,7 @@ package org.devjeans.sid.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.devjeans.sid.domain.chatRoom.controller.RedisSubscriber;
+import org.devjeans.sid.domain.chatRoom.controller.SseController;
 import org.devjeans.sid.domain.member.dto.MemberIdEmailCode;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -125,7 +126,7 @@ public class RedisConfig {
 
     @Bean
     @Qualifier("chatConnectionMap") // 채팅 참여자가 채팅방에 접속해 있는지 확인
-    public RedisTemplate<String, Object> chatRedisTemplate(@Qualifier("chatConnectionMap")RedisConnectionFactory chatRedisConnectionFactory){
+    public RedisTemplate<String, Object> chatRedisTemplate(@Qualifier("chatConnectionMap") RedisConnectionFactory chatRedisConnectionFactory) {
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
         redisTemplate.setKeySerializer(new StringRedisSerializer()); // String 형태를 직렬화 시키겠다. (String으로 직렬화), Redis의 키를 문자열로 직렬화
         redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer()); //json으로 직렬화, Redis의 값을 JSON형태로 직렬화
@@ -168,15 +169,15 @@ public class RedisConfig {
         return new MessageListenerAdapter(redisSubscriber);
     }
 
-    @Bean
-    @Qualifier("chatPubSubContainer")
-    public RedisMessageListenerContainer redisMessageListenerContainer(@Qualifier("chatPubSub") RedisConnectionFactory chatPubSubFactory,
-                                                                       @Qualifier("chatMessageListenerAdapter") MessageListenerAdapter listenerAdapter) {
-        RedisMessageListenerContainer container = new RedisMessageListenerContainer();
-        container.setConnectionFactory(chatPubSubFactory);
-        container.addMessageListener(listenerAdapter, topic());
-        return container;
-    }
+//    @Bean
+//    @Qualifier("chatPubSubContainer")
+//    public RedisMessageListenerContainer redisMessageListenerContainer(@Qualifier("chatPubSub") RedisConnectionFactory chatPubSubFactory,
+//                                                                       @Qualifier("chatMessageListenerAdapter") MessageListenerAdapter listenerAdapter) {
+//        RedisMessageListenerContainer container = new RedisMessageListenerContainer();
+//        container.setConnectionFactory(chatPubSubFactory);
+//        container.addMessageListener(listenerAdapter, topic());
+//        return container;
+//    }
 
     @Bean
     @Qualifier("chatTopic")
@@ -197,7 +198,7 @@ public class RedisConfig {
 
     @Bean
     @Qualifier("LaunchedProjectView") // 완성된프로젝트 조회수 RedisTemplate
-    public RedisTemplate<String, String> LPviewRedisTemplate(@Qualifier("LaunchedProjectView")RedisConnectionFactory LPviewRedisConnectionFactory){
+    public RedisTemplate<String, String> LPviewRedisTemplate(@Qualifier("LaunchedProjectView") RedisConnectionFactory LPviewRedisConnectionFactory) {
         RedisTemplate<String, String> redisTemplate = new RedisTemplate<>();
         redisTemplate.setKeySerializer(new StringRedisSerializer());
         redisTemplate.setValueSerializer(new StringRedisSerializer());
@@ -218,7 +219,7 @@ public class RedisConfig {
 
     @Bean
     @Qualifier("LaunchedProjectScrap") // 완성된프로젝트 스크랩 RedisTemplate
-    public RedisTemplate<String, Object> LPscrapRedisTemplate(@Qualifier("LaunchedProjectScrap")RedisConnectionFactory LPscrapRedisConnectionFactory){
+    public RedisTemplate<String, Object> LPscrapRedisTemplate(@Qualifier("LaunchedProjectScrap") RedisConnectionFactory LPscrapRedisConnectionFactory) {
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
         redisTemplate.setKeySerializer(new StringRedisSerializer()); // String 형태를 직렬화 시키겠다. (String으로 직렬화), Redis의 키를 문자열로 직렬화
         redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer()); //json으로 직렬화, Redis의 값을 JSON형태로 직렬화
@@ -252,5 +253,20 @@ public class RedisConfig {
         redisTemplate.setConnectionFactory(ssePubSubFactory);
         return redisTemplate;
     }
+
+    @Bean
+    @Qualifier("ssePubSub")
+    public RedisMessageListenerContainer redisMessageListenerContainer(@Qualifier("ssePubSub") RedisConnectionFactory sseFactory) {
+        RedisMessageListenerContainer container = new RedisMessageListenerContainer();
+        container.setConnectionFactory(sseFactory);
+        return container;
+    }
+
+//    //    redis에 메시지 발행되면 listen하게 되고 , 아래 코드를 통해 특정 메서드를 실행하도록 설정
+//    @Bean
+//    public MessageListenerAdapter listenerAdapter(SseController sseController) {
+//        System.out.println("MessageListenerAdapter");
+//        return new MessageListenerAdapter(sseController, "onMessage");
+//    }
 
 }
