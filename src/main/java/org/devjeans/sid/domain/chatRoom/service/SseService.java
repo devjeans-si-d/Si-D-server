@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.devjeans.sid.domain.chatRoom.controller.SseController;
 import org.devjeans.sid.domain.chatRoom.dto.sse.NotificationResponse;
 import org.devjeans.sid.domain.chatRoom.dto.sse.SseChatResponse;
 import org.devjeans.sid.domain.chatRoom.dto.sse.SseEnterResponse;
@@ -14,27 +15,48 @@ import org.devjeans.sid.domain.chatRoom.repository.AlertRepository;
 import org.devjeans.sid.domain.project.entity.ProjectMember;
 import org.devjeans.sid.global.exception.BaseException;
 import org.devjeans.sid.global.util.SecurityUtil;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.redis.connection.Message;
+import org.springframework.data.redis.connection.MessageListener;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.listener.PatternTopic;
+import org.springframework.data.redis.listener.RedisMessageListenerContainer;
+import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static org.devjeans.sid.global.exception.exceptionType.SseExceptionType.FAIL_TO_NOTIFY;
 
 // TODO: SseService는 인증 후 사용 예정
 @Slf4j
-@RequiredArgsConstructor
 @Service
-public class SseService {
+public class SseService implements MessageListener {
 
     // key: memberId
     private static final Map<Long, SseEmitter> clients = new ConcurrentHashMap<>();
+    private Set<Long> subscribeList = ConcurrentHashMap.newKeySet();
+
+    @Qualifier("ssePubSub")
+    private final RedisTemplate<String, Object> sseRedisTemplate;
     private final SecurityUtil securityUtil;
     private final AlertRepository alertRepository;
+    private final RedisMessageListenerContainer redisMessageListenerContainer;
+
+
+    public SseService(@Qualifier("ssePubSub") RedisTemplate<String, Object> sseRedisTemplate, SecurityUtil securityUtil, AlertRepository alertRepository, RedisMessageListenerContainer redisMessageListenerContainer) {
+        this.sseRedisTemplate = sseRedisTemplate;
+        this.securityUtil = securityUtil;
+        this.alertRepository = alertRepository;
+        this.redisMessageListenerContainer = redisMessageListenerContainer;
+    }
 
     // 로그인하면 emitter 생성
     public SseEmitter subscribe() {
@@ -57,11 +79,56 @@ public class SseService {
         } catch(IOException e) {
             e.printStackTrace();
         }
-
+        subscribeChannel(memberId);
         return emitter;
     }
 
+    public void subscribeChannel(Long memberId) {
+//        이미 구독한 email일 경우에는 더이상 구독하지 않는 분기처리
+        if (!subscribeList.contains(memberId)) {
+            MessageListenerAdapter listenerAdapter = createListenerAdapter(this);
+            redisMessageListenerContainer.addMessageListener(listenerAdapter, new PatternTopic(String.valueOf(memberId)));
+            subscribeList.add(memberId);
+        }
+    }
 
+    private MessageListenerAdapter createListenerAdapter(SseService sseService) {
+        return new MessageListenerAdapter(sseService, "onMessage");
+    }
+
+    public void publishMessage(SseChatResponse sseChatResponse, Long memberId) {
+        SseEmitter emitter = clients.get(memberId);
+//        if(emitter != null){
+//            try {
+//                emitter.send(SseEmitter.event().name("ordered").data(dto));
+//            } catch (IOException e) {
+//                throw new RuntimeException(e);
+//            }
+//        }else{
+        sseRedisTemplate.convertAndSend(String.valueOf(memberId), sseChatResponse);
+//        }
+    }
+
+    @Override
+    public void onMessage(Message message, byte[] pattern) { // pattern안에 email들어있음
+        ObjectMapper objectMapper = new ObjectMapper();
+        System.out.println("아아아아 \n"+message);
+        try {
+            SseChatResponse sseChatResponse = objectMapper.readValue(message.getBody(), SseChatResponse.class);
+            NotificationResponse noti = new NotificationResponse("chat", sseChatResponse, LocalDateTime.now());
+            Long memberId = Long.valueOf(new String(pattern, StandardCharsets.UTF_8));
+            SseEmitter emitter = clients.get(memberId);
+            if (emitter != null) {
+                emitter.send(SseEmitter.event().name("chat").data(noti));
+                System.out.println("here");
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+//=================================================
     // 로그아웃시 호출
     public void completeEmitter() {
         Long memberId = securityUtil.getCurrentMemberId();
@@ -76,14 +143,16 @@ public class SseService {
     // type: chat
     public void sendChatNotification(Long memberId, SseChatResponse sseChatResponse) {
         SseEmitter emitter = clients.get(memberId);
-        NotificationResponse noti = new NotificationResponse("chat", sseChatResponse, LocalDateTime.now());
+//        NotificationResponse noti = new NotificationResponse("chat", sseChatResponse, LocalDateTime.now());
         
         if (emitter != null) {
-            try {
-                emitter.send(SseEmitter.event().name("chat").data(noti));
-            } catch (IOException e) {
-                throw new BaseException(FAIL_TO_NOTIFY);
-            }
+            publishMessage(sseChatResponse,memberId);
+
+//            try {
+//                emitter.send(SseEmitter.event().name("chat").data(noti));
+//            } catch (IOException e) {
+//                throw new BaseException(FAIL_TO_NOTIFY);
+//            }
         }
     }
 

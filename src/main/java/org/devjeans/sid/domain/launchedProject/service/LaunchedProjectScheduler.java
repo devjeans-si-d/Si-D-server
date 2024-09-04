@@ -18,6 +18,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import javax.transaction.Transactional;
+import java.time.Duration;
 import java.util.Set;
 
 import static org.devjeans.sid.global.exception.exceptionType.LaunchedProjectExceptionType.LAUNCHED_PROJECT_NOT_FOUND;
@@ -52,14 +53,23 @@ public class LaunchedProjectScheduler {
     @Scheduled(cron = "0 0 4 * * *")
     @Transactional
     public void syncViews(){
-        for(LaunchedProject lp : launchedProjectRepository.findAll()){
-            // 조회수 저장
-            String key = LP_VIEWS_KEY_PREFIX + lp.getId() + "_views";
-            String value = viewRedisTemplate.opsForValue().get(key);
-            Long view = 0L;
-            if(value!=null) view = Long.parseLong(value);
-            lp.setViews(view);
-            launchedProjectRepository.save(lp);
+        String lockKey = "shedLock_view_launched";
+        Boolean isLocked = viewRedisTemplate.opsForValue().setIfAbsent(lockKey, "true", Duration.ofSeconds(60)); // 60초 동안 락 유지
+        if(Boolean.TRUE.equals(isLocked)) {
+            try{
+                for (LaunchedProject lp : launchedProjectRepository.findAll()) {
+                    // 조회수 저장
+                    String key = LP_VIEWS_KEY_PREFIX + lp.getId() + "_views";
+                    String value = viewRedisTemplate.opsForValue().get(key);
+                    Long view = 0L;
+                    if (value != null) view = Long.parseLong(value);
+                    lp.setViews(view);
+                    launchedProjectRepository.save(lp);
+                }
+            }
+            finally {
+                viewRedisTemplate.delete(lockKey);
+            }
         }
     }
 
@@ -67,33 +77,39 @@ public class LaunchedProjectScheduler {
     @Scheduled(cron = "0 0 4 * * *")
     @Transactional
     public void syncScraps(){
-        for(LaunchedProject lp : launchedProjectRepository.findAll()){
-            // scrap 저장
-            // key : launched_project1_scrap (이런식으로 저장됨)
-            String key = LP_SCRAP_KEY_PREFIX + lp.getId() + "_scrap";
+        String lockKey = "shedLock_scrap_launched";
+        Boolean isLocked = scrapRedisTemplate.opsForValue().setIfAbsent(lockKey, "true", Duration.ofSeconds(60)); // 60초 동안 락 유지
+        if(Boolean.TRUE.equals(isLocked)) {
+            try {
+                for (LaunchedProject lp : launchedProjectRepository.findAll()) {
+                    // scrap 저장
+                    // key : launched_project1_scrap (이런식으로 저장됨)
+                    String key = LP_SCRAP_KEY_PREFIX + lp.getId() + "_scrap";
 
-            SetOperations<String, Object> setOperations = scrapRedisTemplate.opsForSet();
-            Set<Object> members = setOperations.members(key); // scrap한 회원id Set
+                    SetOperations<String, Object> setOperations = scrapRedisTemplate.opsForSet();
+                    Set<Object> members = setOperations.members(key); // scrap한 회원id Set
 
-            if(members != null){
-                for(Object memberId : members){
-                    Long id = Long.parseLong(memberId.toString()); // 회원id
+                    if (members != null) {
+                        for (Object memberId : members) {
+                            Long id = Long.parseLong(memberId.toString()); // 회원id
 
-                    // RDB에 해당 스크랩 데이터가 이미 존재하는지 확인
-                    boolean exists = launchedProjectScrapRepository.existsByLaunchedProjectIdAndMemberId(lp.getId(), id);
-                    if(!exists){
-                        // RDB에 저장
-                        Member member = memberRepository.findByIdOrThrow(id);
-                        LaunchedProjectScrap launchedProjectScrap = new LaunchedProjectScrap();
-                        launchedProjectScrap.setLaunchedProject(lp);
-                        launchedProjectScrap.setMember(member);
-                        launchedProjectScrapRepository.save(launchedProjectScrap);
+                            // RDB에 해당 스크랩 데이터가 이미 존재하는지 확인
+                            boolean exists = launchedProjectScrapRepository.existsByLaunchedProjectIdAndMemberId(lp.getId(), id);
+                            if (!exists) {
+                                // RDB에 저장
+                                Member member = memberRepository.findByIdOrThrow(id);
+                                LaunchedProjectScrap launchedProjectScrap = new LaunchedProjectScrap();
+                                launchedProjectScrap.setLaunchedProject(lp);
+                                launchedProjectScrap.setMember(member);
+                                launchedProjectScrapRepository.save(launchedProjectScrap);
+                            }
+                        }
                     }
                 }
             }
+            finally {
+                scrapRedisTemplate.delete(lockKey);
+            }
         }
     }
-
-
-
 }
