@@ -30,9 +30,8 @@ public class ChatController {
 
     // createdAt의 내림차순으로 뿌려주기, 보낸사람 아이디, 내용, 보낸 시간
     @GetMapping("/chatroom/{chatRoomId}")
-    public ResponseEntity<Slice<ChatRoomMessageResponse>> getChatRoomMessages(@PageableDefault(size = 50) Pageable pageable,
-                                                                              @PathVariable("chatRoomId") Long chatRoomId) {
-        Slice<ChatRoomMessageResponse> chatRoomMessages = chatService.getChatRoomMessages(pageable, chatRoomId);
+    public ResponseEntity<List<ChatRoomMessageResponse>> getChatRoomMessages(@PathVariable("chatRoomId") Long chatRoomId) {
+        List<ChatRoomMessageResponse> chatRoomMessages = chatService.getChatRoomMessages(chatRoomId);
 
         return new ResponseEntity<>(chatRoomMessages, HttpStatus.OK);
     }
@@ -53,7 +52,7 @@ public class ChatController {
     }
 
     @GetMapping("/chatroom/{chatRoomId}/get-member-info")
-    public ResponseEntity<List<MemberInfoResponse>> getChatRoomMessages(@PathVariable("chatRoomId") Long chatRoomId) {
+    public ResponseEntity<List<MemberInfoResponse>> getChatRoomMembers(@PathVariable("chatRoomId") Long chatRoomId) {
         List<MemberInfoResponse> memberInfos = chatService.getMemberInfo(chatRoomId);
 
         return new ResponseEntity<>(memberInfos, HttpStatus.OK);
