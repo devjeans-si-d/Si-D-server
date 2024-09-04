@@ -169,15 +169,15 @@ public class RedisConfig {
         return new MessageListenerAdapter(redisSubscriber);
     }
 
-//    @Bean
-//    @Qualifier("chatPubSubContainer")
-//    public RedisMessageListenerContainer redisMessageListenerContainer(@Qualifier("chatPubSub") RedisConnectionFactory chatPubSubFactory,
-//                                                                       @Qualifier("chatMessageListenerAdapter") MessageListenerAdapter listenerAdapter) {
-//        RedisMessageListenerContainer container = new RedisMessageListenerContainer();
-//        container.setConnectionFactory(chatPubSubFactory);
-//        container.addMessageListener(listenerAdapter, topic());
-//        return container;
-//    }
+    @Bean
+    @Qualifier("chatPubSubContainer")
+    public RedisMessageListenerContainer redisMessageListenerContainer(@Qualifier("chatPubSub") RedisConnectionFactory chatPubSubFactory,
+                                                                       @Qualifier("chatMessageListenerAdapter") MessageListenerAdapter listenerAdapter) {
+        RedisMessageListenerContainer container = new RedisMessageListenerContainer();
+        container.setConnectionFactory(chatPubSubFactory);
+        container.addMessageListener(listenerAdapter, topic());
+        return container;
+    }
 
     @Bean
     @Qualifier("chatTopic")

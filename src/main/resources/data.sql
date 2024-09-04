@@ -52,3 +52,45 @@ INSERT INTO `tech_stack` VALUES
                              (50,'PM','Kanban'),
                              (51,'PM','Notion');
 
+
+INSERT INTO `member` VALUES
+                         (1,'2024-08-20 07:08:40.464688',NULL,'2024-08-20 18:26:55','kindseho@naver.com','최세호','푸바오','01012341234','https://sejeong-file.s3.ap-northeast-2.amazonaws.com/test-prefix/98c991f9-38db-4870-9c87-ecb373d6034c%ED%91%B8%EB%B0%94%EC%98%A4.jpeg','USER',3633975723,'KAKAO'),
+                         (2,'2024-08-20 07:11:45.595830',NULL,'2024-08-20 16:13:46','wisdom0405@kakao.com','정슬기','마이크로 슬기','01011223344','https://sejeong-file.s3.ap-northeast-2.amazonaws.com/test-prefix/50e2d813-f138-4a10-9cda-ccba204befca60c5e985f16f390de3b233908a175ccc.jpg','USER',3641074527,'KAKAO'),
+                         (3,'2024-08-20 07:47:12.501151',NULL,'2024-08-20 18:31:28','clearrworld@kakao.com','김세정','clean01','01031044841','https://sejeong-file.s3.ap-northeast-2.amazonaws.com/test-prefix/d4529270-7e1d-4797-98e2-641646418f6a%EC%8B%A0.jpeg','USER',3640843038,'KAKAO'),
+                         (4,'2024-08-20 07:52:20.571034',NULL,'2024-08-20 16:52:20','dnwls1313@gmail.com','박우진','헤이호오','01023420984','https://sejeong-file.s3.ap-northeast-2.amazonaws.com/devjeans-sid/devjeans-spring.png','USER',3642634274,'KAKAO'),
+                         (5,'2024-08-20 11:15:11.205674',NULL,'2024-08-20 20:15:11','mandoo2276@naver.com','김민지','minji2276','01031044841','https://sejeong-file.s3.ap-northeast-2.amazonaws.com/devjeans-sid/devjeans-spring.png','USER',3672230448,'KAKAO');
+
+
+/*!40000 ALTER TABLE `sider_card` DISABLE KEYS */;
+INSERT INTO `recruit_info` VALUES
+                               (5,'2024-08-20 07:32:26.270159',NULL,'2024-08-20 16:32:26',2,'FRONTEND',1),
+                               (6,'2024-08-20 07:32:26.270159',NULL,'2024-08-20 16:32:26',2,'BACKEND',1),
+                               (7,'2024-08-20 07:40:56.044572',NULL,'2024-08-20 16:40:56',2,'BACKEND',2),
+                               (8,'2024-08-20 07:44:07.688951',NULL,'2024-08-20 16:44:07',3,'APP',3),
+                               (9,'2024-08-20 07:44:07.689949',NULL,'2024-08-20 16:44:07',1,'DESIGNER',3),
+                               (10,'2024-08-20 07:57:04.615981',NULL,'2024-08-20 16:57:04',2,'FRONTEND',4),
+                               (11,'2024-08-20 07:59:04.034019',NULL,'2024-08-20 16:59:04',2,'FRONTEND',5),
+                               (12,'2024-08-20 07:59:04.034734',NULL,'2024-08-20 16:59:04',2,'BACKEND',5),
+                               (13,'2024-08-20 08:03:27.572437',NULL,'2024-08-20 17:03:27',2,'FRONTEND',6),
+                               (14,'2024-08-20 08:03:27.573438',NULL,'2024-08-20 17:03:27',2,'BACKEND',6),
+                               (15,'2024-08-20 08:45:33.771706',NULL,'2024-08-20 17:45:33',2,'FRONTEND',7),
+                               (16,'2024-08-20 10:11:05.951042',NULL,'2024-08-20 19:11:05',2,'FRONTEND',8),
+                               (17,'2024-08-20 10:11:05.952410',NULL,'2024-08-20 19:11:05',1,'DESIGNER',8),
+                               (18,'2024-08-20 10:11:05.953132',NULL,'2024-08-20 19:11:05',2,'BACKEND',8),
+                               (19,'2024-08-20 10:11:05.954124',NULL,'2024-08-20 19:11:05',1,'APP',8),
+                               (20,'2024-08-20 12:04:56.892110',NULL,'2024-08-20 21:04:56',2,'BACKEND',9),
+                               (21,'2024-08-20 12:04:56.892875',NULL,'2024-08-20 21:04:56',2,'FRONTEND',9),
+                               (22,'2024-08-20 12:06:58.327200',NULL,'2024-08-20 21:06:58',2,'APP',10),
+                               (23,'2024-08-20 12:06:58.328206',NULL,'2024-08-20 21:06:58',2,'DESIGNER',10),
+                               (24,'2024-08-20 12:06:58.328206',NULL,'2024-08-20 21:06:58',2,'FRONTEND',10),
+                               (25,'2024-08-20 12:06:58.329206',NULL,'2024-08-20 21:06:58',2,'BACKEND',10),
+                               (28,'2024-08-20 12:10:17.599628',NULL,'2024-08-20 21:10:17',2,'APP',11),
+                               (29,'2024-08-20 12:10:17.600637',NULL,'2024-08-20 21:10:17',1,'DESIGNER',11);
+
+INSERT INTO `sider_card` VALUES
+                             (1,'2024-08-20 07:08:40.514162',NULL,'2024-08-20 19:34:09','https://www.behance.net/','kindseho@naver.com','https://velog.io/','https://github.com/sseho','https://sejeong-file.s3.ap-northeast-2.amazonaws.com/test-prefix/98c991f9-38db-4870-9c87-ecb373d6034c%ED%91%B8%EB%B0%94%EC%98%A4.jpeg','나는 백엔드 개발자 머리가 아프지','BACKEND','https://kr.linkedin.com/'),
+                             (2,'2024-08-20 07:11:45.602094',NULL,'2024-08-20 16:13:46',NULL,'wisdom0405@kakao.com',NULL,'https://github.com/wisdom0405','https://sejeong-file.s3.ap-northeast-2.amazonaws.com/test-prefix/50e2d813-f138-4a10-9cda-ccba204befca60c5e985f16f390de3b233908a175ccc.jpg','빛','DESIGNER',NULL),
+                             (3,'2024-08-20 07:47:12.501151',NULL,'2024-08-20 20:12:17',NULL,'clearrworld@kakao.com',NULL,'https://github.com/clean2001','https://sejeong-file.s3.ap-northeast-2.amazonaws.com/test-prefix/d4529270-7e1d-4797-98e2-641646418f6a%EC%8B%A0.jpeg','안녕하세요. 고민과 기록을 즐기는 백엔드 개발자 김세정입니다.','PM',NULL),
+                             (4,'2024-08-20 07:52:20.575086',NULL,'2024-08-20 20:13:14',NULL,'dnwls1313@gmail.com','https://m.blog.naver.com/slowly',NULL,'https://sejeong-file.s3.ap-northeast-2.amazonaws.com/devjeans-sid/devjeans-spring.png','안녕하세요!\n백엔드 개발 공부 시작한 지 3개월이 지난 신입 개발자 입니다.\n\n항상 더 좋은 더 친절한 개발자가 되려고 노력하겠습니다!','FRONTEND',NULL),
+                             (5,'2024-08-20 11:15:11.205674',NULL,'2024-08-20 20:16:52',NULL,'mandoo2276@naver.com',NULL,NULL,'https://sejeong-file.s3.ap-northeast-2.amazonaws.com/devjeans-sid/devjeans-spring.png','안녕하세요','APP',NULL);
+
