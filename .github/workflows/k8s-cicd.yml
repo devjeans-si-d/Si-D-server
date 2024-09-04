@@ -3,7 +3,7 @@ name: deploy sid with k8s
 on:
   push:
     branches:
-      - chore/IS-147
+      - main
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
