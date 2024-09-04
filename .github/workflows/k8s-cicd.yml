@@ -1,0 +1,46 @@
+# docker build 후 ecr 업로드 및 kubectl apply 시켜주기
+name: deploy ordersystem with k8s
+on:
+  push:
+    branches:
+      - chore/IS-147
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout github
+        uses: actions/checkout@v2
+
+      - name: install kubectl # 가상 컴퓨터에 kubectl 설치
+        uses: azure/setup-kubectl@v3
+        with:
+          version: "v1.25.9"
+        id: install
+
+      - name: configure aws # aws configure 해서 key값 세팅하는 부분
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{secrets.AWS_KEY}}
+          aws-secret-access-key: ${{secrets.AWS_SECRET}}
+          aws-region: ap-northeast-2
+
+      - name: update cluster information
+        run: aws eks update-kubeconfig --name 6team-cluster --region ap-northeast-2 # 원래는 6team-cluster
+
+      - name: login ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      # 이곳에서 가장 빈번한 변경이 일어남(이미지)
+      - name: build and push docker images to ecr
+        env: # 변수를 지정하는 부분
+          REGISTRY: 346903264902.dkr.ecr.ap-northeast-2.amazonaws.com
+          REPOSITORY: devjeans-sid # AWS ecr의 프라이빗 리포지토리 이름을 의미
+        run: |
+          docker build -t $REGISTRY/$REPOSITORY:latest -f ./Dockerfile .
+          docker push $REGISTRY/$REPOSITORY:latest
+      # deployment가 변경되면 반영하는 부분
+      - name: eks kubectl apply
+        run: |
+          kubectl apply -f ./k8s/sid_depl.yml
+          kubectl rollout restart deployment sid-deployment
