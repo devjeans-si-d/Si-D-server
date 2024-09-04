@@ -1,56 +1,61 @@
-# 아래의 주요 key, secret은 쿠버네티스의 secret 자원을 사용하여 실행 시점에 대체
-
-server:
-  port: 8080
 spring:
-  redis:
-    # 아래 REDIS_HOST는 deployment에서 정의한 env 변수명과 일치해야 함
-    host: ${REDIS_HOST}
-    port: 6379
+  config:
+    activate:
+      on-profile: prod
   datasource:
-    driver-class-name: org.mariadb.jdbc.Driver
-    url: jdbc:mariadb://${DB_HOST}:3306/sid
+    url: jdbc:mariadb://${DB_HOST}:3306/sid?characterEncoding=UTF-8&serverTimezone=UTC
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
-    # spring에서 DB로의 커넥션 개수 제한 세팅
-    # 기본적으로 대략 10개 가량의 커넥션이 1개의 서버에서 발생한다
-    tomcat:
-      max-active: 5
-
-
-
+    driver-class-name: org.mariadb.jdbc.Driver
   jpa:
-    database : mysql
+    hibernate:
+      ddl-auto: validate
+    database: mysql
     database-platform: org.hibernate.dialect.MariaDBDialect
     generate-ddl: true
-    hibernate:
-      ddl-auto: create
-    show_sql: true
+  #    defer-datasource-initialization: true
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+9
+  redis:
+    host: ${REDIS_HOST}
+    port: 6379
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: "clearrworld@gmail.com"
+    password: ${SMTP_PASSWORD}
+    properties:
+      mail.smtp.debug: true
+      mail.smtp.connectiontimeout: 1000 #1초
+      mail.starttls.enable: true
+      mail.smtp.auth: true
+#  sql:
+#    init:
+#      mode: always
+
 logging:
   level:
-    root: info
-    # 로그 레벨: trace < debug < info < error 순서의 로그 레벨을 가진다.
-    # 즉, info로 설정시 trace, debug 로그는 출력되지 않음
-    # 로그 파일 경로와 파일 명 지정
-  file:
-    name: logs/app.log
+    org.hibernate.sql: debug
+    org.hibernate.type: trace
+
+auth:
+  oauth:
+    kakao:
+      api: ${KAKAO_API_KEY}
+      redirect-url: https://dev.si-d.site/oauth
 
 jwt:
   expiration: 30
   secretKey: ${JWT_SECRET}
-  expiration-rt: 14400 # 10일
-  secretKey-rt: ${JWT_SECRET_RT}
 
 cloud:
   aws:
+    s3:
+      bucket: sejeong-file
+    stack.auto: false
+    region:
+      static: ap-northeast-2
     credentials:
       access-key: ${AWS_ACCESS_KEY}
       secret-key: ${AWS_SECRET_KEY}
-    region:
-      static: ap-northeast-2
-    s3:
-      bucket: sejeong-file
-
-
-
-
