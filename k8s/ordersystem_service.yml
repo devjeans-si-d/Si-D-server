@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: ordersystem-service
+  namespace: clean
+spec: 
+# Ingress를 적용하기 위해 Cluster IP로 변경한다.
+  type: ClusterIP
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8080 # ⭐️ 파드의 내부 포트와 일치
+  selector:
+    app: ordersystem # deployment의 labels.app과 일치해야한다.
