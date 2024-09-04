@@ -1,5 +1,5 @@
 # docker build 후 ecr 업로드 및 kubectl apply 시켜주기
-name: deploy ordersystem with k8s
+name: deploy sid with k8s
 on:
   push:
     branches:
