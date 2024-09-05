@@ -1,6 +1,7 @@
 package org.devjeans.sid.domain.project.service;
 
 import lombok.extern.slf4j.Slf4j;
+import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import org.devjeans.sid.domain.chatRoom.dto.sse.SseTeamBuildResponse;
 import org.devjeans.sid.domain.chatRoom.service.SseService;
 import org.devjeans.sid.domain.member.entity.Member;
@@ -61,7 +62,7 @@ public class ProjectScheduler {
         this.scrapRedisTemplate =scrapRedisTemplate;
         this.sseService = sseService;
     }
-
+    @SchedulerLock(name = "shedLock_deadline", lockAtLeastFor = "50s", lockAtMostFor = "59s")
     @Scheduled(cron = "0 0/1 * * * *")
     @Transactional
     public void projectSchedule(){
@@ -69,8 +70,10 @@ public class ProjectScheduler {
         Boolean isLocked = redisTemplate.opsForValue().setIfAbsent(lockKey, "true", Duration.ofSeconds(60)); // 60초 동안 락 유지
 
         if (Boolean.TRUE.equals(isLocked)) {
+            long startTime = System.currentTimeMillis();
+
             try {
-//                System.out.println("서버 1 스케쥴러 시작 ");
+                System.out.println("서버 1 데드라인 스케쥴러 시작 ");
                 Page<Project> projects = projectRepository.findByIsClosed(Pageable.unpaged(),"N");
 
                 for(Project p : projects){
@@ -88,27 +91,34 @@ public class ProjectScheduler {
 
                     }
                 }
-//                System.out.println("서버 1 스케쥴러 끝 ");
+                System.out.println("서버 1 데드라인 스케쥴러 끝 ");
             } finally {
                 // 작업이 끝난 후 락 해제
                 redisTemplate.delete(lockKey);
+                long endTime = System.currentTimeMillis();  // 종료 시간 기록
+                long executionTime = endTime - startTime;   // 실행 시간 계산
+                System.out.println("데드라인 스케쥴러 작업 시간: " + executionTime + "ms");
             }
         } else {
-//            System.out.println("다른 인스턴스에서 스케쥴러가 실행 중");
+            System.out.println("다른 인스턴스에서 데드라인 스케쥴러가 실행 중");
         }
 
 
     }
 
     @Qualifier("viewRedisTemplate")
-    @Scheduled(cron = "0 0 4 * * *")
+//    @Scheduled(cron = "0 0 4 * * *")
+    @SchedulerLock(name = "shedLock_view", lockAtLeastFor = "50s", lockAtMostFor = "59s")
+    @Scheduled(cron = "0 0/1 * * * *")
     @Transactional
     public void syncViews(){
         String lockKey = "shedLock_view";
         Boolean isLocked = redisTemplate.opsForValue().setIfAbsent(lockKey, "true", Duration.ofSeconds(60)); // 60초 동안 락 유지
         if(Boolean.TRUE.equals(isLocked)){
+            long startTime = System.currentTimeMillis();
+
             try{
-//                System.out.println("서버 1 view 스케쥴러 시작 ");
+                System.out.println("서버 1 view 스케쥴러 시작 ");
 
                 for (Project p : projectRepository.findAll()) {
                     // 조회수 저장
@@ -121,28 +131,35 @@ public class ProjectScheduler {
                         projectRepository.save(p);
                     }
                 }
-//                System.out.println("서버 1 view 스케쥴러 끝 ");
+                System.out.println("서버 1 view 스케쥴러 끝 ");
 
             }
             finally {
-                    redisTemplate.delete(lockKey);
+                redisTemplate.delete(lockKey);
+                long endTime = System.currentTimeMillis();  // 종료 시간 기록
+                long executionTime = endTime - startTime;   // 실행 시간 계산
+                System.out.println("view 스케쥴러 작업 시간: " + executionTime + "ms");
             }
         }
         else {
-//            System.out.println("다른 인스턴스에서 view 스케쥴러가 실행 중");
+            System.out.println("다른 인스턴스에서 view 스케쥴러가 실행 중");
         }
     }
 
 
     @Qualifier("scrapRedisTemplate")
-    @Scheduled(cron = "0 0 4 * * *")
+//    @Scheduled(cron = "0 0 4 * * *")
+    @SchedulerLock(name = "shedLock_scrap", lockAtLeastFor = "50s", lockAtMostFor = "59s")
+    @Scheduled(cron = "0 0/1 * * * *")
     @Transactional
     public void syncScraps() {
         String lockKey = "shedLock_scrap";
         Boolean isLocked = redisTemplate.opsForValue().setIfAbsent(lockKey, "true", Duration.ofSeconds(60)); // 60초 동안 락 유지
         if(Boolean.TRUE.equals(isLocked)) {
+            long startTime = System.currentTimeMillis();
+
             try {
-//                System.out.println("서버 1 scrap 스케쥴러 시작 ");
+                System.out.println("서버 1 scrap 스케쥴러 시작 ");
 
                 //set(MEMBER_SCRAP_LIST+memberId).members = project id들
                 // projectScrapRepository에 있는지 체크
@@ -181,15 +198,18 @@ public class ProjectScheduler {
                     p.setScrapCount(scrapCount);
                     projectRepository.save(p);
                 }
-//                System.out.println("서버 1 scrap 스케쥴러 끝 ");
+                System.out.println("서버 1 scrap 스케쥴러 끝 ");
 
             }
             finally {
                 redisTemplate.delete(lockKey);
+                long endTime = System.currentTimeMillis();  // 종료 시간 기록
+                long executionTime = endTime - startTime;   // 실행 시간 계산
+                System.out.println("scrap 스케쥴러 작업 시간: " + executionTime + "ms");
             }
         }
         else {
-//            System.out.println("다른 인스턴스에서 scrap 스케쥴러가 실행 중");
+            System.out.println("다른 인스턴스에서 scrap 스케쥴러가 실행 중");
         }
 
     }

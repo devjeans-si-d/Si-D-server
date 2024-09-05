@@ -47,6 +47,7 @@ public class SecurityConfigs {
                         "/api/project/{id}",
                         "/api/project/{id}/isScrap",
                         "/api/sider-card/list",
+                        "/api/sider-card/{id}",
                         "/healthcheck")
                 .permitAll()
                 .anyRequest().authenticated()

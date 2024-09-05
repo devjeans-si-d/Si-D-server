@@ -113,12 +113,12 @@ public class SseService implements MessageListener {
         SseEmitter emitter = clients.get(memberId);
 //        if(emitter != null){
 //            try {
-//                emitter.send(SseEmitter.event().name("ordered").data(dto));
+//                emitter.send(SseEmitter.event().name("chat").data(redisRes));
 //            } catch (IOException e) {
 //                throw new RuntimeException(e);
 //            }
 //        }else{
-        sseRedisTemplate.convertAndSend(String.valueOf(memberId), redisRes);
+            sseRedisTemplate.convertAndSend(String.valueOf(memberId), redisRes);
 //        }
     }
 
@@ -147,10 +147,10 @@ public class SseService implements MessageListener {
                 }
             } else {
                 NotificationResponse noti = new NotificationResponse("team", redisRes.getData(), LocalDateTime.now());
-                if (emitter != null) {
+//                if (emitter != null) {
                     emitter.send(SseEmitter.event().name("team").data(noti));
                     System.out.println("hereteam");
-                }
+//                }
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -217,14 +217,14 @@ public class SseService implements MessageListener {
         alertRepository.save(alert);
 
 
-        if (emitter != null) {
+//        if (emitter != null) {
             sseRedisTemplate.convertAndSend(String.valueOf(memberId), new RedisRes("team",sseTeamBuildResponse));
 //            try {
 //                emitter.send(SseEmitter.event().name("team").data(noti));
 //            } catch (IOException e) {
 //                throw new BaseException(FAIL_TO_NOTIFY);
 //            }
-        }
+//        }
     }
 }
 
