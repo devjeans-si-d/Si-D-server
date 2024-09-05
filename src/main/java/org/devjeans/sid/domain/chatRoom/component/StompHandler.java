@@ -58,7 +58,6 @@ public class StompHandler implements ChannelInterceptor {
         if (StompCommand.DISCONNECT == accessor.getCommand()) {
             log.info("WebSocket DISCONNECT");
             String sessionId = accessor.getSessionId();
-//            log.info("[line 63] Disconnect. token: {}", bearerToken); // null
             connectedMap.exitRoom(sessionId);
         }
 

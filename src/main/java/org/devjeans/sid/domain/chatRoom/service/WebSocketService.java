@@ -47,8 +47,6 @@ public class WebSocketService {
     @Qualifier("chatPubSub")
     private final RedisTemplate<String, Object> redisTemplate;
 
-//    @Qualifier("chatPubSubContainer")
-//    private final RedisMessageListenerContainer redisContainer;
 
     @Qualifier("chatTopic")
     private final ChannelTopic topic;
@@ -97,8 +95,8 @@ public class WebSocketService {
 
             // 멤버가 현재 접속해있는지를 확인
             // TODO: 레디스로 변경
-            Long receiverChatRoomId = connectedMap.getChatroomIdByMemberId(receiverId);
-            if(receiverChatRoomId != null && receiverChatRoomId.equals(chatRoomId)) {
+            String receiverChatRoomId = connectedMap.getChatroomIdByMemberId(receiverId);
+            if(receiverChatRoomId != null && receiverChatRoomId.equals(Long.toString(chatRoomId))) {
                 // 접속해있다면 읽음 표시
                 isRead = true;
             } else {
@@ -120,9 +118,6 @@ public class WebSocketService {
                 } else {
                     redisTemplate.opsForValue().set(key, "1");
                 }
-
-
-
             }
         }
 
