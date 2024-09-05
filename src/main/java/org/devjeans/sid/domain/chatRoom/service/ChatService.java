@@ -176,7 +176,7 @@ public class ChatService {
         }
 
         // 메모리에 저장
-        connectedMap.enterChatRoom(chatRoomId, memberId);
+//        connectedMap.enterChatRoom(chatRoomId, memberId);
 
     }
 

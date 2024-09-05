@@ -134,7 +134,7 @@ public class SseService implements MessageListener {
                 NotificationResponse noti = new NotificationResponse("chat", redisRes.getData(), LocalDateTime.now());
                 LinkedHashMap lm = (LinkedHashMap) redisRes.getData();
 
-                // 이미 접속 중이기 때문에 빠져나온다.
+//                // 이미 접속 중이기 때문에 빠져나온다.
 //                String chatroom = connectedMap.getChatroomIdByMemberId(memberId);
 //                if(chatroom != null && lm.get("chatroomId").equals(chatroom)) {
 //                    return;

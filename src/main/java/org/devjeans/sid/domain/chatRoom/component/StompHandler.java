@@ -52,13 +52,13 @@ public class StompHandler implements ChannelInterceptor {
             // 저장
             String sessionId = accessor.getSessionId();
             Long memberId = jwtTokenProvider.getMemberIdFromToken(bearerToken);
-            connectedMap.addSession(sessionId, memberId);
+//            connectedMap.addSession(sessionId, memberId);
         }
 
         if (StompCommand.DISCONNECT == accessor.getCommand()) {
             log.info("WebSocket DISCONNECT");
             String sessionId = accessor.getSessionId();
-            connectedMap.exitRoom(sessionId);
+
         }
 
         return message;

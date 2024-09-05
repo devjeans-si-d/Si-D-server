@@ -48,8 +48,16 @@ public class ConnectedMap {
         redisTemplate.delete("session_" + sessionId);
     }
 
+
+    public void exitSession(String sessionId) {
+        // memberIdToChatRoomId, sessionToMemberId에서 지워주기
+        String memberId = (String) redisTemplate.opsForValue().get("session_" + sessionId);
+        redisTemplate.delete("member_" + memberId);
+        redisTemplate.delete("session_" + sessionId);
+    }
+
     public void enterChatRoom(Long chatRoomId, Long memberId) {
-        log.info("redis line 52!!!!!");
+//        log.info("redis line 52!!!!!");
         redisTemplate.opsForValue().set("member_" + memberId, Long.toString(chatRoomId));
 
     }
