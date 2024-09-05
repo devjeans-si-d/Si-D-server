@@ -1,0 +1,97 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sid-deployment
+#  namespace: clean
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: sid
+  template:
+  # 아래 labels.app 부분은 service의 selector 부분과 일치해야하고, 위의 matchLabels 부분과도 일치해야함
+    metadata:
+      labels:
+        app: sid  # ⭐️
+    spec:
+      containers:
+        - name: sid
+        # aws의 ecr 주소를 사용
+          image: 346903264902.dkr.ecr.ap-northeast-2.amazonaws.com/devjeans-sid:latest
+          ports:
+          - containerPort: 8080 # ⭐️ 포트 주의!!
+          resources:
+          # 최대 할당 가능량
+            limits:
+              cpu: "1"
+              memory: "500Mi"
+          # 최소 할당량
+            requests:
+              cpu: "0.5"
+              memory: "250Mi"
+          env:
+          - name: REDIS_HOST
+            valueFrom:
+              secretKeyRef:
+                key: REDIS_HOST
+                name: sid-app-secrets
+          - name: DB_HOST
+            valueFrom:
+              secretKeyRef:
+                key: DB_HOST
+                name: sid-app-secrets
+          - name: DB_USERNAME
+            valueFrom:
+              secretKeyRef:
+                key: DB_USERNAME
+                name: sid-app-secrets
+          - name: DB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                key: DB_PASSWORD
+                name: sid-app-secrets
+          - name: JWT_SECRET
+            valueFrom:
+              secretKeyRef:
+                key: JWT_SECRET
+                name: sid-app-secrets
+          - name: JWT_SECRET_RT
+            valueFrom:
+              secretKeyRef:
+                key: JWT_SECRET_RT
+                name: sid-app-secrets
+          - name: AWS_SECRET_KEY
+            valueFrom:
+              secretKeyRef:
+                key: AWS_SECRET_KEY
+                name: sid-app-secrets
+          - name: AWS_ACCESS_KEY
+            valueFrom:
+              secretKeyRef:
+                key: AWS_ACCESS_KEY
+                name: sid-app-secrets
+          - name: SMTP_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                key: SMTP_PASSWORD
+                name: sid-app-secrets
+          - name: KAKAO_API_KEY
+            valueFrom:
+              secretKeyRef:
+                key: KAKAO_API_KEY
+                name: sid-app-secrets
+          # 무중단 배포를 위한 컨테이너 헬스체크
+          readinessProbe:
+            httpGet:
+              path: /healthcheck
+              port: 8080
+            # 컨테이너 시작 후 지연 시간 설정
+            initialDelaySeconds: 10
+            # 확인 반복 주기
+            periodSeconds: 10
+            # 요청 타임아웃 설정
+            timeoutSeconds: 1 # 1초 이내에 안오면 실패로 간주
+            # 성공 인식 횟수 설정. 몇번을 성공해야 성공으로 간주할거냐
+            successThreshold: 1
+            # 연속 실패 횟수: 연속적으로 5번을 실패하면 건강하지 않은 상태로 판단하여 기존 서버 종료시키지 않음
+            failureThreshold: 5

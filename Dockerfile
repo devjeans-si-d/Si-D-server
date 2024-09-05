@@ -26,16 +26,3 @@ COPY --from=stage1 /app/build/libs/*.jar app.jar
 
 # CMD 또는 ENTRYPOINT를 통해 컨테이너를 실행한다.
 ENTRYPOINT ["java", "-jar", "app.jar"]
-
-# docker 컨테이너 내에서 밖의 전체 host를 지칭하는 도메인 : host.docker.internal
-# 하지만 yml 바꾸지는 않겠다. 왜냐면 그러면 빌드부터 다시해야함. 따라서 실행시점에 주입해줄 것임
-# 약속되어있는 패턴이다. 예를들면 SPRING_DATASOURCE_USERNAME도 있음
-# docker run -d -p 8081:8080 -e SPRING_DATASOURCE_URL=jdbc:mariadb://host.docker.internal:3306/ordersystem ordersystem:latest
-
-# docker 컨테이너 실행 시에 볼륨을 설정할 때는 -v 옵션 사용
-# docker run -d -p 8081:8080 -e SPRING_DATASOURCE_URL=jdbc:mariadb://host.docker.internal:3306/ordersystem -v 호스트경로:컨테이너내부경로 ordersystem:latest
-# docker run -d -p 8081:8080 -e SPRING_DATASOURCE_URL=jdbc:mariadb://host.docker.internal:3306/ordersystem -v /Users/sejeong/Desktop/tmp_logs:/app/logs ordersystem:latest
-
-# 도커 허브에서 내려받은 이미지로 실행
-# docker run -d -p 8080:8080 -e SPRING_DATASOURCE_URL=jdbc:mariadb://host.docker.internal:3306/ordersystem clean01/ordersystem:latest
-

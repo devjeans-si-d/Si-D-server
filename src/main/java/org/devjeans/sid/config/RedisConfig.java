@@ -3,6 +3,8 @@ package org.devjeans.sid.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import net.javacrumbs.shedlock.core.LockProvider;
+import net.javacrumbs.shedlock.provider.redis.spring.RedisLockProvider;
 import org.devjeans.sid.domain.chatRoom.controller.RedisSubscriber;
 import org.devjeans.sid.domain.chatRoom.controller.SseController;
 import org.devjeans.sid.domain.member.dto.MemberIdEmailCode;
@@ -34,6 +36,11 @@ public class RedisConfig {
 
     @Value("${spring.redis.port}")
     private int port;
+
+    @Bean
+    public RedisLockProvider lockProvider(RedisConnectionFactory redisConnectionFactory) {
+        return new RedisLockProvider(redisConnectionFactory);
+    }
 
     @Bean
     public RedisConnectionFactory redisConnectionFactory() {
@@ -169,15 +176,16 @@ public class RedisConfig {
         return new MessageListenerAdapter(redisSubscriber);
     }
 
-//    @Bean
-//    @Qualifier("chatPubSubContainer")
-//    public RedisMessageListenerContainer redisMessageListenerContainer(@Qualifier("chatPubSub") RedisConnectionFactory chatPubSubFactory,
-//                                                                       @Qualifier("chatMessageListenerAdapter") MessageListenerAdapter listenerAdapter) {
-//        RedisMessageListenerContainer container = new RedisMessageListenerContainer();
-//        container.setConnectionFactory(chatPubSubFactory);
-//        container.addMessageListener(listenerAdapter, topic());
-//        return container;
-//    }
+    @Bean
+    @Qualifier("chatPubSub")
+    public RedisMessageListenerContainer redisMessageListenerContainer(@Qualifier("chatPubSub") RedisConnectionFactory chatPubSubFactory,
+                                                                       @Qualifier("chatMessageListenerAdapter") MessageListenerAdapter listenerAdapter) {
+        RedisMessageListenerContainer container = new RedisMessageListenerContainer();
+        container.setConnectionFactory(chatPubSubFactory);
+        container.addMessageListener(listenerAdapter, topic());
+
+        return container;
+    }
 
     @Bean
     @Qualifier("chatTopic")
@@ -255,7 +263,7 @@ public class RedisConfig {
     }
 
     @Bean
-    @Qualifier("ssePubSub")
+//    @Qualifier("ssePubSub")
     public RedisMessageListenerContainer redisMessageListenerContainer(@Qualifier("ssePubSub") RedisConnectionFactory sseFactory) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(sseFactory);

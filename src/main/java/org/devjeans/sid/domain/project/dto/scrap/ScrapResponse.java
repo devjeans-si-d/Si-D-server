@@ -15,6 +15,7 @@ import org.devjeans.sid.domain.project.entity.ProjectScrap;
 public class ScrapResponse {
     private Long memberId;
     private Long projectId;
+    private Long scrapCount;
 
 
     public static ProjectScrap toEntity(Project project, Member member){
