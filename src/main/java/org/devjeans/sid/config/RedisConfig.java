@@ -263,7 +263,7 @@ public class RedisConfig {
     }
 
     @Bean
-//    @Qualifier("ssePubSub")
+    @Qualifier("ssePubSub")
     public RedisMessageListenerContainer redisMessageListenerContainer(@Qualifier("ssePubSub") RedisConnectionFactory sseFactory) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(sseFactory);
