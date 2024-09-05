@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.devjeans.sid.domain.chatRoom.controller.SseController;
+import org.devjeans.sid.domain.chatRoom.component.ConnectedMap;
 import org.devjeans.sid.domain.chatRoom.dto.RedisRes;
 import org.devjeans.sid.domain.chatRoom.dto.sse.NotificationResponse;
 import org.devjeans.sid.domain.chatRoom.dto.sse.SseChatResponse;
@@ -12,6 +12,7 @@ import org.devjeans.sid.domain.chatRoom.dto.sse.SseEnterResponse;
 import org.devjeans.sid.domain.chatRoom.dto.sse.SseTeamBuildResponse;
 import org.devjeans.sid.domain.chatRoom.entity.Alert;
 import org.devjeans.sid.domain.chatRoom.entity.AlertType;
+import org.devjeans.sid.domain.chatRoom.entity.ChatMessage;
 import org.devjeans.sid.domain.chatRoom.repository.AlertRepository;
 import org.devjeans.sid.domain.project.entity.ProjectMember;
 import org.devjeans.sid.global.exception.BaseException;
@@ -29,6 +30,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -49,14 +51,24 @@ public class SseService implements MessageListener {
     private final RedisTemplate<String, Object> sseRedisTemplate;
     private final SecurityUtil securityUtil;
     private final AlertRepository alertRepository;
+
+    @Qualifier("ssePubSub")
     private final RedisMessageListenerContainer redisMessageListenerContainer;
+    private final ConnectedMap connectedMap;
 
 
-    public SseService(@Qualifier("ssePubSub") RedisTemplate<String, Object> sseRedisTemplate, SecurityUtil securityUtil, AlertRepository alertRepository, RedisMessageListenerContainer redisMessageListenerContainer) {
+    public SseService(@Qualifier("ssePubSub")
+                      RedisTemplate<String, Object> sseRedisTemplate,
+                      SecurityUtil securityUtil,
+                      AlertRepository alertRepository,
+//                      @Qualifier("ssePubSub")
+                      RedisMessageListenerContainer redisMessageListenerContainer,
+                      ConnectedMap connectedMap) {
         this.sseRedisTemplate = sseRedisTemplate;
         this.securityUtil = securityUtil;
         this.alertRepository = alertRepository;
         this.redisMessageListenerContainer = redisMessageListenerContainer;
+        this.connectedMap = connectedMap;
     }
 
     // 로그인하면 emitter 생성
@@ -111,7 +123,7 @@ public class SseService implements MessageListener {
     }
 
     @Override
-    public void onMessage(Message message, byte[] pattern) { // pattern안에 email들어있음
+    public void onMessage(Message message, byte[] pattern) {
         ObjectMapper objectMapper = new ObjectMapper();
         System.out.println("아아아아 \n"+message);
         try {
@@ -121,11 +133,19 @@ public class SseService implements MessageListener {
             RedisRes redisRes = objectMapper.readValue(message.getBody(), RedisRes.class);
             if(redisRes.getType().equals("chat")){
                 NotificationResponse noti = new NotificationResponse("chat", redisRes.getData(), LocalDateTime.now());
+                LinkedHashMap lm = (LinkedHashMap) redisRes.getData();
+
+                // 이미 접속 중이기 때문에 빠져나온다.
+                String chatroom = connectedMap.getChatroomIdByMemberId(memberId);
+                if(chatroom != null && lm.get("chatroomId").equals(chatroom)) {
+                    return;
+                }
+
                 if (emitter != null) {
                     emitter.send(SseEmitter.event().name("chat").data(noti));
                     System.out.println("herechat");
                 }
-            }else {
+            } else {
                 NotificationResponse noti = new NotificationResponse("team", redisRes.getData(), LocalDateTime.now());
                 if (emitter != null) {
                     emitter.send(SseEmitter.event().name("team").data(noti));
@@ -153,16 +173,9 @@ public class SseService implements MessageListener {
     // type: chat
     public void sendChatNotification(Long memberId, SseChatResponse sseChatResponse) {
         SseEmitter emitter = clients.get(memberId);
-//        NotificationResponse noti = new NotificationResponse("chat", sseChatResponse, LocalDateTime.now());
         
         if (emitter != null) {
-            publishMessage(new RedisRes("chat",sseChatResponse),memberId);
-
-//            try {
-//                emitter.send(SseEmitter.event().name("chat").data(noti));
-//            } catch (IOException e) {
-//                throw new BaseException(FAIL_TO_NOTIFY);
-//            }
+            publishMessage(new RedisRes("chat",sseChatResponse), memberId);
         }
     }
 

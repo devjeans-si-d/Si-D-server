@@ -170,7 +170,7 @@ public class RedisConfig {
     }
 
     @Bean
-    @Qualifier("chatPubSubContainer")
+    @Qualifier("chatPubSub")
     public RedisMessageListenerContainer redisMessageListenerContainer(@Qualifier("chatPubSub") RedisConnectionFactory chatPubSubFactory,
                                                                        @Qualifier("chatMessageListenerAdapter") MessageListenerAdapter listenerAdapter) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();

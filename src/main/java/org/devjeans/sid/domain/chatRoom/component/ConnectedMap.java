@@ -1,6 +1,8 @@
 package org.devjeans.sid.domain.chatRoom.component;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -8,38 +10,51 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 @Component
 public class ConnectedMap {
-    private static final Map<Long, Long> memberIdToChatroomId = new ConcurrentHashMap<>(); // memberId, chatRoomId
-    private static final Map<String, Long> sessionToMemberId = new ConcurrentHashMap<>(); // 세션 아이디, ChatRoomValue
+    @Qualifier("chatPubSub")
+    private final RedisTemplate<String, Object> redisTemplate;
 
-    public Long getChatroomIdByMemberId(Long memberId) {
-        return memberIdToChatroomId.get(memberId);
+    public ConnectedMap(@Qualifier("chatPubSub") RedisTemplate<String, Object> redisTemplate) {
+        this.redisTemplate = redisTemplate;
+    }
+
+    public String getChatroomIdByMemberId(Long memberId) {
+        log.info("redis line 21: {}", redisTemplate.opsForValue().get("member_" + memberId));
+        try {
+            return (String) redisTemplate.opsForValue().get("member_" + memberId);
+        } catch(Exception e) {
+            return null;
+        }
     }
 
     public Long getMemberIdBySessionId(String sessionId) {
-        return sessionToMemberId.get(sessionId);
+        try {
+            return Long.parseLong((String) redisTemplate.opsForValue().get("session_" + sessionId));
+        } catch(Exception e) {
+            return null;
+        }
+
     }
 
     // 유저가 채팅방에 입장했을 때
     public Long updateChatRoomId(Long memberId, Long chatRoomId) {
-        memberIdToChatroomId.put(memberId, chatRoomId);
+        redisTemplate.opsForValue().set("member_" + memberId, chatRoomId);
         return chatRoomId;
     }
 
     public void exitRoom(String sessionId) {
         // memberIdToChatRoomId, sessionToMemberId에서 지워주기
-        Long memberId = sessionToMemberId.get(sessionId);
-        memberIdToChatroomId.remove(memberId);
-        sessionToMemberId.remove(sessionId);
+        String memberId = (String) redisTemplate.opsForValue().get("session_" + sessionId);
+        redisTemplate.delete("member_" + memberId);
+        redisTemplate.delete("session_" + sessionId);
     }
 
     public void enterChatRoom(Long chatRoomId, Long memberId) {
-        memberIdToChatroomId.put(memberId, chatRoomId);
+        log.info("redis line 52!!!!!");
+        redisTemplate.opsForValue().set("member_" + memberId, Long.toString(chatRoomId));
 
     }
 
     public void addSession(String sessionId, Long memberId) {
-        sessionToMemberId.put(sessionId, memberId);
-        log.info("sessionTo {}", sessionToMemberId);
-        log.info("memberIdTo {}", memberIdToChatroomId);
+        redisTemplate.opsForValue().set("session_" + sessionId, Long.toString(memberId));
     }
 }
