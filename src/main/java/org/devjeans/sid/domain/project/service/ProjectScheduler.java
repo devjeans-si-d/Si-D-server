@@ -1,6 +1,7 @@
 package org.devjeans.sid.domain.project.service;
 
 import lombok.extern.slf4j.Slf4j;
+import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import org.devjeans.sid.domain.chatRoom.dto.sse.SseTeamBuildResponse;
 import org.devjeans.sid.domain.chatRoom.service.SseService;
 import org.devjeans.sid.domain.member.entity.Member;
@@ -61,12 +62,12 @@ public class ProjectScheduler {
         this.scrapRedisTemplate =scrapRedisTemplate;
         this.sseService = sseService;
     }
-
-    @Scheduled(cron = "0 0/2 * * * *")
+    @SchedulerLock(name = "shedLock_deadline", lockAtLeastFor = "50s", lockAtMostFor = "59s")
+    @Scheduled(cron = "0 0/1 * * * *")
     @Transactional
     public void projectSchedule(){
         String lockKey = "shedLock_deadline";
-        Boolean isLocked = redisTemplate.opsForValue().setIfAbsent(lockKey, "true", Duration.ofSeconds(110)); // 60초 동안 락 유지
+        Boolean isLocked = redisTemplate.opsForValue().setIfAbsent(lockKey, "true", Duration.ofSeconds(60)); // 60초 동안 락 유지
 
         if (Boolean.TRUE.equals(isLocked)) {
             long startTime = System.currentTimeMillis();
@@ -107,11 +108,12 @@ public class ProjectScheduler {
 
     @Qualifier("viewRedisTemplate")
 //    @Scheduled(cron = "0 0 4 * * *")
-    @Scheduled(cron = "0 0/2 * * * *")
+    @SchedulerLock(name = "shedLock_view", lockAtLeastFor = "50s", lockAtMostFor = "59s")
+    @Scheduled(cron = "0 0/1 * * * *")
     @Transactional
     public void syncViews(){
         String lockKey = "shedLock_view";
-        Boolean isLocked = redisTemplate.opsForValue().setIfAbsent(lockKey, "true", Duration.ofSeconds(110)); // 60초 동안 락 유지
+        Boolean isLocked = redisTemplate.opsForValue().setIfAbsent(lockKey, "true", Duration.ofSeconds(60)); // 60초 동안 락 유지
         if(Boolean.TRUE.equals(isLocked)){
             long startTime = System.currentTimeMillis();
 
@@ -147,11 +149,12 @@ public class ProjectScheduler {
 
     @Qualifier("scrapRedisTemplate")
 //    @Scheduled(cron = "0 0 4 * * *")
-    @Scheduled(cron = "0 0/2 * * * *")
+    @SchedulerLock(name = "shedLock_scrap", lockAtLeastFor = "50s", lockAtMostFor = "59s")
+    @Scheduled(cron = "0 0/1 * * * *")
     @Transactional
     public void syncScraps() {
         String lockKey = "shedLock_scrap";
-        Boolean isLocked = redisTemplate.opsForValue().setIfAbsent(lockKey, "true", Duration.ofSeconds(110)); // 60초 동안 락 유지
+        Boolean isLocked = redisTemplate.opsForValue().setIfAbsent(lockKey, "true", Duration.ofSeconds(60)); // 60초 동안 락 유지
         if(Boolean.TRUE.equals(isLocked)) {
             long startTime = System.currentTimeMillis();
 

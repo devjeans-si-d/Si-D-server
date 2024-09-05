@@ -59,6 +59,11 @@ dependencies {
 
 	// S3에 사진 저장
 	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+
+	// 스케쥴러 분산락
+	implementation 'net.javacrumbs.shedlock:shedlock-spring:4.44.0'
+	implementation 'net.javacrumbs.shedlock:shedlock-provider-redis-spring:4.44.0'
+
 }
 
 tasks.named('test') {
