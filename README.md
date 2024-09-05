@@ -1,4 +1,4 @@
-![architecture](https://github.com/user-attachments/assets/68d29ee5-9f0a-4a30-8062-f6f61ed9dfe5)## 팀원
+## 팀원
 <div align="center">
 	<table>
 	<tr>
