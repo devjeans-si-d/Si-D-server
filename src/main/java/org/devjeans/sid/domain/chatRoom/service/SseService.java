@@ -62,7 +62,7 @@ public class SseService implements MessageListener {
                       SecurityUtil securityUtil,
                       AlertRepository alertRepository,
 //                      @Qualifier("ssePubSub")
-                      RedisMessageListenerContainer redisMessageListenerContainer,
+                      @Qualifier("ssePubSub") RedisMessageListenerContainer redisMessageListenerContainer,
                       ConnectedMap connectedMap) {
         this.sseRedisTemplate = sseRedisTemplate;
         this.securityUtil = securityUtil;
