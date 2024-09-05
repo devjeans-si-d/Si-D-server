@@ -99,15 +99,15 @@ public class SseService implements MessageListener {
 
     public void publishMessage(RedisRes redisRes, Long memberId) {
         SseEmitter emitter = clients.get(memberId);
-//        if(emitter != null){
-//            try {
-//                emitter.send(SseEmitter.event().name("ordered").data(dto));
-//            } catch (IOException e) {
-//                throw new RuntimeException(e);
-//            }
-//        }else{
-        sseRedisTemplate.convertAndSend(String.valueOf(memberId), redisRes);
-//        }
+        if(emitter != null){
+            try {
+                emitter.send(SseEmitter.event().name("chat").data(redisRes));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }else{
+            sseRedisTemplate.convertAndSend(String.valueOf(memberId), redisRes);
+        }
     }
 
     @Override
