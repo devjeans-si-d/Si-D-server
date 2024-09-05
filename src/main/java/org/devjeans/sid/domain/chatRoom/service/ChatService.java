@@ -203,7 +203,7 @@ public class ChatService {
     // unread message 읽음 처리
     private void resolveUnread(Long chatRoomId, Long memberId) {
         String key = "chat_" + chatRoomId + "_" + memberId;
-        redisTemplate.opsForValue().getAndDelete(key);
+        redisTemplate.delete(key);
 
     }
 
