@@ -3,6 +3,8 @@ package org.devjeans.sid.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import net.javacrumbs.shedlock.core.LockProvider;
+import net.javacrumbs.shedlock.provider.redis.spring.RedisLockProvider;
 import org.devjeans.sid.domain.chatRoom.controller.RedisSubscriber;
 import org.devjeans.sid.domain.member.dto.MemberIdEmailCode;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -33,6 +35,11 @@ public class RedisConfig {
 
     @Value("${spring.redis.port}")
     private int port;
+
+    @Bean
+    public RedisLockProvider lockProvider(RedisConnectionFactory redisConnectionFactory) {
+        return new RedisLockProvider(redisConnectionFactory);
+    }
 
     @Bean
     public RedisConnectionFactory redisConnectionFactory() {
