@@ -58,7 +58,7 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<String> registerMember(@RequestBody RegisterMemberRequest dto) {
         authService.registerMember(dto);
-        return new ResponseEntity<>("register succes!!", HttpStatus.OK);
+        return new ResponseEntity<>("register success!!", HttpStatus.OK);
     }
 
     @DeleteMapping("/delete")
