@@ -125,7 +125,7 @@ public class SseService implements MessageListener {
     @Override
     public void onMessage(Message message, byte[] pattern) {
         ObjectMapper objectMapper = new ObjectMapper();
-        System.out.println("아아아아 \n"+message);
+        System.out.println("온메시지 여기");
         try {
             Long memberId = Long.valueOf(new String(pattern, StandardCharsets.UTF_8));
             SseEmitter emitter = clients.get(memberId);
@@ -141,15 +141,15 @@ public class SseService implements MessageListener {
                     return;
                 }
 
-                if (emitter != null) {
+//                if (emitter != null) {
                     emitter.send(SseEmitter.event().name("chat").data(noti));
-                    System.out.println("herechat");
-                }
+                    System.out.println("채팅 여기");
+//                }
             } else {
                 NotificationResponse noti = new NotificationResponse("team", redisRes.getData(), LocalDateTime.now());
 //                if (emitter != null) {
                     emitter.send(SseEmitter.event().name("team").data(noti));
-                    System.out.println("hereteam");
+                    System.out.println("팀 빌딩 여기");
 //                }
             }
         } catch (IOException e) {
