@@ -135,10 +135,10 @@ public class SseService implements MessageListener {
                 LinkedHashMap lm = (LinkedHashMap) redisRes.getData();
 
                 // 이미 접속 중이기 때문에 빠져나온다.
-                String chatroom = connectedMap.getChatroomIdByMemberId(memberId);
-                if(chatroom != null && lm.get("chatroomId").equals(chatroom)) {
-                    return;
-                }
+//                String chatroom = connectedMap.getChatroomIdByMemberId(memberId);
+//                if(chatroom != null && lm.get("chatroomId").equals(chatroom)) {
+//                    return;
+//                }
 
 //                if (emitter != null) {
                 emitter.send(SseEmitter.event().name("chat").data(noti));
