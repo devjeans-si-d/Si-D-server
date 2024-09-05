@@ -1,12 +1,13 @@
 package org.devjeans.sid;
 
+import net.javacrumbs.shedlock.spring.annotation.EnableSchedulerLock;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 import javax.annotation.PostConstruct;
 import java.util.TimeZone;
-
+@EnableSchedulerLock(defaultLockAtMostFor = "10m")
 @EnableScheduling
 @SpringBootApplication(
 		exclude = {
