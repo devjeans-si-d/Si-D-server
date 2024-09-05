@@ -52,7 +52,7 @@ public class SseService implements MessageListener {
     private final SecurityUtil securityUtil;
     private final AlertRepository alertRepository;
 
-    @Qualifier("ssePubSub")
+//    @Qualifier("ssePubSub")
     private final RedisMessageListenerContainer redisMessageListenerContainer;
     private final ConnectedMap connectedMap;
 
@@ -61,8 +61,7 @@ public class SseService implements MessageListener {
                       RedisTemplate<String, Object> sseRedisTemplate,
                       SecurityUtil securityUtil,
                       AlertRepository alertRepository,
-//                      @Qualifier("ssePubSub")
-                      @Qualifier("ssePubSub") RedisMessageListenerContainer redisMessageListenerContainer,
+                      RedisMessageListenerContainer redisMessageListenerContainer,
                       ConnectedMap connectedMap) {
         this.sseRedisTemplate = sseRedisTemplate;
         this.securityUtil = securityUtil;
@@ -118,7 +117,7 @@ public class SseService implements MessageListener {
 //                throw new RuntimeException(e);
 //            }
 //        }else{
-            sseRedisTemplate.convertAndSend(String.valueOf(memberId), redisRes);
+        sseRedisTemplate.convertAndSend(String.valueOf(memberId), redisRes);
 //        }
     }
 
@@ -142,14 +141,14 @@ public class SseService implements MessageListener {
                 }
 
 //                if (emitter != null) {
-                    emitter.send(SseEmitter.event().name("chat").data(noti));
-                    System.out.println("채팅 여기");
+                emitter.send(SseEmitter.event().name("chat").data(noti));
+                System.out.println("채팅 여기");
 //                }
             } else {
                 NotificationResponse noti = new NotificationResponse("team", redisRes.getData(), LocalDateTime.now());
 //                if (emitter != null) {
-                    emitter.send(SseEmitter.event().name("team").data(noti));
-                    System.out.println("팀 빌딩 여기");
+                emitter.send(SseEmitter.event().name("team").data(noti));
+                System.out.println("팀 빌딩 여기");
 //                }
             }
         } catch (IOException e) {
@@ -158,7 +157,7 @@ public class SseService implements MessageListener {
     }
 
 
-//=================================================
+    //=================================================
     // 로그아웃시 호출
     public void completeEmitter() {
         Long memberId = securityUtil.getCurrentMemberId();
@@ -173,7 +172,7 @@ public class SseService implements MessageListener {
     // type: chat
     public void sendChatNotification(Long memberId, SseChatResponse sseChatResponse) {
         SseEmitter emitter = clients.get(memberId);
-        
+
         if (emitter != null) {
             publishMessage(new RedisRes("chat",sseChatResponse), memberId);
         }
@@ -218,7 +217,7 @@ public class SseService implements MessageListener {
 
 
 //        if (emitter != null) {
-            sseRedisTemplate.convertAndSend(String.valueOf(memberId), new RedisRes("team",sseTeamBuildResponse));
+        sseRedisTemplate.convertAndSend(String.valueOf(memberId), new RedisRes("team",sseTeamBuildResponse));
 //            try {
 //                emitter.send(SseEmitter.event().name("team").data(noti));
 //            } catch (IOException e) {

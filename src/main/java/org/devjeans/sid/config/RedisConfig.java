@@ -262,13 +262,13 @@ public class RedisConfig {
         return redisTemplate;
     }
 
-    @Bean
-    @Qualifier("ssePubSub")
-    public RedisMessageListenerContainer redisMessageListenerContainer(@Qualifier("ssePubSub") RedisConnectionFactory sseFactory) {
-        RedisMessageListenerContainer container = new RedisMessageListenerContainer();
-        container.setConnectionFactory(sseFactory);
-        return container;
-    }
+//    @Bean
+//    @Qualifier("ssePubSub")
+//    public RedisMessageListenerContainer redisMessageListenerContainer(@Qualifier("ssePubSub") RedisConnectionFactory sseFactory) {
+//        RedisMessageListenerContainer container = new RedisMessageListenerContainer();
+//        container.setConnectionFactory(sseFactory);
+//        return container;
+//    }
 
 //    //    redis에 메시지 발행되면 listen하게 되고 , 아래 코드를 통해 특정 메서드를 실행하도록 설정
 //    @Bean
