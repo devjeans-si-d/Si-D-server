@@ -51,6 +51,8 @@ public class AuthService {
     }
 
     public OAuthToken getAccessToken(String code) throws JsonProcessingException {
+        System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
+        System.out.println("redirectUrl: " + redirectUrl);
 
         RestTemplate rt = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
