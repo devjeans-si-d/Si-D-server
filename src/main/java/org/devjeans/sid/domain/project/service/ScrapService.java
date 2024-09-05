@@ -62,10 +62,12 @@ public class ScrapService {
         String projectKey = PROJECT_SCRAP_COUNT + projectId;
         ValueOperations<String, Object> projectScrapCount = scrapRedisTemplate.opsForValue();
         projectScrapCount.increment(projectKey, 1);
+        Object count = projectScrapCount.get(projectKey);
+        Long scrapCount=null;
+        if(count!=null) scrapCount=Long.parseLong(count.toString());
         if (memberSrapSet.isMember(memberKey, String.valueOf(projectId)) == true) {
-            response = new ScrapResponse(memberId, projectId);
+            response = new ScrapResponse(memberId, projectId,scrapCount);
         }
-
         return response;
     }
 
@@ -84,8 +86,11 @@ public class ScrapService {
         String projectKey = PROJECT_SCRAP_COUNT + projectId;
         ValueOperations<String, Object> projectScrapCount = scrapRedisTemplate.opsForValue();
         projectScrapCount.decrement(projectKey, 1);
+        Object count = projectScrapCount.get(projectKey);
+        Long scrapCount=null;
+        if(count!=null) scrapCount=Long.parseLong(count.toString());
         if (memberSrapSet.isMember(memberKey, String.valueOf(projectId)) == false) {
-            scrapResponse = new ScrapResponse(memberId, projectId);
+            scrapResponse = new ScrapResponse(memberId, projectId,scrapCount);
         }
         return scrapResponse;
     }
