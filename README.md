@@ -45,6 +45,12 @@ chore: 코드 수정, 내부 파일 수정
 
 - [기술스택](#기술스택)
 
+- [CI/CD 아키텍처 설계서](#CI/CD-아키텍처-설계서)
+
+- [CI/CD를 위한 구성 스크립트](#CI/CD를-위한-구성-스크립트)
+
+- [테스트 결과서](#테스트결과서)
+
 - [협업관리](#️-협업-관리)
 
 - [기능 및 시연영상](#기능)
@@ -109,7 +115,150 @@ Designer와 Developer를 이어주는 사이드(Side) 프로젝트 플랫폼
 ## ERD
 <img width="542" alt="스크린샷 2024-08-20 오후 9 14 53" src="https://github.com/user-attachments/assets/d4e3365b-ac70-4ab8-93aa-5515a9954248">
 
+## CI/CD 아키텍처 설계서
 
+## CI/CD를 위한 구성 스크립트
+<details>
+<summary>be-cicd.yml</summary>
+
+```
+
+name: deploy to ec2 with docker
+on:
+  push:
+    branches:
+      - dev
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout-branch
+        uses: actions/checkout@v2
+
+      - name: build image
+        working-directory: .
+        run: docker build -t clean01/sid:latest .
+
+      - name: docker hub login
+        uses: docker/login-action@v1
+        with:
+          username: ${{secrets.DOCKER_EMAIL}}
+          password: ${{secrets.DOCKER_PASSWORD}}
+
+      - name: push to dockerhub
+        run: docker push clean01/sid:latest
+
+      - name: ec2 ssh login and docker compose update
+        uses: appleboy/ssh-action@master
+        with:
+          host: ec2-3-36-130-110.ap-northeast-2.compute.amazonaws.com
+          username: ubuntu
+          key: ${{secrets.EC2_PEMKEY}}
+          script: |
+            if ! type docker > /dev/null ; then
+              sudo snap install docker || echo "docker install failed!"
+            fi
+            sudo docker login --username ${{secrets.DOCKER_EMAIL}} --password ${{secrets.DOCKER_PASSWORD}}
+            sudo docker-compose pull && sudo docker-compose up -d
+            
+            # Remove old and unused Docker images
+            sudo docker image prune -f
+
+```
+</details>
+
+<details>
+<summary>k8s-cicd.yml</summary>
+
+```
+
+# docker build 후 ecr 업로드 및 kubectl apply 시켜주기
+name: deploy sid with k8s
+on:
+  push:
+    branches:
+      - main
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout github
+        uses: actions/checkout@v2
+
+      - name: install kubectl # 가상 컴퓨터에 kubectl 설치
+        uses: azure/setup-kubectl@v3
+        with:
+          version: "v1.25.9"
+        id: install
+
+      - name: configure aws # aws configure 해서 key값 세팅하는 부분
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{secrets.AWS_KEY}}
+          aws-secret-access-key: ${{secrets.AWS_SECRET}}
+          aws-region: ap-northeast-2
+
+      - name: update cluster information
+        run: aws eks update-kubeconfig --name 6team-cluster --region ap-northeast-2 # 원래는 6team-cluster
+
+      - name: login ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      # 이곳에서 가장 빈번한 변경이 일어남(이미지)
+      - name: build and push docker images to ecr
+        env: # 변수를 지정하는 부분
+          REGISTRY: 346903264902.dkr.ecr.ap-northeast-2.amazonaws.com
+          REPOSITORY: devjeans-sid # AWS ecr의 프라이빗 리포지토리 이름을 의미
+        run: |
+          docker build -t $REGISTRY/$REPOSITORY:latest -f ./Dockerfile .
+          docker push $REGISTRY/$REPOSITORY:latest
+      # deployment가 변경되면 반영하는 부분
+      - name: eks kubectl apply
+        run: |
+          kubectl apply -f ./k8s/sid_depl.yml
+          kubectl rollout restart deployment sid-deployment
+
+```
+</details>
+
+<details>
+<summary>Dockerfile</summary>
+
+```
+
+# 멀티 스테이지 빌드 방법 사용
+
+### 첫번째 스테이지 => 결과물: .jar 파일 ###
+FROM openjdk:11 as stage1
+# WORKDIR로 필요한 것들만 카피해주면된다!
+WORKDIR /app
+# /app/gradlew 파일로 생성
+COPY gradlew .
+# /app/gradle 폴더로 생성
+COPY gradle gradle
+COPY src src
+COPY build.gradle .
+COPY settings.gradle .
+
+# RUN은 도커 컨테이너 안에서 명령어를 날리는 것이다.
+# 보통은 그냥 이렇게 실행하면 권한 없다 에러날 수 있음. 따라서 777 권한 주자
+RUN chmod 777 ./gradlew
+RUN ./gradlew bootJar
+
+
+### 두번째 스테이지 ###
+FROM openjdk:11
+WORKDIR /app
+# stage 1에서 만든 jar를 stage 2의 app.jar라는 이름으로 copy하겠다.
+COPY --from=stage1 /app/build/libs/*.jar app.jar
+
+# CMD 또는 ENTRYPOINT를 통해 컨테이너를 실행한다.
+ENTRYPOINT ["java", "-jar", "app.jar"]
+
+
+```
+</details>
 
 ## 이슈 관리
 [이슈 관리 보기](https://quark-smile-890.notion.site/01f6e9a772864d789a2aa5f35798e92b?v=8288992a047b499f853c24bfc5f2c1cd&pvs=4)
