@@ -45,6 +45,8 @@ public class AuthService {
     private String redirectUrl;
 
     public KakaoProfile login(KakaoRedirect kakaoRedirect) throws JsonProcessingException {
+        System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
+        System.out.println("redirectUrl: " + redirectUrl);
         OAuthToken oAuthToken = getAccessToken(kakaoRedirect.getCode());
         KakaoProfile kakaoProfile = getKakaoProfile(oAuthToken.getAccess_token());
         return kakaoProfile;
