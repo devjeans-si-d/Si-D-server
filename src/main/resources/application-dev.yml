@@ -43,7 +43,7 @@ auth:
   oauth:
     kakao:
       api: xxxxx
-      redirect-url: https://dev.si-d.site/oauth
+      redirect-url: https://www.si-d.site/oauth
 
 jwt:
   expiration: 30
