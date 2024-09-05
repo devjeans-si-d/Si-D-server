@@ -1,5 +1,6 @@
 package org.devjeans.sid.domain.launchedProject.service;
 
+import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import org.devjeans.sid.domain.launchedProject.entity.LaunchedProject;
 import org.devjeans.sid.domain.launchedProject.entity.LaunchedProjectScrap;
 import org.devjeans.sid.domain.launchedProject.repository.LaunchedProjectRepository;
@@ -32,7 +33,7 @@ public class LaunchedProjectScheduler {
     private final LaunchedProjectRepository launchedProjectRepository;
     private final LaunchedProjectScrapRepository launchedProjectScrapRepository;
     private final MemberRepository memberRepository;
-    private final RedisTemplate<String,String> viewRedisTemplate;
+    private final RedisTemplate<String, String> viewRedisTemplate;
     private final RedisTemplate<String, Object> scrapRedisTemplate;
 
     @Autowired
@@ -41,7 +42,7 @@ public class LaunchedProjectScheduler {
                                     MemberRepository memberRepository,
                                     @Qualifier("LaunchedProjectView") RedisTemplate<String, String> viewRedisTemplate,
                                     @Qualifier("LaunchedProjectScrap") RedisTemplate<String, Object> scrapRedisTemplate
-                                    ){
+    ) {
         this.launchedProjectRepository = launchedProjectRepository;
         this.launchedProjectScrapRepository = launchedProjectScrapRepository;
         this.memberRepository = memberRepository;
@@ -50,65 +51,49 @@ public class LaunchedProjectScheduler {
     }
 
     @Qualifier("viewRedisTemplate")
+    @SchedulerLock(name = "shedLock_launch_view", lockAtLeastFor = "1m", lockAtMostFor = "59m")
     @Scheduled(cron = "0 0 4 * * *")
     @Transactional
-    public void syncViews(){
-        String lockKey = "shedLock_view_launched";
-        Boolean isLocked = viewRedisTemplate.opsForValue().setIfAbsent(lockKey, "true", Duration.ofSeconds(60)); // 60초 동안 락 유지
-        if(Boolean.TRUE.equals(isLocked)) {
-            try{
-                for (LaunchedProject lp : launchedProjectRepository.findAll()) {
-                    // 조회수 저장
-                    String key = LP_VIEWS_KEY_PREFIX + lp.getId() + "_views";
-                    String value = viewRedisTemplate.opsForValue().get(key);
-                    Long view = 0L;
-                    if (value != null) view = Long.parseLong(value);
-                    lp.setViews(view);
-                    launchedProjectRepository.save(lp);
-                }
-            }
-            finally {
-                viewRedisTemplate.delete(lockKey);
-            }
+    public void syncViews() {
+        for (LaunchedProject lp : launchedProjectRepository.findAll()) {
+            // 조회수 저장
+            String key = LP_VIEWS_KEY_PREFIX + lp.getId() + "_views";
+            String value = viewRedisTemplate.opsForValue().get(key);
+            Long view = 0L;
+            if (value != null) view = Long.parseLong(value);
+            lp.setViews(view);
+            launchedProjectRepository.save(lp);
         }
     }
 
     @Qualifier("scrapRedisTemplate")
+    @SchedulerLock(name = "shedLock_launch_scrap", lockAtLeastFor = "1m", lockAtMostFor = "59m")
     @Scheduled(cron = "0 0 4 * * *")
     @Transactional
-    public void syncScraps(){
-        String lockKey = "shedLock_scrap_launched";
-        Boolean isLocked = scrapRedisTemplate.opsForValue().setIfAbsent(lockKey, "true", Duration.ofSeconds(60)); // 60초 동안 락 유지
-        if(Boolean.TRUE.equals(isLocked)) {
-            try {
-                for (LaunchedProject lp : launchedProjectRepository.findAll()) {
-                    // scrap 저장
-                    // key : launched_project1_scrap (이런식으로 저장됨)
-                    String key = LP_SCRAP_KEY_PREFIX + lp.getId() + "_scrap";
+    public void syncScraps() {
+        for (LaunchedProject lp : launchedProjectRepository.findAll()) {
+            // scrap 저장
+            // key : launched_project1_scrap (이런식으로 저장됨)
+            String key = LP_SCRAP_KEY_PREFIX + lp.getId() + "_scrap";
 
-                    SetOperations<String, Object> setOperations = scrapRedisTemplate.opsForSet();
-                    Set<Object> members = setOperations.members(key); // scrap한 회원id Set
+            SetOperations<String, Object> setOperations = scrapRedisTemplate.opsForSet();
+            Set<Object> members = setOperations.members(key); // scrap한 회원id Set
 
-                    if (members != null) {
-                        for (Object memberId : members) {
-                            Long id = Long.parseLong(memberId.toString()); // 회원id
+            if (members != null) {
+                for (Object memberId : members) {
+                    Long id = Long.parseLong(memberId.toString()); // 회원id
 
-                            // RDB에 해당 스크랩 데이터가 이미 존재하는지 확인
-                            boolean exists = launchedProjectScrapRepository.existsByLaunchedProjectIdAndMemberId(lp.getId(), id);
-                            if (!exists) {
-                                // RDB에 저장
-                                Member member = memberRepository.findByIdOrThrow(id);
-                                LaunchedProjectScrap launchedProjectScrap = new LaunchedProjectScrap();
-                                launchedProjectScrap.setLaunchedProject(lp);
-                                launchedProjectScrap.setMember(member);
-                                launchedProjectScrapRepository.save(launchedProjectScrap);
-                            }
-                        }
+                    // RDB에 해당 스크랩 데이터가 이미 존재하는지 확인
+                    boolean exists = launchedProjectScrapRepository.existsByLaunchedProjectIdAndMemberId(lp.getId(), id);
+                    if (!exists) {
+                        // RDB에 저장
+                        Member member = memberRepository.findByIdOrThrow(id);
+                        LaunchedProjectScrap launchedProjectScrap = new LaunchedProjectScrap();
+                        launchedProjectScrap.setLaunchedProject(lp);
+                        launchedProjectScrap.setMember(member);
+                        launchedProjectScrapRepository.save(launchedProjectScrap);
                     }
                 }
-            }
-            finally {
-                scrapRedisTemplate.delete(lockKey);
             }
         }
     }
