@@ -62,11 +62,11 @@ public class ProjectScheduler {
         this.sseService = sseService;
     }
 
-    @Scheduled(cron = "0 0/1 * * * *")
+    @Scheduled(cron = "0 0/2 * * * *")
     @Transactional
     public void projectSchedule(){
         String lockKey = "shedLock_deadline";
-        Boolean isLocked = redisTemplate.opsForValue().setIfAbsent(lockKey, "true", Duration.ofSeconds(60)); // 60초 동안 락 유지
+        Boolean isLocked = redisTemplate.opsForValue().setIfAbsent(lockKey, "true", Duration.ofSeconds(110)); // 60초 동안 락 유지
 
         if (Boolean.TRUE.equals(isLocked)) {
             long startTime = System.currentTimeMillis();
@@ -107,11 +107,11 @@ public class ProjectScheduler {
 
     @Qualifier("viewRedisTemplate")
 //    @Scheduled(cron = "0 0 4 * * *")
-    @Scheduled(cron = "0 0/1 * * * *")
+    @Scheduled(cron = "0 0/2 * * * *")
     @Transactional
     public void syncViews(){
         String lockKey = "shedLock_view";
-        Boolean isLocked = redisTemplate.opsForValue().setIfAbsent(lockKey, "true", Duration.ofSeconds(60)); // 60초 동안 락 유지
+        Boolean isLocked = redisTemplate.opsForValue().setIfAbsent(lockKey, "true", Duration.ofSeconds(110)); // 60초 동안 락 유지
         if(Boolean.TRUE.equals(isLocked)){
             long startTime = System.currentTimeMillis();
 
@@ -147,11 +147,11 @@ public class ProjectScheduler {
 
     @Qualifier("scrapRedisTemplate")
 //    @Scheduled(cron = "0 0 4 * * *")
-    @Scheduled(cron = "0 0/1 * * * *")
+    @Scheduled(cron = "0 0/2 * * * *")
     @Transactional
     public void syncScraps() {
         String lockKey = "shedLock_scrap";
-        Boolean isLocked = redisTemplate.opsForValue().setIfAbsent(lockKey, "true", Duration.ofSeconds(60)); // 60초 동안 락 유지
+        Boolean isLocked = redisTemplate.opsForValue().setIfAbsent(lockKey, "true", Duration.ofSeconds(110)); // 60초 동안 락 유지
         if(Boolean.TRUE.equals(isLocked)) {
             long startTime = System.currentTimeMillis();
 
