@@ -30,6 +30,9 @@ public class AuthController {
     @Value("${jwt.secretKey}")
     private String secretKey;
 
+    @Value("${auth.oauth.kakao.redirect-url}")
+    private String redirectUrl;
+
     private final AuthService authService;
     private final JwtTokenProvider jwtTokenProvider;
 
@@ -71,6 +74,9 @@ public class AuthController {
     // 클라이언트에서 토큰을 받아 로그인 처리
     @PostMapping("login")
     public ResponseEntity<?> login(@RequestBody LoginReqDto dto) throws JsonProcessingException {
+        System.out.println("&&&&&&&&&&&&&&&controller&&&&&&&&&&&&&&&&");
+        System.out.println("redirectUrl: " + redirectUrl);
+        System.out.println("redirectUrl");
         OAuthToken oAuthToken = authService.getAccessToken(dto.getCode());
         KakaoProfile kakaoProfile = authService.getKakaoProfile(oAuthToken.getAccess_token());
 
