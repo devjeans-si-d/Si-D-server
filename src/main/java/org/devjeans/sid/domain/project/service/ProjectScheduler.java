@@ -62,7 +62,7 @@ public class ProjectScheduler {
         this.scrapRedisTemplate =scrapRedisTemplate;
         this.sseService = sseService;
     }
-    @SchedulerLock(name = "shedLock_deadline", lockAtLeastFor = "50s", lockAtMostFor = "59s")
+//    @SchedulerLock(name = "shedLock_deadline", lockAtLeastFor = "50s", lockAtMostFor = "59s")
     @Scheduled(cron = "0 0/1 * * * *")
     @Transactional
     public void projectSchedule(){
@@ -108,7 +108,7 @@ public class ProjectScheduler {
 
     @Qualifier("viewRedisTemplate")
 //    @Scheduled(cron = "0 0 4 * * *")
-    @SchedulerLock(name = "shedLock_view", lockAtLeastFor = "50s", lockAtMostFor = "59s")
+//    @SchedulerLock(name = "shedLock_view", lockAtLeastFor = "50s", lockAtMostFor = "59s")
     @Scheduled(cron = "0 0/1 * * * *")
     @Transactional
     public void syncViews(){
@@ -149,7 +149,7 @@ public class ProjectScheduler {
 
     @Qualifier("scrapRedisTemplate")
 //    @Scheduled(cron = "0 0 4 * * *")
-    @SchedulerLock(name = "shedLock_scrap", lockAtLeastFor = "50s", lockAtMostFor = "59s")
+//    @SchedulerLock(name = "shedLock_scrap", lockAtLeastFor = "50s", lockAtMostFor = "59s")
     @Scheduled(cron = "0 0/1 * * * *")
     @Transactional
     public void syncScraps() {
