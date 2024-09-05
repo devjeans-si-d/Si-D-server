@@ -36,8 +36,8 @@ spring:
 
 logging:
   level:
-    org.hibernate.sql: debug
-    org.hibernate.type: trace
+    org.hibernate.sql: info
+    org.hibernate.type: info
 
 auth:
   oauth:
