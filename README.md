@@ -264,24 +264,38 @@ ENTRYPOINT ["java", "-jar", "app.jar"]
 ## 테스트 결과서
 
 ### 카카오 소셜 로그인 및 나의 사이더카드 조회
-      ![로그인 및 내 사이더 조회 및 수정](https://github.com/user-attachments/assets/2cd389a9-989e-4396-9e41-e3f803a39138)
+	<details>
+ 		<summary><b>카카오 소셜 로그인 및 나의 사이더카드 조회</b></summary>
+
+   		<img src="https://github.com/user-attachments/assets/2cd389a9-989e-4396-9e41-e3f803a39138"/>
+ 	</details>
 
 ### 프로젝트 모집 공고 등록
+	<details>
+ 		<summary><b>프로젝트 모집 공고 등록</b></summary>
 
-	<b>프로젝트 모집 공고 등록</b>
-	![모집 글 작성](https://github.com/user-attachments/assets/14bc9cbb-acee-4424-98b5-99e5fc3dcb6e)
+   		<img src="https://github.com/user-attachments/assets/14bc9cbb-acee-4424-98b5-99e5fc3dcb6e"/>
+ 	</details>
 
 ### 프로젝트 모집 공고 지원
+	<details>
+ 		<summary><b>PM에게 문의채팅</b></summary>
 
-      <b>PM에게 문의채팅</b>
-      ![pm과채팅](https://github.com/user-attachments/assets/daeeb816-1456-40f8-ae76-406f5aa21936)
+   		<img src="https://github.com/user-attachments/assets/daeeb816-1456-40f8-ae76-406f5aa21936"/>
+ 	</details>
 
-      <b>PM 답변 채팅</b>
-      ![pm답변](https://github.com/user-attachments/assets/2218f5fc-94a6-480e-8450-ab4240addb79)
+      <details>
+      	<summary><b>PM 답변 채팅</b></summary>
 
-      <b>프로젝트 지원</b>
-      ![프로젝트지원](https://github.com/user-attachments/assets/f96ff804-f116-4863-a717-900eda709446)
+       	<img src="https://github.com/user-attachments/assets/2218f5fc-94a6-480e-8450-ab4240addb79"/>
+      </details>
 
+      <details>
+      	<summary><b>프로젝트 지원</b></summary>
+
+       	<img src="https://github.com/user-attachments/assets/f96ff804-f116-4863-a717-900eda709446"/>
+      </details>
+      
 ### 프로젝트 관리 (PM)
 
       <b>프로젝트 지원자 승인하기 시연 영상</b>
