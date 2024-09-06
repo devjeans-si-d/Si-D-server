@@ -173,9 +173,9 @@ public class SseService implements MessageListener {
     public void sendChatNotification(Long memberId, SseChatResponse sseChatResponse) {
         SseEmitter emitter = clients.get(memberId);
 
-        if (emitter != null) {
+//        if (emitter != null) {
             publishMessage(new RedisRes("chat",sseChatResponse), memberId);
-        }
+//        }
     }
 
 
