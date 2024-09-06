@@ -267,66 +267,32 @@ ENTRYPOINT ["java", "-jar", "app.jar"]
       ![로그인 및 내 사이더 조회 및 수정](https://github.com/user-attachments/assets/2cd389a9-989e-4396-9e41-e3f803a39138)
 
 ### 프로젝트 모집 공고 등록
-	<details>
-		<div markdown="1"> 
-	  	![모집 글 작성](https://github.com/user-attachments/assets/14bc9cbb-acee-4424-98b5-99e5fc3dcb6e)
-   
-    </div>
-  </details>
+
+	<b>프로젝트 모집 공고 등록</b>
+	![모집 글 작성](https://github.com/user-attachments/assets/14bc9cbb-acee-4424-98b5-99e5fc3dcb6e)
 
 ### 프로젝트 모집 공고 지원
 
-    <details> 
-      <summary>PM에게 문의채팅</summary>
+      <b>PM에게 문의채팅</b>
+      ![pm과채팅](https://github.com/user-attachments/assets/daeeb816-1456-40f8-ae76-406f5aa21936)
 
-		  <div markdown="1"> 
-	      ![pm과채팅](https://github.com/user-attachments/assets/daeeb816-1456-40f8-ae76-406f5aa21936)
-      </div>
-    </details>
+      <b>PM 답변 채팅</b>
+      ![pm답변](https://github.com/user-attachments/assets/2218f5fc-94a6-480e-8450-ab4240addb79)
 
-    <details> 
-      <summary>PM 답변 채팅</summary>
-
-		  <div markdown="1"> 
-	      ![pm답변](https://github.com/user-attachments/assets/2218f5fc-94a6-480e-8450-ab4240addb79)
-      </div>
-    
-    </details>
-
-    <details> 
-      <summary>프로젝트 지원</summary>
-
-		  <div markdown="1"> 
-	      ![프로젝트지원](https://github.com/user-attachments/assets/f96ff804-f116-4863-a717-900eda709446)
-      </div>
-    </details>
+      <b>프로젝트 지원</b>
+      ![프로젝트지원](https://github.com/user-attachments/assets/f96ff804-f116-4863-a717-900eda709446)
 
 ### 프로젝트 관리 (PM)
 
-    <details> 
-      <summary>프로젝트 지원자 승인하기 시연 영상</summary>
+      <b>프로젝트 지원자 승인하기 시연 영상</b>
+      ![프로젝트승인](https://github.com/user-attachments/assets/94444122-7426-4229-b645-1d749d71af48)
 
-		  <div markdown="1"> 
-	      ![프로젝트승인](https://github.com/user-attachments/assets/94444122-7426-4229-b645-1d749d71af48)
-      </div>
-    </details>
-
-    <details> 
-      <summary>프로젝트 마감 시 알람수신 시연영상</summary>
-
-		  <div markdown="1"> 
-	      ![프로젝트마감알람](https://github.com/user-attachments/assets/50ed5b0b-ad7e-4155-a855-f3436122846e)
-      </div>
-    </details>
+      <b>프로젝트 마감 시 알람수신 시연영상</b>
+      ![프로젝트마감알람](https://github.com/user-attachments/assets/50ed5b0b-ad7e-4155-a855-f3436122846e)
 
 ### 완성된 프로젝트 등록
-    <details>
-    	<summary>런칭 프로젝트 등록 시연영상</summary>
-
-		  <div markdown="1"> 
+    	<b>런칭 프로젝트 등록 시연영상</b>
         ![완성프로젝트등록](https://github.com/user-attachments/assets/f05291be-6b26-4765-b5f8-93b8d0ca6a25)
-      </div>
-    </details>
 
 ## 이슈 관리
 [이슈 관리 보기](https://quark-smile-890.notion.site/01f6e9a772864d789a2aa5f35798e92b?v=8288992a047b499f853c24bfc5f2c1cd&pvs=4)
