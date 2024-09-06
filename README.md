@@ -1,4 +1,4 @@
-![모집 글 작성](https://github.com/user-attachments/assets/367875bb-cd74-4d4f-a1fa-8e20e65eae46)## 팀원
+## 팀원
 <div align="center">
 	<table>
 	<tr>
@@ -264,11 +264,7 @@ ENTRYPOINT ["java", "-jar", "app.jar"]
 ## 테스트 결과서
 
 ### 카카오 소셜 로그인 및 나의 사이더카드 조회
-	<details>
-		<div markdown="1"> 
       ![로그인 및 내 사이더 조회 및 수정](https://github.com/user-attachments/assets/2cd389a9-989e-4396-9e41-e3f803a39138)
-    </div>
-	</details>
 
 ### 프로젝트 모집 공고 등록
 	<details>
