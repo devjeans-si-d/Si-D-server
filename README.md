@@ -264,13 +264,19 @@ ENTRYPOINT ["java", "-jar", "app.jar"]
 ## 테스트 결과서
 
 ### 카카오 소셜 로그인 및 나의 사이더카드 조회
+    <details>
+    	<summary>런칭 프로젝트 등록 시연영상</summary>
+
+		  <div markdown="1"> 
+        <img src="https://github.com/user-attachments/assets/f05291be-6b26-4765-b5f8-93b8d0ca6a25"/>
+      </div>
+    </details>
       ![로그인 및 내 사이더 조회 및 수정](https://github.com/user-attachments/assets/2cd389a9-989e-4396-9e41-e3f803a39138)
 
 ### 프로젝트 모집 공고 등록
 	<details>
 		<div markdown="1"> 
-	  	![모집 글 작성](https://github.com/user-attachments/assets/14bc9cbb-acee-4424-98b5-99e5fc3dcb6e)
-   
+	  	<img src="https://github.com/user-attachments/assets/14bc9cbb-acee-4424-98b5-99e5fc3dcb6e"/>
     </div>
   </details>
 
@@ -280,7 +286,7 @@ ENTRYPOINT ["java", "-jar", "app.jar"]
       <summary>PM에게 문의채팅</summary>
 
 		  <div markdown="1"> 
-	      ![pm과채팅](https://github.com/user-attachments/assets/daeeb816-1456-40f8-ae76-406f5aa21936)
+	      <img src="https://github.com/user-attachments/assets/daeeb816-1456-40f8-ae76-406f5aa21936"/>
       </div>
     </details>
 
@@ -288,7 +294,7 @@ ENTRYPOINT ["java", "-jar", "app.jar"]
       <summary>PM 답변 채팅</summary>
 
 		  <div markdown="1"> 
-	      ![pm답변](https://github.com/user-attachments/assets/2218f5fc-94a6-480e-8450-ab4240addb79)
+	      <img src="https://github.com/user-attachments/assets/2218f5fc-94a6-480e-8450-ab4240addb79"/>
       </div>
     
     </details>
@@ -297,7 +303,7 @@ ENTRYPOINT ["java", "-jar", "app.jar"]
       <summary>프로젝트 지원</summary>
 
 		  <div markdown="1"> 
-	      ![프로젝트지원](https://github.com/user-attachments/assets/f96ff804-f116-4863-a717-900eda709446)
+	      <img src="https://github.com/user-attachments/assets/f96ff804-f116-4863-a717-900eda709446"/>
       </div>
     </details>
 
@@ -307,7 +313,7 @@ ENTRYPOINT ["java", "-jar", "app.jar"]
       <summary>프로젝트 지원자 승인하기 시연 영상</summary>
 
 		  <div markdown="1"> 
-	      ![프로젝트승인](https://github.com/user-attachments/assets/94444122-7426-4229-b645-1d749d71af48)
+	      <img src="https://github.com/user-attachments/assets/94444122-7426-4229-b645-1d749d71af48"/>
       </div>
     </details>
 
@@ -315,7 +321,7 @@ ENTRYPOINT ["java", "-jar", "app.jar"]
       <summary>프로젝트 마감 시 알람수신 시연영상</summary>
 
 		  <div markdown="1"> 
-	      ![프로젝트마감알람](https://github.com/user-attachments/assets/50ed5b0b-ad7e-4155-a855-f3436122846e)
+	      <img src="https://github.com/user-attachments/assets/50ed5b0b-ad7e-4155-a855-f3436122846e"/>
       </div>
     </details>
 
@@ -324,7 +330,7 @@ ENTRYPOINT ["java", "-jar", "app.jar"]
     	<summary>런칭 프로젝트 등록 시연영상</summary>
 
 		  <div markdown="1"> 
-        ![완성프로젝트등록](https://github.com/user-attachments/assets/f05291be-6b26-4765-b5f8-93b8d0ca6a25)
+        <img src="https://github.com/user-attachments/assets/f05291be-6b26-4765-b5f8-93b8d0ca6a25"/>
       </div>
     </details>
 
