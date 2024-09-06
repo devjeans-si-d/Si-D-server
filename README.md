@@ -274,6 +274,7 @@ ENTRYPOINT ["java", "-jar", "app.jar"]
 	<details>
 		<div markdown="1"> 
 	  	![모집 글 작성](https://github.com/user-attachments/assets/14bc9cbb-acee-4424-98b5-99e5fc3dcb6e)
+   
     </div>
   </details>
 
@@ -281,6 +282,7 @@ ENTRYPOINT ["java", "-jar", "app.jar"]
 
     <details> 
       <summary>PM에게 문의채팅</summary>
+
 		  <div markdown="1"> 
 	      ![pm과채팅](https://github.com/user-attachments/assets/daeeb816-1456-40f8-ae76-406f5aa21936)
       </div>
@@ -288,6 +290,7 @@ ENTRYPOINT ["java", "-jar", "app.jar"]
 
     <details> 
       <summary>PM 답변 채팅</summary>
+
 		  <div markdown="1"> 
 	      ![pm답변](https://github.com/user-attachments/assets/2218f5fc-94a6-480e-8450-ab4240addb79)
       </div>
@@ -296,6 +299,7 @@ ENTRYPOINT ["java", "-jar", "app.jar"]
 
     <details> 
       <summary>프로젝트 지원</summary>
+
 		  <div markdown="1"> 
 	      ![프로젝트지원](https://github.com/user-attachments/assets/f96ff804-f116-4863-a717-900eda709446)
       </div>
@@ -305,6 +309,7 @@ ENTRYPOINT ["java", "-jar", "app.jar"]
 
     <details> 
       <summary>프로젝트 지원자 승인하기 시연 영상</summary>
+
 		  <div markdown="1"> 
 	      ![프로젝트승인](https://github.com/user-attachments/assets/94444122-7426-4229-b645-1d749d71af48)
       </div>
@@ -312,6 +317,7 @@ ENTRYPOINT ["java", "-jar", "app.jar"]
 
     <details> 
       <summary>프로젝트 마감 시 알람수신 시연영상</summary>
+
 		  <div markdown="1"> 
 	      ![프로젝트마감알람](https://github.com/user-attachments/assets/50ed5b0b-ad7e-4155-a855-f3436122846e)
       </div>
@@ -320,6 +326,7 @@ ENTRYPOINT ["java", "-jar", "app.jar"]
 ### 완성된 프로젝트 등록
     <details>
     	<summary>런칭 프로젝트 등록 시연영상</summary>
+
 		  <div markdown="1"> 
         ![완성프로젝트등록](https://github.com/user-attachments/assets/f05291be-6b26-4765-b5f8-93b8d0ca6a25)
       </div>
