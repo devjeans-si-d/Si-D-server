@@ -55,6 +55,8 @@ chore: 코드 수정, 내부 파일 수정
 
 - [기능 및 시연영상](#기능)
 
+- [Devops Trouble Shooting](#️-devops-trouble-shooting)
+
 ## 주요 기능
 
 - [소셜로그인, 회원정보 입력](#-회원가입--카카오-소셜로그인-si-der-card-등록)
@@ -125,7 +127,69 @@ Designer와 Developer를 이어주는 사이드(Side) 프로젝트 플랫폼
 
 ## CI/CD를 위한 구성 스크립트
 <details>
-<summary>be-cicd.yml</summary>
+<summary> 프론트엔드 CI/CD : deploy-with-s3.yml </summary>
+
+```
+
+name: deploy to aws s3
+# main 브랜치에 push 될 때 현재 스크립트 실행 트리거 발동
+on:
+  push:
+    branches:
+      - main
+jobs:
+# workflow는 하나 이상의 작업(job)으로 구성. 여기서는 하나의 작업만을 정의
+  build-and-deploy:
+    runs-on: ubuntu-latest # 우분투 최신 판에서 작업(빌드, 배포 작업 어디서 할건지 지정)
+    steps:
+    # actions는 깃헙에서 제공되는 공식 워크플로이다.
+    # checkout은 현재 repo의 main 브랜치 소스코드를 copy
+      - name: source code checkout
+        uses: actions/checkout@v2
+        # node js 세팅
+      - name: setup node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '20'
+      - name: pnpm install
+        working-directory: .
+        # run은 직접 사용하고자 하는 명령어이다.
+        run: |
+          npm install -g pnpm
+          pnpm install
+      - name: npm build
+        env:
+          VUE_APP_REST_API_KEY: ${{ secrets.KAKAO_API_KEY }}
+          VUE_APP_API_BASE_URL: ${{secrets.SERVER_URL}}
+          VUE_APP_MY_URL: ${{secrets.CLIENT_URL}}
+        working-directory: .
+        run: pnpm run build
+      - name: setup aws cli
+      # aws 관련한 aws actions가 제공된다. 지금 이게 configure 세팅하는 거임
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{secrets.AWS_ACCESS_KEY}}
+          aws-secret-access-key: ${{secrets.AWS_SECRET_KEY}}
+          aws-region: "ap-northeast-2"
+        # 버킷에 소스코드 붓기
+      - name: clear s3 bucket
+        # 기존 s3 버킷을 비워주기
+        run: aws s3 rm s3://www.si-d.site/ --recursive
+        
+        # S3에 넣기
+      - name: deploy to s3
+        run: aws s3 cp ./dist s3://www.si-d.site/ --recursive
+
+      # cloud front의 캐시를 지워주는 작업이다.
+      - name: invalidate cloudfront caches
+        run: aws cloudfront create-invalidation --distribution-id E1O6AN1E7XTVYQ --paths "/*"
+
+```
+</details>
+
+
+<details>
+<summary>백엔드 CI/CD : be-cicd.yml</summary>
 
 ```
 
@@ -174,7 +238,7 @@ jobs:
 </details>
 
 <details>
-<summary>k8s-cicd.yml</summary>
+<summary>데브옵스 CI/CD : k8s-cicd.yml</summary>
 
 ```
 
@@ -328,7 +392,10 @@ ENTRYPOINT ["java", "-jar", "app.jar"]
 <img src="https://img.shields.io/badge/Vue.js-4FC08D?style=for-the-badge&logo=Vue.js&logoColor=white" ><img src="https://img.shields.io/badge/Vuetify-1867C0?style=for-the-badge&logo=vuetify&logoColor=#1867C0" ><img src="https://img.shields.io/badge/javascript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black" >
 
 ### ✔️Back-end
-<img src="https://img.shields.io/badge/Spring-green?style=for-the-badge&logo=Spring&logoColor=white"><img src="https://img.shields.io/badge/Spring Boot-6DB33F?style=for-the-badge&logo=Spring Boot&logoColor=white"><img src="https://img.shields.io/badge/Sspringsecurity-6DB33F?style=for-the-badge&logo=springsecurity&logoColor=white"><img src="https://img.shields.io/badge/amazons3-569A31?style=for-the-badge&logo=amazons3&logoColor=white"><img src="https://img.shields.io/badge/redis-FF4438?style=for-the-badge&logo=redis&logoColor=white"><img src="https://img.shields.io/badge/mariadb-003545?style=for-the-badge&logo=mariadb&logoColor=white"><img src="https://img.shields.io/badge/docker-2496ED?style=for-the-badge&logo=docker&logoColor=white">
+<img src="https://img.shields.io/badge/Spring-green?style=for-the-badge&logo=Spring&logoColor=white"><img src="https://img.shields.io/badge/Spring Boot-6DB33F?style=for-the-badge&logo=Spring Boot&logoColor=white"><img src="https://img.shields.io/badge/Springsecurity-6DB33F?style=for-the-badge&logo=springsecurity&logoColor=white"><img src="https://img.shields.io/badge/Spring Data JPA -13C100?style=for-the-badge&logo=Spring Boot&logoColor=white"><img src="https://img.shields.io/badge/amazons3-569A31?style=for-the-badge&logo=amazons3&logoColor=white"><img src="https://img.shields.io/badge/redis-FF4438?style=for-the-badge&logo=redis&logoColor=white"><img src="https://img.shields.io/badge/mariadb-003545?style=for-the-badge&logo=mariadb&logoColor=white"><img src="https://img.shields.io/badge/docker-2496ED?style=for-the-badge&logo=docker&logoColor=white">
+
+### ✔️ Devops
+<img src="https://img.shields.io/badge/amazonwebservices-232F3E?style=for-the-badge&logo=amazonwebservices&logoColor=white"><img src="https://img.shields.io/badge/docker-2496ED?style=for-the-badge&logo=docker&logoColor=white"><img src="https://img.shields.io/badge/kubernetes-326CE5?style=for-the-badge&logo=kubernetes&logoColor=white"><img src="https://img.shields.io/badge/amazons3-569A31?style=for-the-badge&logo=amazons3&logoColor=white"><img src="https://img.shields.io/badge/amazonrds-527FFF?style=for-the-badge&logo=amazonrds&logoColor=white"><img src="https://img.shields.io/badge/amazonroute53-8C4FFF?style=for-the-badge&logo=amazonroute53&logoColor=white"><img src="https://img.shields.io/badge/amazonelasticache-C925D1?style=for-the-badge&logo=amazonelasticache&logoColor=white"><img src="https://img.shields.io/badge/amazonec2-FF9900?style=for-the-badge&logo=amazonec2&logoColor=white"><img src="https://img.shields.io/badge/awselasticloadbalancing-ED1965?style=for-the-badge&logo=awselasticloadbalancing&logoColor=white"><img src="https://img.shields.io/badge/amazoneks-FF9900?style=for-the-badge&logo=amazoneks&logoColor=white"><img src="https://img.shields.io/badge/nginx-009639?style=for-the-badge&logo=nginx&logoColor=white"><img src="https://img.shields.io/badge/githubactions-2088FF?style=for-the-badge&logo=githubactions&logoColor=white"><img src="https://img.shields.io/badge/cloudfront-FF4F8B?style=for-the-badge&logo=amazoncloudwatch&logoColor=white">
 
 ### ✔️ 협업 관리
 <img src="https://img.shields.io/badge/notion-000000?style=for-the-badge&logo=notion&logoColor=white"><img src="https://img.shields.io/badge/git-F05032?style=for-the-badge&logo=git&logoColor=white"><img src="https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white">
@@ -424,7 +491,6 @@ ENTRYPOINT ["java", "-jar", "app.jar"]
     - '프로젝트 관리'에서 지원자 조회가 가능하다.
     - 지원자를 승인하고 프로젝트에 초대하면 지원자에게 승인안내 메일이 전송된다.
     - 프로젝트가 마감되면 프로젝트 참여자에게 프로젝트 모집이 종료되었다는 알림이 간다.
-    - 
 
     <details> <summary><b>프로젝트 지원자 승인하기 시연 영상</b></summary>
         <div markdown="1"> 
@@ -432,7 +498,7 @@ ENTRYPOINT ["java", "-jar", "app.jar"]
         </div>
     </details>
 
-    <details> <summary><b>>프로젝트 마감 시 알람수신 시연영상</b></summary>
+    <details> <summary><b>프로젝트 마감 시 알람수신 시연영상</b></summary>
         <div markdown="1"> 
             <img src="https://github.com/user-attachments/assets/08e1221b-fe2a-4206-940c-5aa41b4a9b9c"/>
         </div>
@@ -446,13 +512,113 @@ ENTRYPOINT ["java", "-jar", "app.jar"]
     - Launched Project 글에는 좋아요(사이다)를 누를 수 있다.
   
 
-    <details> <summary><b>>런칭 프로젝트 등록 시연영상</b></summary>
+    <details> <summary><b>런칭 프로젝트 등록 시연영상</b></summary>
         <div markdown="1"> 
             <img src="https://github.com/user-attachments/assets/4709aee2-1c3f-4eba-b8f1-02131d2009ea"/>
         </div>
     </details>
 
+## ☄️ Devops Trouble Shooting
+<details> 
+<summary><h3> SSE(Server-Sent Events) 미작동 문제 </h3> </summary> 
 
+### 📌 이슈
+
+개발 서버 배포 시 Nginx를 사용한 환경에서 Server-Sent Events(SSE)가 작동하지 않는 문제가 발생했습니다. SSE는 HTTP/1.1 이상에서 지원되지만 Nginx가 HTTP/1.0으로 요청을 프록시 처리하면서 발생한 이슈였습니다.
+
+### 📌 원인
+
+Nginx의 기본 설정에서 HTTP/1.0을 사용하고 있었으며 SSE는 HTTP/1.1 이상의 프로토콜에서만 지원됩니다. 따라서 Nginx에서 HTTP/1.1로의 전환이 필요했습니다.
+
+### 📌 해결 방법
+
+문제를 해결하기 위해 Nginx 대신 **AWS의 Application Load Balancer(ALB)**를 사용하여 로드 밸런싱을 처리했습니다. AWS ALB는 HTTP/1.1을 기본적으로 지원하므로, 별도의 Nginx 설정 없이도 SSE가 정상적으로 동작하였습니다.
+</details>
+
+<details> 
+<summary><h3> 쿠버네티스 멀티서버 배포 시 SSE 구독 실패 문제 해결 </h3> </summary> 
+
+### 오류 확인
+![sse구독실패 문제](https://github.com/user-attachments/assets/7228d6ab-bf7d-42dc-bae6-4172a5469359)
+
+### 해결 시연영상
+![redis구독은 방이랑 상관이없다 편집](https://github.com/user-attachments/assets/6a0c1a02-7547-4c01-b1d8-a9b05c55bec9)
+
+
+### 📌 이슈
+
+쿠버네티스를 사용하여 멀티서버 배포 중 알림이 간헐적으로 전달되지 않는 문제가 발생했습니다. 수천 개의 채팅 메시지를 보내는 상황에서도 알림이 일부는 도착하고, 일부는 도착하지 않는 불안정한 현상이 있었습니다.
+
+### 📌 원인
+
+문제의 원인을 파악하기 위해 Redis에 접속하여 데이터가 제대로 저장되는지 확인한 결과, redis에는 데이터가 제대로 들어왔으나 알림이 발생되지 않는 문제를 발견하였고 코드를 확인해보니 채팅과 알림 RedisMessageListenerContainer가 두 개가 존재하여 중복 구독이 발생할 가능성이 있다고 판단했습니다. 이로 인해 메시지 처리의 일관성이 깨졌을 수 있습니다. 
+
+또한, SSE 구독 요청이 실패할 때 알림이 전송되지 않는 문제도 추가적으로 발견되었습니다. 이는 프론트엔드의 구독 실패로 인한 이슈였습니다.
+
+### 📌 해결 방법
+
+RedisMessageListenerContainer 중복 문제 해결: 두 개의 RedisMessageListenerContainer가 구동 중인 것을 확인한 후, 하나를 삭제하고 관련된 qualifier를 제거하여 재배포했습니다. 이로 인해 중복 문제는 해결되었습니다.
+
+프론트엔드 구독 실패 문제 해결: SSE/subscribe 요청이 실패할 때 알림이 전송되지 않는 문제를 해결하기 위해, try-catch 문을 사용하여 실패 시 재연결 요청을 하도록 프론트엔드 코드를 수정했습니다.
+</details>
+
+<details> 
+<summary><h3> Spring Scheduler 동시성 문제 해결  </h3> </summary> 
+
+### 📌 이슈
+
+Spring Scheduler 환경에서 여러 Pod 간에 스케줄된 작업이 동시에 실행되어 동시성 문제가 발생했습니다. 이를 방지하기 위해 Redis에 락 키를 저장해봤지만, 동시성 문제는 여전히 해결되지 않았습니다.
+
+### 📌 원인
+
+Redis 락을 사용해도 스케줄 작업 간의 동시성 제어가 제대로 되지 않았던 이유는, Redis가 락을 충분히 빠르게 관리하지 못하거나, 여러 노드 간 동시성 제어에 한계가 있었기 때문입니다. Redis만으로는 여러 Pod 간 잠금을 효율적으로 관리하는 데 어려움이 있었습니다.
+
+### 📌 해결 방법
+
+ShedLock 도입: ShedLock은 여러 노드 또는 Pod에서 동일한 작업이 중복 실행되지 않도록 잠금을 제공합니다. 한 노드에서 잠금을 획득하면, 다른 노드는 동일한 작업을 실행하지 않으며 대기하지 않고 건너뜁니다.
+
+**ShedLock의 특징:**
+
+휘발성 관리: 잠금이 필요한 시간 동안만 유지되며, 작업이 완료되면 잠금이 자동 해제됩니다.
+클러스터 환경 지원: 한 노드가 잠금을 획득하면 다른 노드는 해당 잠금이 해제될 때까지 작업을 실행하지 않습니다.
+시간 기반 잠금: 노드 시간이 동기화된 환경에서만 제대로 작동합니다.
+적용 방법:
+
+@SchedulerLock 어노테이션을 사용하여 스케줄된 메서드에 잠금 로직을 적용.
+Lock Provider로 Redis를 사용하여 빠른 실시간 잠금 처리가 가능하게 설정.
+적용 환경:
+
+JDK 17 이상 및 Spring 6 이상 환경에서는 ShedLock 5.1.0 버전을 권장.
+JDK 17 미만 환경에서는 ShedLock 4.44.0 버전 사용.
+
+</details>
+
+<details> 
+<summary><h3> 배포 후 화면 깨짐 현상 </h3> </summary> 
+	
+### 배포 후 화면 깨짐
+<img width="1002" alt="배포 후 화면깨짐" src="https://github.com/user-attachments/assets/d58a81be-0f20-447b-9e12-fc2d6e303f2a">
+
+### 배포 후 화면 수정
+<img width="957" alt="배포 후 화면수정" src="https://github.com/user-attachments/assets/bfa809ee-fa77-4581-8bf7-35bfa25fbfc3">
+
+### 📌 이슈
+
+배포 후 프론트엔드 화면이 깨지는 문제가 발생하였습니다. 로컬 환경에서는 정상적으로 표시되었지만, 배포 환경에서는 CSS 우선순위가 달라져 화면이 제대로 렌더링되지 않았습니다.
+
+### 📌 원인
+
+로컬 개발 환경과 배포 환경 간의 차이로 인해 CSS 우선순위가 변경된 것이 문제의 원인이었습니다. 특히, 웹팩(Webpack) 빌드 과정에서 CSS가 예상과 다르게 처리되어, 스타일이 올바르게 적용되지 않았습니다.
+
+### 📌 해결 방법
+
+1. npm run build 명령어로 프로젝트를 빌드한 후, 배포 환경과 동일한 방식으로 로컬 서버에서 애플리케이션을 확인하기 위해 serve -s dist 명령어를 실행하여 배포환경과 동일한 환경을 로컬에서 재현할 수 있었습니다.
+
+2. 로컬 서버에서 배포 환경과 동일하게 확인하며 CSS 스타일 우선순위를 다시 맞추었습니다. 스타일 우선순위 충돌을 해결하고, 화면이 정상적으로 표시되는 것을 확인했습니다.
+
+3. 이후 수정된 CSS를 포함한 코드를 다시 빌드 및 배포하여 문제를 해결했습니다.
+
+</details>
 
 
 
