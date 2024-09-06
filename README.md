@@ -116,7 +116,12 @@ Designer와 Developer를 이어주는 사이드(Side) 프로젝트 플랫폼
 <img width="542" alt="스크린샷 2024-08-20 오후 9 14 53" src="https://github.com/user-attachments/assets/d4e3365b-ac70-4ab8-93aa-5515a9954248">
 
 ## CI/CD 아키텍처 설계서
-![architecture2](https://github.com/user-attachments/assets/b2ae26e1-078c-43a3-a676-09a021053de2)
+
+### 초기 배포 아키텍처
+<img width="1113" alt="데브서버1" src="https://github.com/user-attachments/assets/de56bf4a-c20b-4d9f-9b64-b6ef759d3179">
+
+### 최종 배포 아키텍처
+<img width="756" alt="아키텍처3" src="https://github.com/user-attachments/assets/4cd6c8b6-8f35-4169-a328-969c9d7b0c6b">
 
 ## CI/CD를 위한 구성 스크립트
 <details>
@@ -263,52 +268,58 @@ ENTRYPOINT ["java", "-jar", "app.jar"]
 
 ## 테스트 결과서
 
-### 카카오 소셜 로그인 및 나의 사이더카드 조회
-	<details>
- 		<summary><b>카카오 소셜 로그인 및 나의 사이더카드 조회</b></summary>
+### 📍카카오 소셜 로그인 및 나의 사이더카드 조회
 
-   		<img src="https://github.com/user-attachments/assets/2cd389a9-989e-4396-9e41-e3f803a39138"/>
- 	</details>
+  <details>
+      <summary><b>카카오 소셜 로그인 및 나의 사이더카드 조회</b></summary>
+      <img src="https://github.com/user-attachments/assets/a6ecb38f-2378-4731-a22a-77aaf5d91e0b" alt="카카오 소셜 로그인 및 나의 사이더카드 조회"/>
+  </details>
+  <br/>
 
-### 프로젝트 모집 공고 등록
-	<details>
- 		<summary><b>프로젝트 모집 공고 등록</b></summary>
+### 📍프로젝트 모집 공고 등록
+  <details>
+      <summary><b>프로젝트 모집 공고 등록</b></summary>
+      <img src="https://github.com/user-attachments/assets/213bc96c-e95f-4489-9a81-2bedb4aeb905" alt="프로젝트 모집 공고 등록"/>
+  </details>
+  <br/>
 
-   		<img src="https://github.com/user-attachments/assets/14bc9cbb-acee-4424-98b5-99e5fc3dcb6e"/>
- 	</details>
+### 📍프로젝트 모집 공고 지원
+  <details>
+      <summary><b>PM에게 문의채팅</b></summary>
+      <img src="https://github.com/user-attachments/assets/29d242b0-6328-4881-afcb-1c4c4b71dc92" alt="PM에게 문의채팅"/>
+  </details>
+  <br/>
+  <details>
+      <summary><b>PM 답변 채팅</b></summary>
+      <img src="https://github.com/user-attachments/assets/069e19a4-9e84-4fb3-960f-3ab8d3116132" alt="PM 답변 채팅"/>
+  </details>
+  <br/>
+  <details>
+      <summary><b>프로젝트 지원</b></summary>
+      <img src="https://github.com/user-attachments/assets/0431b94f-30cb-4617-89e1-36acad830b6d" alt="프로젝트 지원"/>
+  </details>
+  <br/>
 
-### 프로젝트 모집 공고 지원
-	<details>
- 		<summary><b>PM에게 문의채팅</b></summary>
+### 📍프로젝트 관리 (PM)
+  <details>
+      <summary><b>프로젝트 지원자 승인</b></summary>
+      <img src="https://github.com/user-attachments/assets/eb6fb10e-cef6-4f63-948c-03b2e7a625e0" alt="프로젝트 지원자 승인"/>
+  </details>
+  <br/>
+    <details>
+      <summary><b>프로젝트 마감 시 알람</b></summary>
+      <img src="https://github.com/user-attachments/assets/d9d955a2-b493-4541-b93d-1903c91dd396" alt="프로젝트 마감 시 알람"/>
+  </details>
+  <br/>
 
-   		<img src="https://github.com/user-attachments/assets/daeeb816-1456-40f8-ae76-406f5aa21936"/>
- 	</details>
+### 📍완성된 프로젝트 등록
+  <details>
+      <summary><b>완성된 프로젝트 등록</b></summary>
+      <img src="https://github.com/user-attachments/assets/e6f8601e-ad6d-4e65-af52-d559a107562a" alt="완성된 프로젝트 등록"/>
+  </details>
+  <br/>
 
-      <details>
-      	<summary><b>PM 답변 채팅</b></summary>
-
-       	<img src="https://github.com/user-attachments/assets/2218f5fc-94a6-480e-8450-ab4240addb79"/>
-      </details>
-
-      <details>
-      	<summary><b>프로젝트 지원</b></summary>
-
-       	<img src="https://github.com/user-attachments/assets/f96ff804-f116-4863-a717-900eda709446"/>
-      </details>
-      
-### 프로젝트 관리 (PM)
-
-      <b>프로젝트 지원자 승인하기 시연 영상</b>
-      ![프로젝트승인](https://github.com/user-attachments/assets/94444122-7426-4229-b645-1d749d71af48)
-
-      <b>프로젝트 마감 시 알람수신 시연영상</b>
-      ![프로젝트마감알람](https://github.com/user-attachments/assets/50ed5b0b-ad7e-4155-a855-f3436122846e)
-
-### 완성된 프로젝트 등록
-    	<b>런칭 프로젝트 등록 시연영상</b>
-        ![완성프로젝트등록](https://github.com/user-attachments/assets/f05291be-6b26-4765-b5f8-93b8d0ca6a25)
-
-## 이슈 관리
+## 📍이슈 관리
 [이슈 관리 보기](https://quark-smile-890.notion.site/01f6e9a772864d789a2aa5f35798e92b?v=8288992a047b499f853c24bfc5f2c1cd&pvs=4)
 
 
