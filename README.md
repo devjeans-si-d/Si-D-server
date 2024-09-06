@@ -116,7 +116,7 @@ Designer와 Developer를 이어주는 사이드(Side) 프로젝트 플랫폼
 <img width="542" alt="스크린샷 2024-08-20 오후 9 14 53" src="https://github.com/user-attachments/assets/d4e3365b-ac70-4ab8-93aa-5515a9954248">
 
 ## CI/CD 아키텍처 설계서
-![architecture](https://github.com/user-attachments/assets/2e54c573-963f-4a41-a18f-2ce99446c029)
+![architecture2](https://github.com/user-attachments/assets/b2ae26e1-078c-43a3-a676-09a021053de2)
 
 ## CI/CD를 위한 구성 스크립트
 <details>
