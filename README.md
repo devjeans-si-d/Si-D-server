@@ -281,17 +281,16 @@ ENTRYPOINT ["java", "-jar", "app.jar"]
   </details>
 
 ### 프로젝트 모집 공고 지원
-
-    <details> 
-      <summary>PM에게 문의채팅</summary>
+	<details>
+ 		<summary><b>PM에게 문의채팅</b></summary>
 
 		  <div markdown="1"> 
 	      <img src="https://github.com/user-attachments/assets/daeeb816-1456-40f8-ae76-406f5aa21936"/>
       </div>
     </details>
 
-    <details> 
-      <summary>PM 답변 채팅</summary>
+      <details>
+      	<summary><b>PM 답변 채팅</b></summary>
 
 		  <div markdown="1"> 
 	      <img src="https://github.com/user-attachments/assets/2218f5fc-94a6-480e-8450-ab4240addb79"/>
@@ -299,8 +298,8 @@ ENTRYPOINT ["java", "-jar", "app.jar"]
     
     </details>
 
-    <details> 
-      <summary>프로젝트 지원</summary>
+      <details>
+      	<summary><b>프로젝트 지원</b></summary>
 
 		  <div markdown="1"> 
 	      <img src="https://github.com/user-attachments/assets/f96ff804-f116-4863-a717-900eda709446"/>
