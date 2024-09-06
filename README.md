@@ -261,6 +261,51 @@ ENTRYPOINT ["java", "-jar", "app.jar"]
 ```
 </details>
 
+## 테스트 결과서
+
+### 카카오 소셜 로그인 및 나의 사이더카드 조회
+<details>
+
+</details>
+
+### 프로젝트 모집 공고 등록
+<details>
+</details>
+
+### 프로젝트 모집 공고 지원
+
+    <details> 
+      <summary>PM에게 문의채팅</summary>
+
+    </details>
+
+    <details> 
+      <summary>PM 답변 채팅</summary>
+
+    </details>
+
+    <details> 
+      <summary>프로젝트 지원</summary>
+
+    </details>
+
+### 프로젝트 관리 (PM)
+
+    <details> 
+      <summary>프로젝트 지원자 승인하기 시연 영상</summary>
+
+    </details>
+
+    <details> 
+      <summary>프로젝트 마감 시 알람수신 시연영상</summary>
+
+    </details>
+
+### 완성된 프로젝트 등록
+    <details> 
+        <summary>런칭 프로젝트 등록 시연영상</summary>
+    </details>
+
 ## 이슈 관리
 [이슈 관리 보기](https://quark-smile-890.notion.site/01f6e9a772864d789a2aa5f35798e92b?v=8288992a047b499f853c24bfc5f2c1cd&pvs=4)
 
